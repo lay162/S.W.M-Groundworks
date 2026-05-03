@@ -5,9 +5,7 @@ Your project is already set up for Netlify:
 - Publish folder: dist
 - Functions: netlify/functions (quote form calls /.netlify/functions/enquiry)
 
-Deploy flow (recommended): each push to **main** runs **GitHub Actions** — it builds the site and runs `netlify deploy`, so production updates without using **Netlify build minutes** for that build. Netlify’s own Git hook build is skipped (see netlify.toml `ignore`). You still need **GitHub Actions** minutes (free tier on public repos; private repos have a monthly allowance).
-
-One-time: add GitHub Actions secrets — see **GITHUB ACTIONS → NETLIFY** below. Runtime secrets for functions (Sheets, SMTP) stay in the Netlify dashboard.
+Deploy flow: connect the repo in Netlify (below). Each push to **main** triggers a **build on Netlify** — no GitHub secrets required. Runtime secrets for functions (Google Sheet URL, SMTP, etc.) are set only in the Netlify dashboard.
 
 --------------------------------------------------------------------------------
 STEP 0 — PUSH CODE TO GITHUB FIRST (if you have not yet)
@@ -27,27 +25,6 @@ If push fails, fix auth (GitHub Desktop or a personal access token).
 WHY NETLIFY SHOWED “NO RESULTS” FOR BRANCH
 - GitHub had no commits yet (empty repo), so there was no branch for Netlify to list.
 - Fix: push at least one commit to **main**, then refresh the Netlify import page or start the import again.
-
---------------------------------------------------------------------------------
-GITHUB ACTIONS → NETLIFY (push main = live site, no Netlify build minutes)
---------------------------------------------------------------------------------
-Netlify cannot “build for free” on their servers on every push — that uses Netlify build minutes. This repo instead **builds on GitHub** and **uploads** the result to Netlify (hosting/CDN still goes through Netlify; optional `VITE_*` values must be available at **build** time on GitHub if you use them).
-
-1. Netlify → User settings (your avatar) → **Applications** → **Personal access tokens** → New access token → copy it (starts like a long random string).
-
-2. Netlify → your site → **Site configuration** → **General** → **Site details** → copy **Site ID**.
-
-3. GitHub → repository **S.W.M-Groundworks** → **Settings** → **Secrets and variables** → **Actions** → **New repository secret**:
-     NETLIFY_AUTH_TOKEN   = paste the personal access token
-     NETLIFY_SITE_ID      = paste the Site ID
-
-4. Optional: if you use **VITE_BUSINESS_QUOTE_EMAIL**, add a secret with the same name in GitHub Actions so the workflow can bake it into the build (Netlify env vars are not used for the GitHub build step).
-
-5. Push to **main** (or merge a PR into main). Open **Actions** tab on GitHub and confirm the workflow is green. The live site should update within a couple of minutes.
-
-If the workflow fails with “missing secrets”, add the two required secrets and re-run the failed job (or push an empty commit).
-
-Emergency fallback: comment out the `ignore = "exit 0"` line in netlify.toml and push — Netlify will build on their servers again (uses Netlify build minutes) until you restore the setup.
 
 --------------------------------------------------------------------------------
 STEP 1 — NETLIFY: ADD NEW SITE FROM GIT
