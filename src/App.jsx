@@ -17,6 +17,7 @@ import {
   Trees,
   Droplets,
   Landmark,
+  Play,
 } from 'lucide-react';
 import { BLOG_POSTS } from './data/blogPosts.js';
 
@@ -180,6 +181,89 @@ function formatLongDate(iso) {
   const d = new Date(iso + (iso.length === 10 ? 'T12:00:00' : ''));
   if (Number.isNaN(d.getTime())) return '';
   return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+/** First garden before/after reel — add MP4 at public/videos/garden-transformation-01.mp4 (see public/videos/README.txt). */
+const GARDEN_TRANSFORMATION_VIDEO_SRC = '/videos/garden-transformation-01.mp4';
+const GARDEN_TRANSFORMATION_POSTER = '/images/garden pic 3.jpeg';
+
+function GardenTransformationSection() {
+  const [videoAvailable, setVideoAvailable] = useState(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetch(GARDEN_TRANSFORMATION_VIDEO_SRC, { method: 'HEAD' })
+      .then((res) => {
+        if (!cancelled) setVideoAvailable(res.ok);
+      })
+      .catch(() => {
+        if (!cancelled) setVideoAvailable(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  return (
+    <section className="bg-zinc-950 py-20 md:py-28 text-white border-y border-zinc-800">
+      <div className="mx-auto max-w-5xl px-4 text-center sm:px-6">
+        <h2 className="mb-3 text-[10px] font-black uppercase tracking-[0.45em] text-zinc-500">On the ground</h2>
+        <h3 className="mb-4 text-3xl font-black tracking-tighter text-white sm:text-4xl md:text-5xl">Garden transformation</h3>
+        <p className="mx-auto mb-10 max-w-xl text-sm font-medium leading-relaxed text-zinc-400">
+          Before-and-after walkthrough on one reel — sits on the home page above the stills gallery so visitors see scale
+          and movement first.
+        </p>
+        <div className="relative mx-auto aspect-video max-h-[70vh] w-full overflow-hidden rounded-2xl border border-zinc-800 bg-black shadow-2xl shadow-black/40">
+          {videoAvailable === true ? (
+            <video
+              className="h-full w-full object-cover"
+              controls
+              playsInline
+              preload="metadata"
+              poster={GARDEN_TRANSFORMATION_POSTER}
+            >
+              <source src={GARDEN_TRANSFORMATION_VIDEO_SRC} type="video/mp4" />
+            </video>
+          ) : (
+            <>
+              <img
+                src={GARDEN_TRANSFORMATION_POSTER}
+                alt="Garden project — video placeholder"
+                className="h-full w-full object-cover opacity-90"
+                loading="lazy"
+              />
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-t from-black/85 via-black/45 to-black/30 px-6">
+                <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full border-2 border-white/30 bg-white/10 text-white backdrop-blur-sm">
+                  <Play size={28} className="ml-1 text-white" fill="white" aria-hidden />
+                </div>
+                <p className="max-w-md text-sm font-bold leading-relaxed text-white">
+                  {videoAvailable === false
+                    ? 'Upload your finished reel as MP4 to deploy it here — no code change needed.'
+                    : 'Checking for video…'}
+                </p>
+                <p className="mt-3 max-w-lg text-xs font-semibold leading-relaxed text-zinc-400">
+                  Save as <span className="font-mono text-zinc-300">public/videos/garden-transformation-01.mp4</span> then
+                  redeploy (or refresh locally). See <span className="font-mono">public/videos/README.txt</span>.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setVideoAvailable(null);
+                    fetch(GARDEN_TRANSFORMATION_VIDEO_SRC, { method: 'HEAD' })
+                      .then((res) => setVideoAvailable(res.ok))
+                      .catch(() => setVideoAvailable(false));
+                  }}
+                  className="mt-6 text-[10px] font-black uppercase tracking-[0.28em] text-zinc-400 underline decoration-zinc-600 underline-offset-4 hover:text-white"
+                >
+                  I’ve added the file — check again
+                </button>
+              </div>
+            </>
+          )}
+        </div>
+      </div>
+    </section>
+  );
 }
 
 /** workFilter must match a key in WORK_GALLERY (use "all" where there is no exact gallery tab). */
@@ -785,6 +869,7 @@ const App = () => {
         <>
           <Hero />
           <ServiceAreas />
+          <GardenTransformationSection />
           <section className="bg-white py-28 border-b border-zinc-100">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-16 text-center">
