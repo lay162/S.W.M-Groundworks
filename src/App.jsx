@@ -948,64 +948,24 @@ const App = () => {
       {activeTab === 'work' && <Gallery />}
 
       {activeTab === 'reviews' && (
-        <section className="py-40 bg-white flex flex-col items-center">
-          <div className="max-w-7xl mx-auto px-4 w-full">
-            <div className="grid lg:grid-cols-12 gap-24 items-start">
-              <div className="lg:col-span-5 text-center lg:text-left flex flex-col items-center lg:items-start">
-                <h2 className="text-xs font-black tracking-[0.4em] text-zinc-400 uppercase mb-8">Verified Clients</h2>
-                <h3 className="text-7xl font-black text-black mb-12 leading-[0.8] tracking-tighter">
-                  CLIENT <br />
-                  TRUST.
-                </h3>
+        <section className="border-b border-zinc-100 bg-gradient-to-b from-white via-white to-zinc-50/60 py-16 md:py-24 lg:py-28">
+          <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+            <header className="mx-auto mb-12 max-w-2xl text-center md:mb-16">
+              <p className="mb-3 text-xs font-black uppercase tracking-[0.35em] text-zinc-400">Verified Clients</p>
+              <h2 className="text-4xl font-black leading-[0.95] tracking-tighter text-black sm:text-5xl md:text-6xl">
+                CLIENT <br className="sm:hidden" />
+                TRUST.
+              </h2>
+            </header>
 
-                <form onSubmit={handleReviewSubmit} className="bg-zinc-50 p-12 rounded border border-zinc-200 w-full">
-                  <h3 className="font-black text-xs mb-10 uppercase tracking-[0.3em] text-black">SHARE YOUR EXPERIENCE</h3>
-                  <div className="space-y-8">
-                    <input
-                      required
-                      placeholder="FULL NAME"
-                      className="w-full px-6 py-5 bg-white border border-zinc-200 rounded outline-none focus:border-black text-[10px] font-black tracking-[0.3em] transition-all"
-                      value={reviewForm.author}
-                      onChange={(e) => setReviewForm({ ...reviewForm, author: e.target.value.toUpperCase() })}
-                    />
-                    <div className="flex justify-center lg:justify-start gap-3">
-                      {[1, 2, 3, 4, 5].map((num) => (
-                        <button
-                          key={num}
-                          type="button"
-                          onClick={() => setReviewForm({ ...reviewForm, rating: num })}
-                          className={`p-1 ${reviewForm.rating >= num ? 'text-black' : 'text-zinc-300'}`}
-                        >
-                          <Star size={24} fill={reviewForm.rating >= num ? 'currentColor' : 'none'} />
-                        </button>
-                      ))}
-                    </div>
-                    <textarea
-                      required
-                      placeholder="DESCRIBE THE CRAFTSMANSHIP..."
-                      className="w-full px-6 py-5 bg-white border border-zinc-200 rounded outline-none focus:border-black text-[10px] font-black tracking-[0.3em] transition-all min-h-[150px]"
-                      value={reviewForm.text}
-                      onChange={(e) => setReviewForm({ ...reviewForm, text: e.target.value })}
-                    />
-                    <button type="submit" className="w-full bg-black text-white font-black py-6 rounded text-[10px] tracking-[0.4em] hover:bg-zinc-800 transition-colors">
-                      POST FEEDBACK
-                    </button>
-                    {status.msg && (
-                      <p className={`text-[10px] font-black text-center mt-6 tracking-[0.2em] ${status.type === 'success' ? 'text-green-600' : 'text-red-600'}`}>
-                        {status.msg.toUpperCase()}
-                      </p>
-                    )}
-                  </div>
-                </form>
-              </div>
-
-              <div className="lg:col-span-7 w-full">
+            <div className="grid items-start gap-12 lg:grid-cols-12 lg:gap-14">
+              <div className="order-2 lg:order-1 lg:col-span-8">
                 {reviews.filter((r) => r.isApproved).length === 0 ? (
-                  <div className="p-32 text-center border-4 border-dashed border-zinc-100 rounded text-zinc-300 font-black uppercase tracking-[0.5em] text-xs">
-                    ARCHIVING FEEDBACK
+                  <div className="rounded-2xl border-2 border-dashed border-zinc-200 bg-white px-8 py-24 text-center">
+                    <p className="text-xs font-black uppercase tracking-[0.45em] text-zinc-300">Archiving feedback</p>
                   </div>
                 ) : (
-                  <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-5 md:auto-rows-fr">
+                  <ol className="divide-y divide-zinc-200/90 rounded-2xl border border-zinc-200/80 bg-white shadow-sm">
                     {reviews
                       .filter((r) => r.isApproved)
                       .sort((a, b) => {
@@ -1014,109 +974,116 @@ const App = () => {
                         return tb - ta;
                       })
                       .map((r, i) => {
-                        const v = i % 6;
-                        const grid =
-                          v === 0
-                            ? 'md:col-span-12'
-                            : v === 1
-                              ? 'md:col-span-5'
-                              : v === 2
-                                ? 'md:col-span-7'
-                                : v === 3
-                                  ? 'md:col-span-6 md:translate-y-2'
-                                  : v === 4
-                                    ? 'md:col-span-6 md:-translate-y-2'
-                                    : 'md:col-span-12 lg:col-span-6 lg:col-start-4';
-                        const shell =
-                          v === 0
-                            ? 'bg-black text-white border border-zinc-800 p-8 md:p-12 md:pr-16 rounded-2xl shadow-xl md:flex md:flex-row md:items-stretch md:gap-12'
-                            : v === 1
-                              ? 'bg-white p-7 md:p-9 rounded-2xl border-2 border-black shadow-[6px_6px_0_0_rgb(0,0,0)]'
-                              : v === 2
-                                ? 'bg-zinc-100 p-8 md:p-10 rounded-2xl border border-zinc-200/90 md:pl-12 border-l-[6px] border-l-black border-t-zinc-200/90 border-r-zinc-200/90 border-b-zinc-200/90'
-                                : v === 3
-                                  ? 'bg-gradient-to-br from-zinc-50 to-white p-8 md:p-10 rounded-2xl border border-zinc-200 ring-1 ring-black/5'
-                                  : v === 4
-                                    ? 'bg-zinc-900 text-zinc-100 p-8 md:p-10 rounded-2xl border border-zinc-700'
-                                    : 'bg-white p-7 md:p-9 rounded-2xl border border-dashed border-zinc-300';
-                        const starWrap = v === 0 || v === 4 ? 'text-amber-400' : 'text-black';
-                        const starEmpty = v === 0 || v === 4 ? 'text-zinc-600' : 'text-zinc-200';
-                        const quoteClass =
-                          v === 0
-                            ? 'text-lg md:text-2xl font-medium leading-snug md:leading-relaxed text-zinc-100 md:flex-1'
-                            : v === 1
-                              ? 'text-sm md:text-base font-semibold leading-relaxed text-zinc-800'
-                              : v === 2
-                                ? 'text-base md:text-xl font-serif italic text-zinc-900 leading-relaxed'
-                                : v === 4
-                                  ? 'text-base md:text-lg font-medium leading-relaxed text-zinc-200'
-                                  : 'text-base md:text-lg text-black font-medium leading-relaxed';
-                        const openQuote =
-                          v === 0 ? 'text-zinc-600' : v === 4 ? 'text-zinc-500' : v === 2 ? 'text-black/25' : 'text-zinc-300';
-                        const footBorder =
-                          v === 0
-                            ? 'border-t border-zinc-700 md:border-t-0 md:border-l md:pl-10 md:pt-0 md:mt-0 md:min-w-[11rem] md:flex md:flex-col md:justify-center pt-6 mt-6'
-                            : v === 4
-                              ? 'border-t border-zinc-700 pt-5 mt-6'
-                              : 'border-t border-zinc-200/90 pt-5 mt-6';
-                        const authorClass =
-                          v === 0 ? 'font-black text-sm tracking-tight text-white' : v === 4 ? 'font-black text-sm text-white' : 'font-black text-sm text-black tracking-tight';
-                        const metaMuted =
-                          v === 0 ? 'text-zinc-500' : v === 4 ? 'text-zinc-400' : 'text-zinc-400';
-                        const locClass = v === 0 ? 'text-zinc-400' : v === 4 ? 'text-zinc-500' : 'text-zinc-500';
-                        const jobClass = v === 0 ? 'text-zinc-300' : v === 4 ? 'text-zinc-300' : 'text-zinc-600';
+                        const parts = String(r.author || '')
+                          .trim()
+                          .split(/\s+/)
+                          .filter(Boolean);
+                        const initials =
+                          parts.length >= 2
+                            ? `${parts[0][0] || ''}${parts[parts.length - 1][0] || ''}`.toUpperCase()
+                            : (parts[0]?.slice(0, 2) || '?').toUpperCase();
 
                         return (
-                          <article
-                            key={r.id || i}
-                            className={`${grid} ${shell} text-left flex flex-col h-full transition-transform duration-300 hover:-translate-y-0.5`}
-                          >
-                            {v === 1 && (
-                              <p className="text-[10px] font-black tracking-[0.35em] text-zinc-400 uppercase mb-5">Field note</p>
-                            )}
-                            {v === 3 && (
-                              <p className="text-[10px] font-black tracking-[0.4em] text-zinc-400 uppercase mb-4">Verified</p>
-                            )}
-                            {v === 5 && (
-                              <p className="text-[10px] font-black tracking-[0.45em] text-zinc-400 uppercase mb-4">Client voice</p>
-                            )}
-
-                            <div className={`flex items-center gap-1 mb-4 md:mb-5 ${v === 0 ? 'md:order-none' : ''}`} aria-label={`${r.rating} out of 5 stars`}>
-                              {[...Array(5)].map((_, idx) => (
-                                <Star
-                                  key={idx}
-                                  size={v === 0 ? 18 : 16}
-                                  className={idx < r.rating ? `${starWrap} fill-current` : starEmpty}
-                                  fill={idx < r.rating ? 'currentColor' : 'none'}
-                                  stroke="currentColor"
-                                />
-                              ))}
-                            </div>
-
-                            <div className={v === 0 ? 'md:flex-1 md:flex md:flex-col' : 'flex-1 flex flex-col'}>
-                              <blockquote className={`${quoteClass} mb-4 md:mb-6 flex-1`}>
-                                <span className={`font-serif text-3xl md:text-4xl leading-none mr-1 ${openQuote}`}>“</span>
-                                <span className={v === 2 ? '' : v === 1 ? 'not-italic' : 'italic'}>{r.text}</span>
-                                <span className={`font-serif text-3xl md:text-4xl leading-none ${openQuote}`}>”</span>
-                              </blockquote>
-                            </div>
-
-                            <footer className={`mt-auto ${footBorder}`}>
-                              <p className={authorClass}>{r.author}</p>
-                              {r.reviewedAt && (
-                                <p className={`text-[10px] font-black tracking-[0.2em] uppercase mt-2 ${metaMuted}`}>
-                                  {formatLongDate(r.reviewedAt)}
-                                </p>
-                              )}
-                              <p className={`text-[10px] font-black tracking-[0.25em] uppercase mt-2 ${locClass}`}>{r.location}</p>
-                              {r.jobType && <p className={`text-[11px] font-bold mt-1.5 tracking-tight ${jobClass}`}>{r.jobType}</p>}
-                            </footer>
-                          </article>
+                          <li key={r.id || i}>
+                            <article className="flex gap-4 px-4 py-8 sm:gap-6 sm:px-6 md:py-9">
+                              <div
+                                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-black text-[11px] font-black text-white sm:h-12 sm:w-12 sm:text-xs"
+                                aria-hidden
+                              >
+                                {initials}
+                              </div>
+                              <div className="min-w-0 flex-1">
+                                <div className="mb-3 flex items-center gap-0.5" aria-label={`${r.rating} out of 5 stars`}>
+                                  {[...Array(5)].map((_, idx) => (
+                                    <Star
+                                      key={idx}
+                                      size={15}
+                                      className={idx < r.rating ? 'fill-black text-black' : 'text-zinc-200'}
+                                      fill={idx < r.rating ? 'currentColor' : 'none'}
+                                      stroke="currentColor"
+                                    />
+                                  ))}
+                                </div>
+                                <blockquote className="text-[15px] font-medium leading-relaxed text-zinc-800 sm:text-base">
+                                  {r.text}
+                                </blockquote>
+                                <footer className="mt-5 flex flex-wrap items-baseline gap-x-2 gap-y-1 border-t border-zinc-100 pt-4 text-[11px] sm:text-xs">
+                                  <cite className="not-italic">
+                                    <span className="font-black text-black">{r.author}</span>
+                                  </cite>
+                                  {r.reviewedAt && (
+                                    <>
+                                      <span className="text-zinc-300" aria-hidden>
+                                        ·
+                                      </span>
+                                      <span className="font-bold uppercase tracking-[0.12em] text-zinc-400">{formatLongDate(r.reviewedAt)}</span>
+                                    </>
+                                  )}
+                                  <span className="w-full text-[10px] font-black uppercase tracking-[0.22em] text-zinc-500 sm:mt-0 sm:inline sm:w-auto">
+                                    {r.location}
+                                    {r.jobType ? ` · ${r.jobType}` : ''}
+                                  </span>
+                                </footer>
+                              </div>
+                            </article>
+                          </li>
                         );
                       })}
-                  </div>
+                  </ol>
                 )}
               </div>
+
+              <aside className="order-1 lg:order-2 lg:col-span-4">
+                <div className="lg:sticky lg:top-28">
+                  <form
+                    onSubmit={handleReviewSubmit}
+                    className="rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm sm:p-10"
+                  >
+                    <h3 className="mb-8 font-black text-xs uppercase tracking-[0.3em] text-black">SHARE YOUR EXPERIENCE</h3>
+                    <div className="space-y-6">
+                      <input
+                        required
+                        placeholder="FULL NAME"
+                        className="w-full rounded-lg border border-zinc-200 bg-zinc-50/80 px-5 py-4 text-[10px] font-black uppercase tracking-[0.3em] outline-none transition-all placeholder:text-zinc-400 focus:border-black"
+                        value={reviewForm.author}
+                        onChange={(e) => setReviewForm({ ...reviewForm, author: e.target.value.toUpperCase() })}
+                      />
+                      <div className="flex justify-center gap-2 sm:justify-start sm:gap-3">
+                        {[1, 2, 3, 4, 5].map((num) => (
+                          <button
+                            key={num}
+                            type="button"
+                            onClick={() => setReviewForm({ ...reviewForm, rating: num })}
+                            className={`rounded-md p-1.5 transition-colors ${reviewForm.rating >= num ? 'text-black' : 'text-zinc-300'}`}
+                          >
+                            <Star size={24} fill={reviewForm.rating >= num ? 'currentColor' : 'none'} />
+                          </button>
+                        ))}
+                      </div>
+                      <textarea
+                        required
+                        placeholder="DESCRIBE THE CRAFTSMANSHIP..."
+                        className="min-h-[140px] w-full rounded-lg border border-zinc-200 bg-zinc-50/80 px-5 py-4 text-[10px] font-black uppercase tracking-[0.3em] outline-none transition-all placeholder:text-zinc-400 focus:border-black"
+                        value={reviewForm.text}
+                        onChange={(e) => setReviewForm({ ...reviewForm, text: e.target.value })}
+                      />
+                      <button
+                        type="submit"
+                        className="w-full rounded-lg bg-black py-5 text-[10px] font-black uppercase tracking-[0.35em] text-white transition-colors hover:bg-zinc-800"
+                      >
+                        POST FEEDBACK
+                      </button>
+                      {status.msg && (
+                        <p
+                          className={`text-center text-[10px] font-black uppercase tracking-[0.2em] ${status.type === 'success' ? 'text-green-600' : 'text-red-600'}`}
+                        >
+                          {status.msg.toUpperCase()}
+                        </p>
+                      )}
+                    </div>
+                  </form>
+                </div>
+              </aside>
             </div>
           </div>
         </section>
