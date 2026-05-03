@@ -11,6 +11,12 @@ import {
   ArrowRight,
   ShieldCheck,
   ChevronLeft,
+  Car,
+  LayoutGrid,
+  Fence,
+  Trees,
+  Droplets,
+  Landmark,
 } from 'lucide-react';
 import { BLOG_POSTS } from './data/blogPosts.js';
 
@@ -176,32 +182,60 @@ function formatLongDate(iso) {
   return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
+/** workFilter must match a key in WORK_GALLERY (use "all" where there is no exact gallery tab). */
 const SERVICES = [
   {
     title: 'Driveways',
     desc: 'Premium block paving, resin-bound, and decorative gravel driveways across the Wirral, Liverpool, Merseyside and Cheshire.',
+    image: '/images/driveway pic.jpeg',
+    workFilter: 'driveways',
+    iconKey: 'driveways',
   },
   {
     title: 'Patios',
     desc: 'High-end porcelain and natural stone patio installations for luxury outdoor living.',
+    image: '/images/tiles pic.jpeg',
+    workFilter: 'patios',
+    iconKey: 'patios',
   },
   {
     title: 'Fencing',
     desc: 'Commercial grade and decorative domestic fencing solutions built for durability.',
+    image: '/images/fence pic.jpeg',
+    workFilter: 'fencing',
+    iconKey: 'fencing',
   },
   {
     title: 'Landscaping',
     desc: 'Complete architectural garden transformations and heavy-duty landscaping.',
+    image: '/images/garden pic.jpeg',
+    workFilter: 'gardens',
+    iconKey: 'landscaping',
   },
   {
     title: 'Drainage',
     desc: 'Expert ground drainage solutions to prevent flooding and manage runoff.',
+    image: '/images/garden pic 2.jpeg',
+    workFilter: 'all',
+    iconKey: 'drainage',
   },
   {
     title: 'Foundations',
     desc: 'Precision-engineered foundations and concrete footings for extensions and new builds.',
+    image: '/images/steps 2.jpeg',
+    workFilter: 'steps',
+    iconKey: 'foundations',
   },
 ];
+
+const SERVICE_ICON_MAP = {
+  driveways: Car,
+  patios: LayoutGrid,
+  fencing: Fence,
+  landscaping: Trees,
+  drainage: Droplets,
+  foundations: Landmark,
+};
 
 const SOCIAL_LINKS = {
   facebook: 'https://facebook.com',
@@ -773,20 +807,54 @@ const App = () => {
       )}
 
       {activeTab === 'services' && (
-        <section className="py-40 bg-white animate-in fade-in duration-1000 flex flex-col items-center">
-          <div className="max-w-7xl mx-auto px-4 text-center">
-            <h2 className="text-xs font-black tracking-[0.5em] text-zinc-400 uppercase mb-10">S.W.M Groundworks</h2>
-            <h3 className="text-6xl font-black text-black tracking-tighter mb-28">OUR CORE CAPABILITIES</h3>
-            <div className="grid md:grid-cols-3 gap-12">
-              {SERVICES.map((s, i) => (
-                <div key={i} className="group p-12 bg-zinc-50 rounded border border-zinc-100 text-left hover:bg-black hover:text-white transition-all duration-700">
-                  <div className="w-14 h-14 bg-white text-black rounded flex items-center justify-center mb-10 shadow-sm group-hover:bg-zinc-800 group-hover:text-white transition-colors">
-                    <CheckCircle2 size={28} />
-                  </div>
-                  <h3 className="text-2xl font-black mb-6 tracking-tight">{s.title.toUpperCase()}</h3>
-                  <p className="text-zinc-500 group-hover:text-zinc-400 leading-relaxed text-sm font-bold tracking-tight">{s.desc}</p>
-                </div>
-              ))}
+        <section className="py-20 md:py-28 bg-zinc-50/80 animate-in fade-in duration-1000 flex flex-col items-center border-b border-zinc-100">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 w-full text-center">
+            <h2 className="text-[10px] font-black tracking-[0.45em] text-zinc-400 uppercase mb-4">S.W.M Groundworks</h2>
+            <h3 className="text-4xl sm:text-5xl md:text-6xl font-black text-black tracking-tighter mb-4">Core services</h3>
+            <p className="text-zinc-500 text-sm md:text-base font-medium max-w-2xl mx-auto mb-14 md:mb-16 leading-relaxed">
+              Tap a service to open our work gallery on the matching category — driveways, patios, fencing, gardens and more.
+            </p>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+              {SERVICES.map((s) => {
+                const Icon = SERVICE_ICON_MAP[s.iconKey] ?? CheckCircle2;
+                return (
+                  <button
+                    key={s.title}
+                    type="button"
+                    onClick={() => {
+                      setWorkGalleryFilter(s.workFilter);
+                      setActiveTab('work');
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }}
+                    className="group relative flex w-full flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white text-center shadow-sm transition-all duration-500 hover:-translate-y-1 hover:border-zinc-300 hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
+                  >
+                    <div className="relative aspect-[16/11] w-full shrink-0 overflow-hidden bg-zinc-200">
+                      <img
+                        src={s.image}
+                        alt=""
+                        className="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                        loading="lazy"
+                      />
+                      <div
+                        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-black/10 transition-opacity duration-500 group-hover:from-black/80"
+                        aria-hidden
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center p-4">
+                        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-white text-black shadow-lg ring-4 ring-white/40 transition-transform duration-500 group-hover:scale-110 group-hover:ring-white/60">
+                          <Icon size={28} strokeWidth={1.75} className="shrink-0" aria-hidden />
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex flex-1 flex-col items-center px-6 pb-7 pt-8">
+                      <h4 className="text-xl font-black tracking-tight text-black md:text-2xl">{s.title.toUpperCase()}</h4>
+                      <p className="mt-4 max-w-sm text-sm font-semibold leading-relaxed text-zinc-600">{s.desc}</p>
+                      <span className="mt-6 inline-flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.28em] text-zinc-400 transition-colors group-hover:text-black">
+                        View work <ArrowRight size={14} className="transition-transform group-hover:translate-x-0.5" strokeWidth={2.5} />
+                      </span>
+                    </div>
+                  </button>
+                );
+              })}
             </div>
           </div>
         </section>
