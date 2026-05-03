@@ -19,10 +19,6 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    # Same environment as deploy so **Environment secrets** (e.g. VITE_*) are available during `npm run build`.
-    # If builds wait for approval, open Environment → github-pages → turn off “Required reviewers”, or use Repository secrets instead.
-    environment:
-      name: github-pages
     steps:
       - uses: actions/checkout@v4
 

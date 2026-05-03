@@ -17,23 +17,21 @@ to your **Google Apps Script** web app (same row shape as before). There is no s
 The built JavaScript needs your Apps Script URL and shared secret at **build time** (they are embedded in the bundle —
 anyone can read them in DevTools, same as any client-side form; use a long random secret and optional throttling in the script).
 
-GitHub → **Settings** → **Secrets and variables** → **Actions**
+GitHub → **Settings** → **Secrets and variables** → **Actions** → open the **Secrets** tab (not “Environments”).
 
-**Option A — Repository secrets (simplest)**  
-Under the **Secrets** tab (not “Environments”): add **New repository secret**:
-  VITE_GOOGLE_APPS_SCRIPT_URL, VITE_GOOGLE_APPS_SCRIPT_SECRET (required), and optional ones below.  
-No need to use the **github-pages** Environment for these.
+Click **New repository secret** and add (names must match exactly):
 
-**Option B — Environment `github-pages` (what the workflow uses)**  
-Settings → **Environments** → **github-pages** → add under **Environment secrets** (lock icon, value hidden):
-  VITE_GOOGLE_APPS_SCRIPT_URL     = your Web App URL ending in /exec  
-  VITE_GOOGLE_APPS_SCRIPT_SECRET  = same string as `SECRET` in Apps Script (no `'` quotes in the GitHub value box)
+  Required:
+    VITE_GOOGLE_APPS_SCRIPT_URL     = your Apps Script Web App URL (ends with /exec)
+    VITE_GOOGLE_APPS_SCRIPT_SECRET  = same value as SECRET in Code.gs (no surrounding ' quotes)
 
-Do **not** put `VITE_GOOGLE_APPS_SCRIPT_SECRET` under **Environment variables** — those values are visible and the workflow reads **secrets**, not variables.
+  Optional:
+    VITE_GOOGLE_APPS_SCRIPT_INCLUDE_PHOTOS = true   (only if you send photos to Drive from the browser)
+    VITE_BUSINESS_QUOTE_EMAIL              = your public email (mailto fallback)
 
-Optional **Environment secrets** (or repository secrets):
-  VITE_GOOGLE_APPS_SCRIPT_INCLUDE_PHOTOS = true   (Drive photos; large payloads may fail)
-  VITE_BUSINESS_QUOTE_EMAIL              = your public inbox (mailto fallback)
+Do **not** create an **Environment** whose name is `VITE_GOOGLE_APPS_SCRIPT_URL` — that is a variable *name*, not an environment. If you made one by mistake, delete it (trash icon on **Settings → Environments**). Keep only **github-pages** (GitHub creates/uses it for Pages deploy).
+
+Do **not** put the script secret under **Environment variables** (values are visible). Always use **Repository secrets** for the two VITE_* keys above.
 
 After changing secrets: **Actions** → re-run the latest workflow, or push an empty commit, so a new build runs.
 
