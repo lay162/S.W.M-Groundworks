@@ -52,6 +52,9 @@ const LOCATIONS = [
   'Neston',
 ];
 
+/** Shown in the reviews grid only. Customer form never appends here — you add entries in code after moderation. */
+const isPublicReview = (r) => Boolean(r?.isApproved) && Number(r.rating) >= 4;
+
 /** Display-only client feedback (in-page). Not emitted as structured data for search engines. */
 const STATIC_CLIENT_REVIEWS = [
   {
@@ -705,10 +708,17 @@ const App = () => {
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
     if (!user) return;
+    const author = reviewForm.author.trim();
+    const text = reviewForm.text.trim();
+    if (!author || !reviewForm.jobType || !text) {
+      setStatus({ type: 'error', msg: 'Please complete all fields before submitting.' });
+      return;
+    }
     try {
-      // Keeping your exact UX; can be wired to email / Sheets later if you want (include reviewForm.jobType then).
+      // Submissions are not stored on the site or shown publicly from this form — only in-code approved entries appear.
+      // Wire to email / Google Sheet later if you want a private inbox (still never auto-display).
       setReviewForm({ author: '', jobType: '', rating: 5, text: '' });
-      setStatus({ type: 'success', msg: 'Review submitted for moderation. Thank you!' });
+      setStatus({ type: 'success', msg: 'Thank you — we have received your feedback for moderation.' });
       setTimeout(() => setStatus({ type: '', msg: '' }), 5000);
     } catch (err) {
       setStatus({ type: 'error', msg: 'Failed to post review.' });
@@ -1159,6 +1169,10 @@ const App = () => {
                 <h3 className="mb-6 text-center font-black text-xs uppercase tracking-[0.3em] text-black sm:mb-8">
                   SHARE YOUR EXPERIENCE
                 </h3>
+                <p className="mb-6 text-center text-[11px] font-semibold leading-relaxed text-zinc-500 sm:mb-7">
+                  Your message is not posted on this page automatically. We read every submission first; only feedback we
+                  choose to showcase is added below (typically four- and five-star work we are proud of).
+                </p>
                 <div className="space-y-5 sm:space-y-6">
                   <input
                     required
@@ -1221,14 +1235,14 @@ const App = () => {
               </form>
             </div>
 
-            {reviews.filter((r) => r.isApproved).length === 0 ? (
+            {reviews.filter(isPublicReview).length === 0 ? (
               <div className="mx-auto max-w-4xl rounded-2xl border-2 border-dashed border-zinc-200 bg-white px-6 py-20 text-center sm:py-24">
                 <p className="text-xs font-black uppercase tracking-[0.45em] text-zinc-300">Archiving feedback</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6 xl:grid-cols-4">
                 {reviews
-                  .filter((r) => r.isApproved)
+                  .filter(isPublicReview)
                   .sort((a, b) => {
                     const ta = a.reviewedAt ? new Date(a.reviewedAt).getTime() : 0;
                     const tb = b.reviewedAt ? new Date(b.reviewedAt).getTime() : 0;
