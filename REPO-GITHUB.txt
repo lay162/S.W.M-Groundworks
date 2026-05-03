@@ -23,4 +23,4 @@ IF `git remote` ALREADY SHOWS THE WRONG REPO
 IF GITHUB ASKS FOR LOGIN
 - Use GitHub Desktop, or a Personal Access Token as the password when Git prompts over HTTPS.
 
-Do not commit real secrets: keep `.env` local (it is listed in .gitignore). Use Netlify / `.env.example` for variable names only.
+Do not commit real secrets: keep `.env` local (it is listed in .gitignore). Use GitHub Actions secrets + `.env.example` for variable names only.

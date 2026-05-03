@@ -1,0 +1,69 @@
+GITHUB PAGES + CUSTOM DOMAIN (S.W.M Groundworks) — NO NETLIFY
+
+This site is a static Vite/React build. Hosting is **GitHub Pages**; the quote form POSTs **directly from the browser**
+to your **Google Apps Script** web app (same row shape as before). There is no serverless “enquiry” function anymore.
+
+--------------------------------------------------------------------------------
+1) ENABLE GITHUB PAGES
+--------------------------------------------------------------------------------
+1. GitHub → repository **S.W.M-Groundworks** → **Settings** → **Pages**.
+2. Under **Build and deployment** → **Source**: choose **GitHub Actions** (not “Deploy from a branch” for this workflow).
+3. Push to **main** (or open **Actions** → **Deploy GitHub Pages** → **Run workflow**). The first successful run publishes the site.
+4. Your temporary URL will look like: **https://lay162.github.io/S.W.M-Groundworks/** (user + repo name; dots in the repo name are kept).
+
+--------------------------------------------------------------------------------
+2) SECRETS & VARIABLES (quote form → Google Sheet)
+--------------------------------------------------------------------------------
+The built JavaScript needs your Apps Script URL and shared secret at **build time** (they are embedded in the bundle —
+anyone can read them in DevTools, same as any client-side form; use a long random secret and optional throttling in the script).
+
+GitHub → **Settings** → **Secrets and variables** → **Actions**
+
+**Repository secrets**
+  Required (quotes → Sheet from the live site):
+    VITE_GOOGLE_APPS_SCRIPT_URL     = your Web App URL ending in /exec
+    VITE_GOOGLE_APPS_SCRIPT_SECRET  = exact same string as SECRET inside Apps Script (see FOR-GOOGLE-APPS-SCRIPT-PASTE-ONLY.txt)
+  Optional (omit if you do not need them):
+    VITE_GOOGLE_APPS_SCRIPT_INCLUDE_PHOTOS = true   (Drive photo path in script; large payloads may fail)
+    VITE_BUSINESS_QUOTE_EMAIL              = your public inbox (mailto fallback in the app)
+
+After changing secrets: **Actions** → re-run the latest workflow, or push an empty commit, so a new build runs.
+
+Local dev: copy **.env.example** to **.env** and fill the same `VITE_*` names, then `npm run dev`.
+
+--------------------------------------------------------------------------------
+3) APPS SCRIPT (GOOGLE SHEETS)
+--------------------------------------------------------------------------------
+Use **FOR-GOOGLE-APPS-SCRIPT-PASTE-ONLY.txt** and **google-apps-script.txt**. Deploy the script as a Web app with access
+**Anyone** (or “Anyone with Google account” if you accept sign-in only — then browser POSTs may fail for anonymous visitors).
+
+**CORS:** If the browser blocks the request, open the browser **Console** on submit. Fixes that often work:
+- Redeploy the Web app as a **new version** after editing the script.
+- Ensure the request URL is the **current /exec** URL from **Deploy** → **Manage deployments**.
+
+If POST still fails, the app falls back to **mailto** so the customer can email you (photos do not attach in that path).
+
+--------------------------------------------------------------------------------
+4) CUSTOM DOMAIN (e.g. swm-groundworks.co.uk from Namecheap)
+--------------------------------------------------------------------------------
+When you own **swm-groundworks.co.uk**:
+
+1. GitHub → repo → **Settings** → **Pages** → **Custom domain**: enter **swm-groundworks.co.uk** (and add **www** if you use it).
+2. GitHub shows the **DNS records** to add at Namecheap (**Advanced DNS**). Typical pattern:
+   - **A** records for **@** → GitHub’s IPs (copy from GitHub; they can change — always use GitHub’s current list).
+   - **CNAME** for **www** → **lay162.github.io** (your GitHub username + .github.io).
+3. Wait for DNS (minutes to 48h). **Enforce HTTPS** stays on in GitHub Pages.
+4. **index.html** canonical / **og:url** / JSON-LD **url** are set to **https://swm-groundworks.co.uk/** — update that file if you use a different hostname.
+
+**apex vs www:** Many registrars make **www** easier; you can redirect **@** → **https://www.swm-groundworks.co.uk** at Namecheap and set the GitHub custom domain to **www**.
+
+--------------------------------------------------------------------------------
+5) SPA REFRESH (404 ON DEEP LINK)
+--------------------------------------------------------------------------------
+The workflow copies **dist/index.html** to **dist/404.html** so client-side routes survive a full page refresh on GitHub Pages.
+
+--------------------------------------------------------------------------------
+6) LEAVING NETLIFY
+--------------------------------------------------------------------------------
+Disconnect or delete the old Netlify site if you no longer want it. This repo no longer includes **netlify.toml** or
+**netlify/functions**.

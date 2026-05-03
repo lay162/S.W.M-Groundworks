@@ -2,7 +2,7 @@ GOOGLE SHEETS + APPS SCRIPT (S.W.M Groundworks)
 
 Quick files in this folder:
 - FOR-GOOGLE-APPS-SCRIPT-PASTE-ONLY.txt → paste ONLY that into Apps Script Code.gs (avoids pasting the guide twice).
-- NETLIFY-HOSTING-STEPS.txt → first-time Netlify + env vars.
+- GITHUB-PAGES-HOSTING.txt → GitHub Pages + custom domain + VITE_* secrets for the quote form.
 
 --------------------------------------------------------------------------------
 FIX: YOU PASTED THE SCRIPT TWICE IN GOOGLE
@@ -29,19 +29,21 @@ It is NOT a Google password and you do not “look it up” anywhere.
 
 1. Invent one long random phrase only you know, e.g. swmQuoteLog-k9mP2xQ7vL4nR8
 2. In Apps Script (Code.gs), first line inside doPost:  var SECRET = 'paste-the-same-phrase-here';
-3. In Netlify → Site configuration → Environment variables → add:
-     GOOGLE_APPS_SCRIPT_SECRET   =   the exact same phrase (no spaces at start/end)
-4. Save env vars → Trigger a new deploy on Netlify.
+3. In GitHub → repository → Settings → Secrets and variables → Actions → add **Repository secrets**:
+     VITE_GOOGLE_APPS_SCRIPT_SECRET   =   the exact same phrase (no spaces at start/end)
+     VITE_GOOGLE_APPS_SCRIPT_URL      =   your Web App /exec URL
+4. Run the **Deploy GitHub Pages** workflow (or push to main) so the site rebuilds with those values.
 
 The website’s server sends that phrase inside the JSON body; the script checks data.secret === SECRET so random people cannot spam your sheet.
 
 --------------------------------------------------------------------------------
-NETLIFY ENV
+GITHUB ACTIONS (BUILD-TIME VITE_* VARS)
 --------------------------------------------------------------------------------
-GOOGLE_APPS_SCRIPT_URL, GOOGLE_APPS_SCRIPT_SECRET (match SECRET). Optional: GOOGLE_APPS_SCRIPT_INCLUDE_PHOTOS=true for Drive uploads.
+VITE_GOOGLE_APPS_SCRIPT_URL, VITE_GOOGLE_APPS_SCRIPT_SECRET (match SECRET in the script). Optional:
+VITE_GOOGLE_APPS_SCRIPT_INCLUDE_PHOTOS=true for Drive uploads (large payloads may fail from the browser).
 
 Sheets only (no Drive): leave DRIVE_FOLDER_ID = '' in the script; do NOT set INCLUDE_PHOTOS (or set false). Rows still get PhotoCount + PhotoNames.
 
-Email with photo attachments: requires OWNER_EMAIL + SMTP_* on Netlify later; until then, email is not sent.
+There is no server email path in this repo anymore; rely on the Sheet and/or MailApp inside Apps Script if you add it.
 
 Full narrative guide was merged into the files above; script body matches FOR-GOOGLE-APPS-SCRIPT-PASTE-ONLY.txt.

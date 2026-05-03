@@ -1,0 +1,54 @@
+# Build static site and deploy to GitHub Pages (no Netlify).
+# Repo → Settings → Pages → Source: GitHub Actions.
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: package-lock.json
+
+      - name: Install and build
+        env:
+          VITE_GOOGLE_APPS_SCRIPT_URL: ${{ secrets.VITE_GOOGLE_APPS_SCRIPT_URL }}
+          VITE_GOOGLE_APPS_SCRIPT_SECRET: ${{ secrets.VITE_GOOGLE_APPS_SCRIPT_SECRET }}
+          VITE_GOOGLE_APPS_SCRIPT_INCLUDE_PHOTOS: ${{ secrets.VITE_GOOGLE_APPS_SCRIPT_INCLUDE_PHOTOS }}
+          VITE_BUSINESS_QUOTE_EMAIL: ${{ secrets.VITE_BUSINESS_QUOTE_EMAIL }}
+        run: |
+          npm ci
+          npm run build
+          cp dist/index.html dist/404.html
+
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

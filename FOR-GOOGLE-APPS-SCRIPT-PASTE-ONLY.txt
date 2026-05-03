@@ -82,4 +82,4 @@ function saveQuotePhotos_(photos, folderId) {
 
 --- stop copying above this line ---
 
-Remember: set SECRET and match it in Netlify as GOOGLE_APPS_SCRIPT_SECRET. Redeploy Web app after edits.
+Remember: set SECRET and match it in GitHub Actions as VITE_GOOGLE_APPS_SCRIPT_SECRET (and set VITE_GOOGLE_APPS_SCRIPT_URL). Redeploy Web app after edits.

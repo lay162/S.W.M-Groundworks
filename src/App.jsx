@@ -365,23 +365,81 @@ const InstagramIcon = ({ size = 24, className = '' }) => (
   </svg>
 );
 
-/** Shown in mailto: when Netlify is not configured; set in .env as VITE_BUSINESS_QUOTE_EMAIL (rebuild required). */
+/** Shown in mailto fallback; set VITE_BUSINESS_QUOTE_EMAIL at build time (GitHub Actions vars or local .env). */
 const MAILTO_QUOTE_EMAIL =
   (typeof import.meta.env.VITE_BUSINESS_QUOTE_EMAIL === 'string' &&
     import.meta.env.VITE_BUSINESS_QUOTE_EMAIL.trim()) ||
   'you@example.com';
 
+const GOOGLE_SCRIPT_URL =
+  typeof import.meta.env.VITE_GOOGLE_APPS_SCRIPT_URL === 'string'
+    ? import.meta.env.VITE_GOOGLE_APPS_SCRIPT_URL.trim()
+    : '';
+const GOOGLE_SCRIPT_SECRET =
+  typeof import.meta.env.VITE_GOOGLE_APPS_SCRIPT_SECRET === 'string'
+    ? import.meta.env.VITE_GOOGLE_APPS_SCRIPT_SECRET.trim()
+    : '';
+
 async function submitEnquiry(payload) {
-  const res = await fetch('/.netlify/functions/enquiry', {
+  if (!GOOGLE_SCRIPT_URL || !GOOGLE_SCRIPT_SECRET) {
+    throw new Error(
+      'Not configured. Set VITE_GOOGLE_APPS_SCRIPT_URL and VITE_GOOGLE_APPS_SCRIPT_SECRET for GitHub Actions (see GITHUB-PAGES-HOSTING.txt).',
+    );
+  }
+
+  const includePhotos =
+    String(import.meta.env.VITE_GOOGLE_APPS_SCRIPT_INCLUDE_PHOTOS || '').toLowerCase() === 'true';
+  const attachments = Array.isArray(payload.attachments) ? payload.attachments : [];
+  const photoNames = attachments.map((a) => a.name).filter(Boolean).join('; ');
+  const photoCount = attachments.length;
+  const marketingConsent =
+    payload.marketingConsent === true || String(payload.marketingConsent || '').toLowerCase() === 'true';
+
+  const body = {
+    secret: GOOGLE_SCRIPT_SECRET,
+    type: payload.type === 'quote' ? 'quote' : 'quote',
+    timestamp: payload.createdAt || new Date().toISOString(),
+    name: payload.name,
+    email: payload.email,
+    phone: payload.phone,
+    service: payload.service,
+    message: payload.message,
+    marketingConsent: marketingConsent ? 'Yes' : 'No',
+    ip: '',
+    photoCount,
+    photoNames,
+  };
+  if (includePhotos && attachments.length) {
+    body.photos = attachments.map((a) => ({ name: a.name, mime: a.mime, data: a.data }));
+  }
+
+  const res = await fetch(GOOGLE_SCRIPT_URL, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
-    body: JSON.stringify(payload),
+    body: JSON.stringify(body),
   });
-  const data = await res.json().catch(() => ({}));
-  if (res.status === 413) {
-    throw new Error(data.error || 'Request too large. Send fewer or smaller photos.');
+
+  const raw = await res.text();
+  let data = {};
+  try {
+    data = raw ? JSON.parse(raw) : {};
+  } catch {
+    data = {};
   }
-  if (!res.ok || data.ok === false) throw new Error(data.error || 'Request failed');
+
+  if (!res.ok) {
+    throw new Error(
+      data.error ||
+        (raw && raw.length < 200 ? raw : '') ||
+        'Could not save your quote. Check the Apps Script URL and deployment.',
+    );
+  }
+  if (data.ok !== true) {
+    throw new Error(
+      data.error ||
+        'Could not save your quote. Check the Apps Script response and CORS (see GITHUB-PAGES-HOSTING.txt).',
+    );
+  }
 }
 
 const MAX_QUOTE_PHOTOS = 50;
@@ -478,10 +536,9 @@ function PrivacyPolicyModal({ onClose }) {
           <section>
             <h3 className="mb-2 font-black text-black">Where data is stored</h3>
             <p>
-              Information submitted through our site may be processed by our website host (Netlify) and, where you have
-              set it up, recorded in a Google Sheet you control via Google Apps Script. Email delivery may use an SMTP
-              provider configured in your hosting account. Providers process data only as needed to provide their
-              services.
+              Information submitted through our site may be processed by our website host (GitHub Pages) and, where you
+              have set it up, recorded in a Google Sheet you control via Google Apps Script. Providers process data only
+              as needed to provide their services.
             </p>
           </section>
           <section>
@@ -502,8 +559,8 @@ function PrivacyPolicyModal({ onClose }) {
           <section>
             <h3 className="mb-2 font-black text-black">Cookies</h3>
             <p>
-              This site is built to work with minimal cookies. Essential cookies may be used by our host for security and
-              delivery. We do not use third-party advertising cookies on this page by default.
+              This site is built to work with minimal cookies. Essential cookies may be used by our host (GitHub Pages)
+              for delivery. We do not use third-party advertising cookies on this page by default.
             </p>
           </section>
           <section>
@@ -627,15 +684,15 @@ const App = () => {
       const msg = String(err?.message || '');
       const looksLikeNotConfigured =
         msg.toLowerCase().includes('not configured') ||
-        msg.toLowerCase().includes('smtp') ||
-        msg.toLowerCase().includes('google');
+        msg.toLowerCase().includes('apps script') ||
+        msg.toLowerCase().includes('cors');
 
       if (looksLikeNotConfigured) {
         openEmailFallback();
         setStatus({
           type: 'success',
           msg:
-            'Opening your email app. Photos cannot attach through this fallback; after you set Netlify email (SMTP), the form will send real attachments.',
+            'Opening your email app. Configure VITE_GOOGLE_APPS_SCRIPT_URL + SECRET in GitHub Actions to save quotes to your Sheet from the site (see GITHUB-PAGES-HOSTING.txt).',
         });
         setTimeout(() => setStatus({ type: '', msg: '' }), 5000);
         return;
