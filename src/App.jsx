@@ -328,7 +328,7 @@ const SERVICE_ICON_MAP = {
 const REVIEW_JOB_TYPE_OPTIONS = [...SERVICES.map((s) => s.title), 'Other / multiple'];
 
 const SOCIAL_LINKS = {
-  facebook: 'https://facebook.com',
+  facebook: 'https://www.facebook.com/SWMGroundworks/',
   instagram: 'https://instagram.com',
   tiktok: 'https://tiktok.com',
 };
