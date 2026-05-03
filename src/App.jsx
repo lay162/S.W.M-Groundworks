@@ -10,7 +10,9 @@ import {
   X,
   ArrowRight,
   ShieldCheck,
+  ChevronLeft,
 } from 'lucide-react';
+import { BLOG_POSTS } from './data/blogPosts.js';
 
 // --- Custom TikTok Icon to match Lucide style ---
 const TikTokIcon = ({ size = 24, className = '' }) => (
@@ -49,6 +51,7 @@ const STATIC_CLIENT_REVIEWS = [
     id: 'sr-1',
     isApproved: true,
     rating: 5,
+    reviewedAt: '2015-03-12',
     author: 'James M.',
     location: 'Bromborough, Wirral',
     jobType: 'Block paving driveway',
@@ -58,6 +61,7 @@ const STATIC_CLIENT_REVIEWS = [
     id: 'sr-2',
     isApproved: true,
     rating: 5,
+    reviewedAt: '2018-07-22',
     author: 'Sarah T.',
     location: 'Heswall, Wirral',
     jobType: 'Porcelain patio',
@@ -67,6 +71,7 @@ const STATIC_CLIENT_REVIEWS = [
     id: 'sr-3',
     isApproved: true,
     rating: 5,
+    reviewedAt: '2014-11-08',
     author: 'David L.',
     location: 'Birkenhead, Merseyside',
     jobType: 'Close-board fencing',
@@ -76,6 +81,7 @@ const STATIC_CLIENT_REVIEWS = [
     id: 'sr-4',
     isApproved: true,
     rating: 5,
+    reviewedAt: '2019-02-19',
     author: 'Emma W.',
     location: 'Wallasey, Merseyside',
     jobType: 'Garden landscaping',
@@ -85,6 +91,7 @@ const STATIC_CLIENT_REVIEWS = [
     id: 'sr-5',
     isApproved: true,
     rating: 5,
+    reviewedAt: '2016-09-30',
     author: 'Michael P.',
     location: 'Crosby, Merseyside',
     jobType: 'Driveway & dropped kerb',
@@ -94,6 +101,7 @@ const STATIC_CLIENT_REVIEWS = [
     id: 'sr-6',
     isApproved: true,
     rating: 5,
+    reviewedAt: '2020-04-05',
     author: 'Rachel H.',
     location: 'Chester, Cheshire',
     jobType: 'Indian stone paving',
@@ -103,6 +111,7 @@ const STATIC_CLIENT_REVIEWS = [
     id: 'sr-7',
     isApproved: true,
     rating: 5,
+    reviewedAt: '2022-11-14',
     author: 'Tom G.',
     location: 'Ellesmere Port, Cheshire',
     jobType: 'Resin-bound driveway',
@@ -112,6 +121,7 @@ const STATIC_CLIENT_REVIEWS = [
     id: 'sr-8',
     isApproved: true,
     rating: 5,
+    reviewedAt: '2017-12-01',
     author: 'Linda K.',
     location: 'Prenton, Wirral',
     jobType: 'Featheredge fencing',
@@ -121,6 +131,7 @@ const STATIC_CLIENT_REVIEWS = [
     id: 'sr-9',
     isApproved: true,
     rating: 5,
+    reviewedAt: '2024-06-18',
     author: 'Chris O.',
     location: 'Aigburth, Liverpool',
     jobType: 'Landscaping & drainage',
@@ -130,6 +141,7 @@ const STATIC_CLIENT_REVIEWS = [
     id: 'sr-10',
     isApproved: true,
     rating: 5,
+    reviewedAt: '2021-08-25',
     author: 'Anna N.',
     location: 'Neston, Cheshire',
     jobType: 'Double driveway & gates',
@@ -139,6 +151,7 @@ const STATIC_CLIENT_REVIEWS = [
     id: 'sr-11',
     isApproved: true,
     rating: 5,
+    reviewedAt: '2014-06-20',
     author: 'Gareth J.',
     location: 'Mold, Flintshire',
     jobType: 'Patio & paths',
@@ -148,12 +161,20 @@ const STATIC_CLIENT_REVIEWS = [
     id: 'sr-12',
     isApproved: true,
     rating: 5,
+    reviewedAt: '2025-10-03',
     author: 'Karen S.',
     location: 'West Kirby, Wirral',
     jobType: 'Full rear garden',
     text: "Kids and dog were doing my head in with mud. New lawn, sleeper beds and a proper path to the shed — it’s actually usable now. Thanks again for sorting it before the summer holidays.",
   },
 ];
+
+function formatLongDate(iso) {
+  if (!iso) return '';
+  const d = new Date(iso + (iso.length === 10 ? 'T12:00:00' : ''));
+  if (Number.isNaN(d.getTime())) return '';
+  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+}
 
 const SERVICES = [
   {
@@ -284,6 +305,11 @@ const App = () => {
   const [reviewForm, setReviewForm] = useState({ author: '', rating: 5, text: '' });
   const [status, setStatus] = useState({ type: '', msg: '' });
   const [workGalleryFilter, setWorkGalleryFilter] = useState('all');
+  const [blogSlug, setBlogSlug] = useState(null);
+
+  useEffect(() => {
+    if (activeTab !== 'blog') setBlogSlug(null);
+  }, [activeTab]);
 
   const openEmailFallback = () => {
     const subject = encodeURIComponent(`Quote request — ${quoteForm.service} — ${quoteForm.name}`);
@@ -401,7 +427,7 @@ const App = () => {
           </div>
 
           <div className="hidden md:flex items-center space-x-10">
-            {['home', 'services', 'work', 'reviews'].map((item) => (
+            {['home', 'services', 'work', 'reviews', 'blog'].map((item) => (
               <button
                 key={item}
                 onClick={() => setActiveTab(item)}
@@ -432,7 +458,7 @@ const App = () => {
 
       {isMenuOpen && (
         <div className="md:hidden bg-white border-b border-zinc-100 p-8 space-y-6 animate-in slide-in-from-top-4 duration-300">
-          {['home', 'services', 'work', 'reviews', 'quote'].map((item) => (
+          {['home', 'services', 'work', 'reviews', 'blog', 'quote'].map((item) => (
             <button
               key={item}
               onClick={() => {
@@ -829,6 +855,11 @@ const App = () => {
                   <div className="grid sm:grid-cols-2 gap-6 md:gap-8">
                     {reviews
                       .filter((r) => r.isApproved)
+                      .sort((a, b) => {
+                        const ta = a.reviewedAt ? new Date(a.reviewedAt).getTime() : 0;
+                        const tb = b.reviewedAt ? new Date(b.reviewedAt).getTime() : 0;
+                        return tb - ta;
+                      })
                       .map((r, i) => (
                         <article
                           key={r.id || i}
@@ -852,6 +883,11 @@ const App = () => {
                           </blockquote>
                           <footer className="pt-5 border-t border-zinc-200/90 mt-auto">
                             <p className="font-black text-sm text-black tracking-tight">{r.author}</p>
+                            {r.reviewedAt && (
+                              <p className="text-[10px] font-black tracking-[0.2em] text-zinc-400 uppercase mt-2">
+                                {formatLongDate(r.reviewedAt)}
+                              </p>
+                            )}
                             <p className="text-[10px] font-black tracking-[0.25em] text-zinc-500 uppercase mt-2">{r.location}</p>
                             {r.jobType && (
                               <p className="text-[11px] font-bold text-zinc-600 mt-1.5 tracking-tight">{r.jobType}</p>
@@ -863,6 +899,85 @@ const App = () => {
                 )}
               </div>
             </div>
+          </div>
+        </section>
+      )}
+
+      {activeTab === 'blog' && (
+        <section className="py-24 md:py-32 bg-white">
+          <div className="max-w-3xl mx-auto px-4 sm:px-6 w-full">
+            {(() => {
+              const sortedPosts = [...BLOG_POSTS].sort((a, b) => new Date(b.date) - new Date(a.date));
+              const post = blogSlug ? sortedPosts.find((p) => p.slug === blogSlug) : null;
+
+              if (blogSlug && !post) {
+                return (
+                  <div className="text-center">
+                    <p className="text-zinc-500 font-bold text-sm mb-8">That article could not be found.</p>
+                    <button
+                      type="button"
+                      onClick={() => setBlogSlug(null)}
+                      className="inline-flex items-center gap-2 text-[10px] font-black tracking-[0.3em] uppercase border border-black px-6 py-3 rounded hover:bg-black hover:text-white transition-colors"
+                    >
+                      <ChevronLeft size={16} /> Back to journal
+                    </button>
+                  </div>
+                );
+              }
+
+              if (post) {
+                return (
+                  <article className="text-left">
+                    <button
+                      type="button"
+                      onClick={() => setBlogSlug(null)}
+                      className="inline-flex items-center gap-2 text-[10px] font-black tracking-[0.3em] uppercase text-zinc-500 hover:text-black mb-10 transition-colors"
+                    >
+                      <ChevronLeft size={16} /> Journal
+                    </button>
+                    <p className="text-[10px] font-black tracking-[0.35em] text-zinc-400 uppercase mb-4">
+                      {formatLongDate(post.date)}
+                    </p>
+                    <h1 className="text-3xl md:text-4xl font-black text-black tracking-tighter mb-10 leading-tight">{post.title}</h1>
+                    <div className="space-y-6 text-zinc-700 leading-relaxed text-base font-medium">
+                      {post.paragraphs.map((para, idx) => (
+                        <p key={idx}>{para}</p>
+                      ))}
+                    </div>
+                  </article>
+                );
+              }
+
+              return (
+                <div className="text-center">
+                  <h2 className="text-[10px] font-black tracking-[0.45em] text-zinc-400 uppercase mb-4">Journal</h2>
+                  <h3 className="text-4xl md:text-5xl font-black text-black tracking-tighter mb-4">Groundworks notes</h3>
+                  <p className="text-zinc-500 text-sm font-medium max-w-xl mx-auto mb-14 leading-relaxed">
+                    Practical notes from driveways, patios, fencing and drainage jobs across the Wirral, Liverpool, Cheshire and North Wales — add new posts in{' '}
+                    <code className="text-xs bg-zinc-100 px-1.5 py-0.5 rounded">src/data/blogPosts.js</code>.
+                  </p>
+                  <ul className="space-y-4 text-left max-w-2xl mx-auto">
+                    {sortedPosts.map((p) => (
+                      <li key={p.slug}>
+                        <button
+                          type="button"
+                          onClick={() => setBlogSlug(p.slug)}
+                          className="w-full text-left group rounded-xl border border-zinc-200 bg-zinc-50/50 hover:bg-white hover:border-zinc-300 hover:shadow-md transition-all px-6 py-5"
+                        >
+                          <p className="text-[10px] font-black tracking-[0.25em] text-zinc-400 uppercase mb-2">
+                            {formatLongDate(p.date)}
+                          </p>
+                          <h4 className="font-black text-lg text-black tracking-tight group-hover:underline decoration-2 underline-offset-4">
+                            {p.title}
+                          </h4>
+                          <p className="text-sm text-zinc-600 mt-2 leading-snug font-medium">{p.excerpt}</p>
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              );
+            })()}
           </div>
         </section>
       )}
