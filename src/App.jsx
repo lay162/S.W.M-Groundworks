@@ -185,7 +185,7 @@ function formatLongDate(iso) {
 
 /** First garden before/after reel — add MP4 at public/videos/garden-transformation-01.mp4 (see public/videos/README.txt). */
 const GARDEN_TRANSFORMATION_VIDEO_SRC = '/videos/garden-transformation-01.mp4';
-const GARDEN_TRANSFORMATION_POSTER = '/images/garden pic 3.jpeg';
+const GARDEN_TRANSFORMATION_POSTER = '/images/work/gardens/garden pic 3.jpeg';
 
 function GardenTransformationSection() {
   const [videoAvailable, setVideoAvailable] = useState(null);
@@ -271,42 +271,42 @@ const SERVICES = [
   {
     title: 'Driveways',
     desc: 'Premium block paving, resin-bound, and decorative gravel driveways across the Wirral, Liverpool, Merseyside and Cheshire.',
-    image: '/images/driveway pic.jpeg',
+    image: '/images/work/driveways/driveway pic.jpeg',
     workFilter: 'driveways',
     iconKey: 'driveways',
   },
   {
     title: 'Patios',
     desc: 'High-end porcelain and natural stone patio installations for luxury outdoor living.',
-    image: '/images/tiles pic.jpeg',
+    image: '/images/work/patios/tiles pic.jpeg',
     workFilter: 'patios',
     iconKey: 'patios',
   },
   {
     title: 'Fencing',
     desc: 'Commercial grade and decorative domestic fencing solutions built for durability.',
-    image: '/images/fence pic.jpeg',
+    image: '/images/work/fencing/fence pic.jpeg',
     workFilter: 'fencing',
     iconKey: 'fencing',
   },
   {
     title: 'Landscaping',
     desc: 'Complete architectural garden transformations and heavy-duty landscaping.',
-    image: '/images/garden pic.jpeg',
+    image: '/images/work/gardens/garden pic.jpeg',
     workFilter: 'gardens',
     iconKey: 'landscaping',
   },
   {
     title: 'Drainage',
     desc: 'Expert ground drainage solutions to prevent flooding and manage runoff.',
-    image: '/images/garden pic 2.jpeg',
+    image: '/images/work/gardens/garden pic 2.jpeg',
     workFilter: 'all',
     iconKey: 'drainage',
   },
   {
     title: 'Foundations',
     desc: 'Precision-engineered foundations and concrete footings for extensions and new builds.',
-    image: '/images/steps 2.jpeg',
+    image: '/images/work/steps/steps 2.jpeg',
     workFilter: 'steps',
     iconKey: 'foundations',
   },
@@ -856,14 +856,14 @@ const App = () => {
     {
       title: 'Driveway',
       subtitle: 'Tarmac / finishing',
-      beforeSrc: '/images/driveway pic.jpeg',
-      afterSrc: '/images/tarmac.jpeg',
+      beforeSrc: '/images/work/driveways/driveway pic.jpeg',
+      afterSrc: '/images/work/driveways/tarmac.jpeg',
     },
     {
       title: 'Steps',
       subtitle: 'Stone steps & detail',
-      beforeSrc: '/images/steps pic .jpeg',
-      afterSrc: '/images/steps 2.jpeg',
+      beforeSrc: '/images/work/steps/steps pic .jpeg',
+      afterSrc: '/images/work/steps/steps 2.jpeg',
       beforeImgClass:
         'h-full w-full object-cover object-[50%_22%] scale-[1.22] transition-transform duration-700 group-hover:scale-[1.28]',
       afterImgClass:
@@ -872,8 +872,8 @@ const App = () => {
     {
       title: 'Garden',
       subtitle: 'Landscaping finish',
-      beforeSrc: '/images/garden pic.jpeg',
-      afterSrc: '/images/garden pic 3.jpeg',
+      beforeSrc: '/images/work/gardens/garden pic.jpeg',
+      afterSrc: '/images/work/gardens/garden pic 3.jpeg',
     },
   ];
 
@@ -882,79 +882,79 @@ const App = () => {
     all: {
       label: 'All work',
       images: [
-        { src: '/images/fence pic.jpeg', alt: 'Fencing installation' },
-        { src: '/images/driveway pic.jpeg', alt: 'Driveway' },
-        { src: '/images/garden pic.jpeg', alt: 'Garden landscaping' },
-        { src: '/images/gate pic .jpeg', alt: 'Gate' },
-        { src: '/images/tarmac.jpeg', alt: 'Tarmac surface' },
-        { src: '/images/porch pic.jpeg', alt: 'Porch' },
+        { src: '/images/work/fencing/fence pic.jpeg', alt: 'Fencing installation' },
+        { src: '/images/work/driveways/driveway pic.jpeg', alt: 'Driveway' },
+        { src: '/images/work/gardens/garden pic.jpeg', alt: 'Garden landscaping' },
+        { src: '/images/work/fencing/gate pic .jpeg', alt: 'Gate' },
+        { src: '/images/work/driveways/tarmac.jpeg', alt: 'Tarmac surface' },
+        { src: '/images/work/porches/porch pic.jpeg', alt: 'Porch' },
         {
-          src: '/images/steps pic .jpeg',
+          src: '/images/work/steps/steps pic .jpeg',
           alt: 'Stone steps',
           imgClass: 'h-full w-full object-cover object-[50%_20%] scale-[1.3]',
         },
-        { src: '/images/indian stone pic.jpeg', alt: 'Indian stone paving' },
-        { src: '/images/garden pic 2.jpeg', alt: 'Garden' },
-        { src: '/images/tiles pic.jpeg', alt: 'Patio tiling' },
+        { src: '/images/work/patios/indian stone pic.jpeg', alt: 'Indian stone paving' },
+        { src: '/images/work/gardens/garden pic 2.jpeg', alt: 'Garden' },
+        { src: '/images/work/patios/tiles pic.jpeg', alt: 'Patio tiling' },
         {
-          src: '/images/steps 2.jpeg',
+          src: '/images/work/steps/steps 2.jpeg',
           alt: 'Steps detail',
           imgClass: 'h-full w-full object-cover object-[50%_24%] scale-[1.28]',
         },
-        { src: '/images/tiles pic 2.jpeg', alt: 'Paving' },
-        { src: '/images/garden pic 3.jpeg', alt: 'Landscaping' },
-        { src: '/images/tiles pic 3.jpeg', alt: 'Patio tiles' },
+        { src: '/images/work/patios/tiles pic 2.jpeg', alt: 'Paving' },
+        { src: '/images/work/gardens/garden pic 3.jpeg', alt: 'Landscaping' },
+        { src: '/images/work/patios/tiles pic 3.jpeg', alt: 'Patio tiles' },
       ],
     },
     fencing: {
       label: 'Fencing & gates',
       images: [
-        { src: '/images/fence pic.jpeg', alt: 'Fencing' },
-        { src: '/images/gate pic .jpeg', alt: 'Gate' },
+        { src: '/images/work/fencing/fence pic.jpeg', alt: 'Fencing' },
+        { src: '/images/work/fencing/gate pic .jpeg', alt: 'Gate' },
       ],
     },
     driveways: {
       label: 'Driveways',
       images: [
-        { src: '/images/driveway pic.jpeg', alt: 'Driveway' },
-        { src: '/images/tarmac.jpeg', alt: 'Tarmac driveway' },
+        { src: '/images/work/driveways/driveway pic.jpeg', alt: 'Driveway' },
+        { src: '/images/work/driveways/tarmac.jpeg', alt: 'Tarmac driveway' },
       ],
     },
     steps: {
       label: 'Steps & stonework',
       images: [
         {
-          src: '/images/steps pic .jpeg',
+          src: '/images/work/steps/steps pic .jpeg',
           alt: 'Steps',
           imgClass: 'h-full w-full object-cover object-[50%_18%] scale-[1.32]',
         },
         {
-          src: '/images/steps 2.jpeg',
+          src: '/images/work/steps/steps 2.jpeg',
           alt: 'Steps',
           imgClass: 'h-full w-full object-cover object-[50%_22%] scale-[1.3]',
         },
-        { src: '/images/indian stone pic.jpeg', alt: 'Indian stone' },
+        { src: '/images/work/patios/indian stone pic.jpeg', alt: 'Indian stone' },
       ],
     },
     gardens: {
       label: 'Gardens',
       images: [
-        { src: '/images/garden pic.jpeg', alt: 'Garden' },
-        { src: '/images/garden pic 2.jpeg', alt: 'Garden' },
-        { src: '/images/garden pic 3.jpeg', alt: 'Garden' },
+        { src: '/images/work/gardens/garden pic.jpeg', alt: 'Garden' },
+        { src: '/images/work/gardens/garden pic 2.jpeg', alt: 'Garden' },
+        { src: '/images/work/gardens/garden pic 3.jpeg', alt: 'Garden' },
       ],
     },
     patios: {
       label: 'Patios & paving',
       images: [
-        { src: '/images/tiles pic.jpeg', alt: 'Patio tiles' },
-        { src: '/images/tiles pic 2.jpeg', alt: 'Paving' },
-        { src: '/images/tiles pic 3.jpeg', alt: 'Patio' },
+        { src: '/images/work/patios/tiles pic.jpeg', alt: 'Patio tiles' },
+        { src: '/images/work/patios/tiles pic 2.jpeg', alt: 'Paving' },
+        { src: '/images/work/patios/tiles pic 3.jpeg', alt: 'Patio' },
       ],
     },
     porches: {
       label: 'Porches',
-      images: [{ src: '/images/porch pic.jpeg', alt: 'Porch' }],
+      images: [{ src: '/images/work/porches/porch pic.jpeg', alt: 'Porch' }],
     },
   };
 
