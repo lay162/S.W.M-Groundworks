@@ -97,6 +97,21 @@ CHANGE THE *.NETLIFY.APP ADDRESS (fix spelling / branding)
 Open your https://YOURNAME.netlify.app URL, scroll to the quote form, submit a test quote → check your Google Sheet for a new row.
 
 --------------------------------------------------------------------------------
+MOBILE: SITE WORKS ON DESKTOP BUT NOT ON PHONE
+--------------------------------------------------------------------------------
+The Netlify server sends the same files to every device (no “desktop-only” mode in this project).
+
+Check first:
+- Use the exact URL: https://swm-groundworks.netlify.app — no extra full stop after .app (some phones autocomplete “netlify.app.” which can fail).
+- No typo in the subdomain (e.g. ground vs grounds).
+- Try Safari and Chrome; try Wi‑Fi and mobile data.
+- Turn off VPN / ad-blocker / “private DNS” temporarily (some block *.netlify.app).
+- Avoid opening the link inside Facebook/Instagram in-app browser for testing — use the real browser.
+- Clear the site data for that URL in phone settings, or try a private/incognito tab.
+
+If the screen is blank, pull the latest deploy: the app may show a short error message if the phone’s browser hits a JavaScript error.
+
+--------------------------------------------------------------------------------
 COMMON BUILD FAILURES
 --------------------------------------------------------------------------------
 - “npm run build” failed: open the deploy log; often missing dependency or Node version. Netlify default Node is usually fine; if not, add an .nvmrc with e.g. 20
