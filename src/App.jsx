@@ -1005,7 +1005,7 @@ const App = () => {
                     ARCHIVING FEEDBACK
                   </div>
                 ) : (
-                  <div className="grid sm:grid-cols-2 gap-6 md:gap-8">
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-5 md:auto-rows-fr">
                     {reviews
                       .filter((r) => r.isApproved)
                       .sort((a, b) => {
@@ -1013,41 +1013,107 @@ const App = () => {
                         const tb = b.reviewedAt ? new Date(b.reviewedAt).getTime() : 0;
                         return tb - ta;
                       })
-                      .map((r, i) => (
-                        <article
-                          key={r.id || i}
-                          className="bg-zinc-50/80 p-8 md:p-10 rounded-xl border border-zinc-200/80 text-left flex flex-col h-full shadow-sm hover:shadow-md hover:border-zinc-300 transition-all"
-                        >
-                          <div className="flex items-center gap-1 mb-5" aria-label={`${r.rating} out of 5 stars`}>
-                            {[...Array(5)].map((_, idx) => (
-                              <Star
-                                key={idx}
-                                size={16}
-                                className={idx < r.rating ? 'text-black fill-black' : 'text-zinc-200'}
-                                fill={idx < r.rating ? 'currentColor' : 'none'}
-                                stroke="currentColor"
-                              />
-                            ))}
-                          </div>
-                          <blockquote className="text-base md:text-lg text-black font-medium leading-relaxed mb-6 flex-1">
-                            <span className="text-zinc-300 font-serif text-3xl leading-none mr-1">“</span>
-                            <span className="italic">{r.text}</span>
-                            <span className="text-zinc-300 font-serif text-3xl leading-none">”</span>
-                          </blockquote>
-                          <footer className="pt-5 border-t border-zinc-200/90 mt-auto">
-                            <p className="font-black text-sm text-black tracking-tight">{r.author}</p>
-                            {r.reviewedAt && (
-                              <p className="text-[10px] font-black tracking-[0.2em] text-zinc-400 uppercase mt-2">
-                                {formatLongDate(r.reviewedAt)}
-                              </p>
+                      .map((r, i) => {
+                        const v = i % 6;
+                        const grid =
+                          v === 0
+                            ? 'md:col-span-12'
+                            : v === 1
+                              ? 'md:col-span-5'
+                              : v === 2
+                                ? 'md:col-span-7'
+                                : v === 3
+                                  ? 'md:col-span-6 md:translate-y-2'
+                                  : v === 4
+                                    ? 'md:col-span-6 md:-translate-y-2'
+                                    : 'md:col-span-12 lg:col-span-6 lg:col-start-4';
+                        const shell =
+                          v === 0
+                            ? 'bg-black text-white border border-zinc-800 p-8 md:p-12 md:pr-16 rounded-2xl shadow-xl md:flex md:flex-row md:items-stretch md:gap-12'
+                            : v === 1
+                              ? 'bg-white p-7 md:p-9 rounded-2xl border-2 border-black shadow-[6px_6px_0_0_rgb(0,0,0)]'
+                              : v === 2
+                                ? 'bg-zinc-100 p-8 md:p-10 rounded-2xl border border-zinc-200/90 md:pl-12 border-l-[6px] border-l-black border-t-zinc-200/90 border-r-zinc-200/90 border-b-zinc-200/90'
+                                : v === 3
+                                  ? 'bg-gradient-to-br from-zinc-50 to-white p-8 md:p-10 rounded-2xl border border-zinc-200 ring-1 ring-black/5'
+                                  : v === 4
+                                    ? 'bg-zinc-900 text-zinc-100 p-8 md:p-10 rounded-2xl border border-zinc-700'
+                                    : 'bg-white p-7 md:p-9 rounded-2xl border border-dashed border-zinc-300';
+                        const starWrap = v === 0 || v === 4 ? 'text-amber-400' : 'text-black';
+                        const starEmpty = v === 0 || v === 4 ? 'text-zinc-600' : 'text-zinc-200';
+                        const quoteClass =
+                          v === 0
+                            ? 'text-lg md:text-2xl font-medium leading-snug md:leading-relaxed text-zinc-100 md:flex-1'
+                            : v === 1
+                              ? 'text-sm md:text-base font-semibold leading-relaxed text-zinc-800'
+                              : v === 2
+                                ? 'text-base md:text-xl font-serif italic text-zinc-900 leading-relaxed'
+                                : v === 4
+                                  ? 'text-base md:text-lg font-medium leading-relaxed text-zinc-200'
+                                  : 'text-base md:text-lg text-black font-medium leading-relaxed';
+                        const openQuote =
+                          v === 0 ? 'text-zinc-600' : v === 4 ? 'text-zinc-500' : v === 2 ? 'text-black/25' : 'text-zinc-300';
+                        const footBorder =
+                          v === 0
+                            ? 'border-t border-zinc-700 md:border-t-0 md:border-l md:pl-10 md:pt-0 md:mt-0 md:min-w-[11rem] md:flex md:flex-col md:justify-center pt-6 mt-6'
+                            : v === 4
+                              ? 'border-t border-zinc-700 pt-5 mt-6'
+                              : 'border-t border-zinc-200/90 pt-5 mt-6';
+                        const authorClass =
+                          v === 0 ? 'font-black text-sm tracking-tight text-white' : v === 4 ? 'font-black text-sm text-white' : 'font-black text-sm text-black tracking-tight';
+                        const metaMuted =
+                          v === 0 ? 'text-zinc-500' : v === 4 ? 'text-zinc-400' : 'text-zinc-400';
+                        const locClass = v === 0 ? 'text-zinc-400' : v === 4 ? 'text-zinc-500' : 'text-zinc-500';
+                        const jobClass = v === 0 ? 'text-zinc-300' : v === 4 ? 'text-zinc-300' : 'text-zinc-600';
+
+                        return (
+                          <article
+                            key={r.id || i}
+                            className={`${grid} ${shell} text-left flex flex-col h-full transition-transform duration-300 hover:-translate-y-0.5`}
+                          >
+                            {v === 1 && (
+                              <p className="text-[10px] font-black tracking-[0.35em] text-zinc-400 uppercase mb-5">Field note</p>
                             )}
-                            <p className="text-[10px] font-black tracking-[0.25em] text-zinc-500 uppercase mt-2">{r.location}</p>
-                            {r.jobType && (
-                              <p className="text-[11px] font-bold text-zinc-600 mt-1.5 tracking-tight">{r.jobType}</p>
+                            {v === 3 && (
+                              <p className="text-[10px] font-black tracking-[0.4em] text-zinc-400 uppercase mb-4">Verified</p>
                             )}
-                          </footer>
-                        </article>
-                      ))}
+                            {v === 5 && (
+                              <p className="text-[10px] font-black tracking-[0.45em] text-zinc-400 uppercase mb-4">Client voice</p>
+                            )}
+
+                            <div className={`flex items-center gap-1 mb-4 md:mb-5 ${v === 0 ? 'md:order-none' : ''}`} aria-label={`${r.rating} out of 5 stars`}>
+                              {[...Array(5)].map((_, idx) => (
+                                <Star
+                                  key={idx}
+                                  size={v === 0 ? 18 : 16}
+                                  className={idx < r.rating ? `${starWrap} fill-current` : starEmpty}
+                                  fill={idx < r.rating ? 'currentColor' : 'none'}
+                                  stroke="currentColor"
+                                />
+                              ))}
+                            </div>
+
+                            <div className={v === 0 ? 'md:flex-1 md:flex md:flex-col' : 'flex-1 flex flex-col'}>
+                              <blockquote className={`${quoteClass} mb-4 md:mb-6 flex-1`}>
+                                <span className={`font-serif text-3xl md:text-4xl leading-none mr-1 ${openQuote}`}>“</span>
+                                <span className={v === 2 ? '' : v === 1 ? 'not-italic' : 'italic'}>{r.text}</span>
+                                <span className={`font-serif text-3xl md:text-4xl leading-none ${openQuote}`}>”</span>
+                              </blockquote>
+                            </div>
+
+                            <footer className={`mt-auto ${footBorder}`}>
+                              <p className={authorClass}>{r.author}</p>
+                              {r.reviewedAt && (
+                                <p className={`text-[10px] font-black tracking-[0.2em] uppercase mt-2 ${metaMuted}`}>
+                                  {formatLongDate(r.reviewedAt)}
+                                </p>
+                              )}
+                              <p className={`text-[10px] font-black tracking-[0.25em] uppercase mt-2 ${locClass}`}>{r.location}</p>
+                              {r.jobType && <p className={`text-[11px] font-bold mt-1.5 tracking-tight ${jobClass}`}>{r.jobType}</p>}
+                            </footer>
+                          </article>
+                        );
+                      })}
                   </div>
                 )}
               </div>
