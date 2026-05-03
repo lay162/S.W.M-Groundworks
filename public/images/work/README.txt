@@ -1,5 +1,7 @@
 S.W.M Groundworks — category image folders (optional)
 
+Parent folder is named "work" (on disk: public/images/work/). Inside it you get one folder per service category — driveways, fencing, gardens, patios, porches, steps, plus misc.
+
 Drop finished job photos in the matching folder, then update paths in src/App.jsx
 in the WORK_GALLERY object (and SERVICES image fields) to use e.g.:
 
