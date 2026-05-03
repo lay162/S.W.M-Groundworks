@@ -877,7 +877,7 @@ const App = () => {
           <Hero />
           <ServiceAreas />
           <GardenTransformationSection />
-          <section className="border-b border-zinc-800 bg-black py-16 text-white sm:py-20 md:py-24">
+          <section className="mt-10 border-b border-zinc-800 bg-black py-16 text-white sm:mt-14 sm:py-20 md:mt-16 md:py-24">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
               <div className="grid grid-cols-2 gap-10 text-center md:grid-cols-4 md:gap-12 lg:gap-16">
                 {[
