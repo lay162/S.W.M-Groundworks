@@ -321,6 +321,9 @@ const SERVICE_ICON_MAP = {
   foundations: Landmark,
 };
 
+/** Review form: job type dropdown (matches core services + catch-all). */
+const REVIEW_JOB_TYPE_OPTIONS = [...SERVICES.map((s) => s.title), 'Other / multiple'];
+
 const SOCIAL_LINKS = {
   facebook: 'https://facebook.com',
   instagram: 'https://instagram.com',
@@ -420,7 +423,7 @@ const App = () => {
     website: '', // honeypot (spam)
   });
   const [quoteFiles, setQuoteFiles] = useState([]);
-  const [reviewForm, setReviewForm] = useState({ author: '', rating: 5, text: '' });
+  const [reviewForm, setReviewForm] = useState({ author: '', jobType: '', rating: 5, text: '' });
   const [status, setStatus] = useState({ type: '', msg: '' });
   const [workGalleryFilter, setWorkGalleryFilter] = useState('all');
   const [blogSlug, setBlogSlug] = useState(null);
@@ -517,8 +520,8 @@ const App = () => {
     e.preventDefault();
     if (!user) return;
     try {
-      // Keeping your exact UX; can be wired to email later if you want.
-      setReviewForm({ author: '', rating: 5, text: '' });
+      // Keeping your exact UX; can be wired to email / Sheets later if you want (include reviewForm.jobType then).
+      setReviewForm({ author: '', jobType: '', rating: 5, text: '' });
       setStatus({ type: 'success', msg: 'Review submitted for moderation. Thank you!' });
       setTimeout(() => setStatus({ type: '', msg: '' }), 5000);
     } catch (err) {
@@ -1048,6 +1051,24 @@ const App = () => {
                         value={reviewForm.author}
                         onChange={(e) => setReviewForm({ ...reviewForm, author: e.target.value.toUpperCase() })}
                       />
+                      <label className="block">
+                        <span className="sr-only">Job type</span>
+                        <select
+                          required
+                          value={reviewForm.jobType}
+                          onChange={(e) => setReviewForm({ ...reviewForm, jobType: e.target.value })}
+                          className="w-full cursor-pointer rounded-lg border border-zinc-200 bg-zinc-50/80 px-5 py-4 text-[10px] font-black uppercase tracking-[0.3em] text-black outline-none transition-all focus:border-black"
+                        >
+                          <option value="" disabled className="text-zinc-400">
+                            JOB TYPE (WHAT WE DID)
+                          </option>
+                          {REVIEW_JOB_TYPE_OPTIONS.map((label) => (
+                            <option key={label} value={label}>
+                              {label}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
                       <div className="flex justify-center gap-2 sm:justify-start sm:gap-3">
                         {[1, 2, 3, 4, 5].map((num) => (
                           <button

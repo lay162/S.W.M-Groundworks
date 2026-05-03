@@ -1,6 +1,8 @@
 [build]
   command = "npm run build"
   publish = "dist"
+  # Skip Git-triggered builds when SKIP_NETLIFY_BUILD=true (saves build minutes). Deploy manually from the Netlify dashboard when ready.
+  ignore = "node -e \"process.exit(/^true$/i.test(String(process.env.SKIP_NETLIFY_BUILD || '').trim()) ? 0 : 1)\""
 
 [functions]
   directory = "netlify/functions"

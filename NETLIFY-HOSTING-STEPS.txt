@@ -5,7 +5,7 @@ Your project is already set up for Netlify:
 - Publish folder: dist
 - Functions: netlify/functions (quote form calls /.netlify/functions/enquiry)
 
-Use Git deploy (recommended) so every push rebuilds the site.
+Use Git deploy so pushes can rebuild the site. To save Netlify build minutes, see “SAVE BUILD MINUTES” below (optional env flag + dashboard tips).
 
 --------------------------------------------------------------------------------
 STEP 0 — PUSH CODE TO GITHUB FIRST (if you have not yet)
@@ -25,6 +25,26 @@ If push fails, fix auth (GitHub Desktop or a personal access token).
 WHY NETLIFY SHOWED “NO RESULTS” FOR BRANCH
 - GitHub had no commits yet (empty repo), so there was no branch for Netlify to list.
 - Fix: push at least one commit to **main**, then refresh the Netlify import page or start the import again.
+
+--------------------------------------------------------------------------------
+SAVE BUILD MINUTES (CREDITS / AUTO-DEPLOY)
+--------------------------------------------------------------------------------
+Netlify bills “build minutes” (and bandwidth) on your plan — frequent Git pushes each trigger a new build.
+
+This repo’s netlify.toml includes a build “ignore” hook: when an environment variable is set to skip builds, Git pushes will not run a full build (saves minutes). You then deploy when you choose from the dashboard.
+
+1. Netlify → your site → Site configuration → Environment variables → Add variable:
+     Name:   SKIP_NETLIFY_BUILD
+     Value:  true
+   Save. New commits pushed to GitHub will skip the build until you remove this variable or set it to false.
+
+2. When you want the live site updated: Deploys → Trigger deploy → “Deploy site” (or clear cache and deploy). That still uses one build for that deploy — you control timing instead of every push.
+
+3. In the same Build & deploy area, also reduce noise:
+   - Turn off Deploy previews for pull requests (if you do not need PR previews).
+   - Limit “Branch deploys” to production only if your plan shows that option.
+
+4. Alternative: disconnect Git and publish only via drag-and-drop or Netlify CLI when you want — more manual, maximum control.
 
 --------------------------------------------------------------------------------
 STEP 1 — NETLIFY: ADD NEW SITE FROM GIT
