@@ -1468,11 +1468,12 @@ const App = () => {
           <div className="grid md:grid-cols-12 gap-16 md:gap-24 mb-16 text-center md:text-left">
             <div className="md:col-span-6 flex flex-col items-center md:items-start">
               <div className="mb-8 flex flex-col items-center gap-4 md:flex-row md:items-center md:gap-4">
-                <div className="rounded-xl bg-white px-5 py-3 shadow-lg md:shrink-0 md:rounded-lg md:px-4 md:py-2.5">
+                <div className="flex w-full max-w-[20rem] min-h-[9.5rem] items-center justify-center rounded-2xl bg-white px-6 py-5 shadow-lg sm:max-w-[22rem] sm:min-h-[10.5rem] sm:px-8 sm:py-6 md:w-auto md:max-w-none md:min-h-0 md:shrink-0 md:rounded-xl md:px-7 md:py-6">
                   <img
                     src="/S.W.M.logo.svg"
                     alt="S.W.M Groundworks"
-                    className="mx-auto h-12 w-auto max-w-[200px] object-contain md:mx-0 md:h-14 md:max-w-[220px]"
+                    className="mx-auto max-h-32 w-auto max-w-full object-contain object-center sm:max-h-40 md:mx-0 md:max-h-44"
+                    decoding="async"
                   />
                 </div>
                 <span className="text-center font-black text-3xl tracking-tighter sm:text-4xl md:text-left md:text-4xl">
