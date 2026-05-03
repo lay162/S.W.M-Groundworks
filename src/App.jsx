@@ -1467,18 +1467,21 @@ const App = () => {
         <div className="max-w-7xl mx-auto px-4 w-full">
           <div className="grid md:grid-cols-12 gap-16 md:gap-24 mb-16 text-center md:text-left">
             <div className="md:col-span-6 flex flex-col items-center md:items-start">
-              <div className="mb-8 flex flex-col items-center gap-4 md:flex-row md:items-center md:gap-4">
+              <div className="mb-8 flex w-full flex-col items-center gap-5 text-center sm:gap-6 md:self-center">
                 <div className="flex w-full max-w-[20rem] min-h-[9.5rem] items-center justify-center rounded-2xl bg-white px-6 py-5 shadow-lg sm:max-w-[22rem] sm:min-h-[10.5rem] sm:px-8 sm:py-6 md:w-auto md:max-w-none md:min-h-0 md:shrink-0 md:rounded-xl md:px-7 md:py-6">
                   <img
                     src="/S.W.M.logo.svg"
                     alt="S.W.M Groundworks"
-                    className="mx-auto max-h-32 w-auto max-w-full object-contain object-center sm:max-h-40 md:mx-0 md:max-h-44"
+                    className="mx-auto max-h-32 w-auto max-w-full object-contain object-center sm:max-h-40 md:max-h-44"
                     decoding="async"
                   />
                 </div>
-                <span className="text-center font-black text-3xl tracking-tighter sm:text-4xl md:text-left md:text-4xl">
-                  S.W.M <span className="text-zinc-600">GROUNDWORKS</span>
-                </span>
+                <div className="flex flex-col items-center gap-1.5 sm:gap-2">
+                  <span className="text-3xl font-black leading-none tracking-tighter text-white sm:text-4xl md:text-5xl">S.W.M</span>
+                  <span className="text-lg font-black leading-none tracking-tight text-zinc-500 sm:text-xl md:text-2xl">
+                    GROUNDWORKS
+                  </span>
+                </div>
               </div>
               <p className="text-zinc-500 max-w-md mb-10 leading-relaxed font-bold tracking-tight text-lg">
                 Elite groundworks across the Wirral, Liverpool, Merseyside, Cheshire and North Wales — driveways, fencing, patios, landscaping, drainage and foundations. Fully insured.
