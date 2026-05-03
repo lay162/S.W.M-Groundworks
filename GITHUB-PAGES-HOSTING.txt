@@ -19,13 +19,21 @@ anyone can read them in DevTools, same as any client-side form; use a long rando
 
 GitHub → **Settings** → **Secrets and variables** → **Actions**
 
-**Repository secrets**
-  Required (quotes → Sheet from the live site):
-    VITE_GOOGLE_APPS_SCRIPT_URL     = your Web App URL ending in /exec
-    VITE_GOOGLE_APPS_SCRIPT_SECRET  = exact same string as SECRET inside Apps Script (see FOR-GOOGLE-APPS-SCRIPT-PASTE-ONLY.txt)
-  Optional (omit if you do not need them):
-    VITE_GOOGLE_APPS_SCRIPT_INCLUDE_PHOTOS = true   (Drive photo path in script; large payloads may fail)
-    VITE_BUSINESS_QUOTE_EMAIL              = your public inbox (mailto fallback in the app)
+**Option A — Repository secrets (simplest)**  
+Under the **Secrets** tab (not “Environments”): add **New repository secret**:
+  VITE_GOOGLE_APPS_SCRIPT_URL, VITE_GOOGLE_APPS_SCRIPT_SECRET (required), and optional ones below.  
+No need to use the **github-pages** Environment for these.
+
+**Option B — Environment `github-pages` (what the workflow uses)**  
+Settings → **Environments** → **github-pages** → add under **Environment secrets** (lock icon, value hidden):
+  VITE_GOOGLE_APPS_SCRIPT_URL     = your Web App URL ending in /exec  
+  VITE_GOOGLE_APPS_SCRIPT_SECRET  = same string as `SECRET` in Apps Script (no `'` quotes in the GitHub value box)
+
+Do **not** put `VITE_GOOGLE_APPS_SCRIPT_SECRET` under **Environment variables** — those values are visible and the workflow reads **secrets**, not variables.
+
+Optional **Environment secrets** (or repository secrets):
+  VITE_GOOGLE_APPS_SCRIPT_INCLUDE_PHOTOS = true   (Drive photos; large payloads may fail)
+  VITE_BUSINESS_QUOTE_EMAIL              = your public inbox (mailto fallback)
 
 After changing secrets: **Actions** → re-run the latest workflow, or push an empty commit, so a new build runs.
 
