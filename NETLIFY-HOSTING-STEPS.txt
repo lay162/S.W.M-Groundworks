@@ -22,6 +22,10 @@ From folder: ...\S.W.M GroundsWork\swm-groundsworks
 
 If push fails, fix auth (GitHub Desktop or a personal access token).
 
+WHY NETLIFY SHOWED “NO RESULTS” FOR BRANCH
+- GitHub had no commits yet (empty repo), so there was no branch for Netlify to list.
+- Fix: push at least one commit to **main**, then refresh the Netlify import page or start the import again.
+
 --------------------------------------------------------------------------------
 STEP 1 — NETLIFY: ADD NEW SITE FROM GIT
 --------------------------------------------------------------------------------
@@ -47,6 +51,8 @@ You already picked repo **S.W.M-Groundworks** and branch **main**. On this page:
                      — Your package.json and netlify.toml sit at the repo root, not in a subfolder.
 
   Build command:       npm run build
+                       (If Netlify auto-fills “npm build”, change it to **npm run build** — that is what this repo uses.)
+
   Publish directory:   dist
 
 If Netlify shows “Deploy” settings collapsed, expand “Show advanced” or “Build settings” and set Build command + Publish directory exactly as above (Netlify does not always auto-fill these).
