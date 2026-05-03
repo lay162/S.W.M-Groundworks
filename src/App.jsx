@@ -406,10 +406,127 @@ function readFileAsAttachment(file) {
   });
 }
 
+function PrivacyPolicyModal({ onClose }) {
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [onClose]);
+
+  return (
+    <div
+      className="fixed inset-0 z-[100] flex items-start justify-center overflow-y-auto bg-black/80 px-4 py-8 backdrop-blur-sm md:items-center md:py-10"
+      role="presentation"
+      onClick={onClose}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="privacy-policy-title"
+        className="my-auto w-full max-w-2xl rounded-2xl bg-white p-6 text-left shadow-2xl md:p-10"
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="mb-6 flex items-start justify-between gap-4 border-b border-zinc-200 pb-5 md:mb-8 md:pb-6">
+          <h2 id="privacy-policy-title" className="text-2xl font-black tracking-tight text-black md:text-3xl">
+            Privacy policy
+          </h2>
+          <button
+            type="button"
+            onClick={onClose}
+            className="shrink-0 rounded-lg p-2 text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-black"
+            aria-label="Close privacy policy"
+          >
+            <X size={24} />
+          </button>
+        </div>
+        <div className="max-h-[calc(100vh-8rem)] space-y-5 overflow-y-auto pr-1 text-sm font-medium leading-relaxed text-zinc-700 md:max-h-[70vh]">
+          <p className="text-xs font-bold uppercase tracking-wider text-zinc-500">Last updated: {new Date().getFullYear()}</p>
+          <section>
+            <h3 className="mb-2 font-black text-black">Who we are</h3>
+            <p>
+              S.W.M Groundworks (&quot;we&quot;, &quot;us&quot;) provides groundworks and landscaping services. This policy
+              explains how we handle personal information when you use our website or contact us.
+            </p>
+          </section>
+          <section>
+            <h3 className="mb-2 font-black text-black">Information we collect</h3>
+            <ul className="list-inside list-disc space-y-2">
+              <li>
+                <strong>Quote requests:</strong> name, email, phone, service type, project details, optional photos, and
+                whether you opted in to hear about offers and promotions.
+              </li>
+              <li>
+                <strong>Reviews:</strong> if you submit feedback, we process the details you provide (for example name,
+                rating, and comment) for moderation and display as described on the reviews page.
+              </li>
+              <li>
+                <strong>Technical data:</strong> our hosting and forms infrastructure may log limited technical data (for
+                example IP address and timestamps) to operate the site and reduce spam.
+              </li>
+            </ul>
+          </section>
+          <section>
+            <h3 className="mb-2 font-black text-black">How we use your information</h3>
+            <p>
+              We use quote and contact details to respond to enquiries, prepare estimates, and deliver our services. If
+              you tick the marketing consent box, we may use your contact details to send occasional offers or news; you
+              can ask us to stop at any time. We do not sell your personal information.
+            </p>
+          </section>
+          <section>
+            <h3 className="mb-2 font-black text-black">Where data is stored</h3>
+            <p>
+              Information submitted through our site may be processed by our website host (Netlify) and, where you have
+              set it up, recorded in a Google Sheet you control via Google Apps Script. Email delivery may use an SMTP
+              provider configured in your hosting account. Providers process data only as needed to provide their
+              services.
+            </p>
+          </section>
+          <section>
+            <h3 className="mb-2 font-black text-black">Retention</h3>
+            <p>
+              We keep enquiry and project-related records only as long as needed for quotes, contracts, accounting, and
+              legal obligations. Ask us if you want details deleted where the law allows.
+            </p>
+          </section>
+          <section>
+            <h3 className="mb-2 font-black text-black">Your rights</h3>
+            <p>
+              Under UK data protection law you may have rights including access, correction, erasure, restriction, and
+              objection. To exercise these rights, or to withdraw marketing consent, contact us using the details in the
+              site footer.
+            </p>
+          </section>
+          <section>
+            <h3 className="mb-2 font-black text-black">Cookies</h3>
+            <p>
+              This site is built to work with minimal cookies. Essential cookies may be used by our host for security and
+              delivery. We do not use third-party advertising cookies on this page by default.
+            </p>
+          </section>
+          <section>
+            <h3 className="mb-2 font-black text-black">Contact</h3>
+            <p>
+              Questions about this policy or your data:{' '}
+              <a href="mailto:SWM@GROUNDWORKS.COM" className="font-bold text-black underline underline-offset-2">
+                SWM@GROUNDWORKS.COM
+              </a>{' '}
+              or the phone number shown in our footer.
+            </p>
+          </section>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const App = () => {
   const [user, setUser] = useState(null);
   const [activeTab, setActiveTab] = useState('home');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [privacyOpen, setPrivacyOpen] = useState(false);
   const [reviews] = useState(STATIC_CLIENT_REVIEWS);
   const photoInputRef = useRef(null);
 
@@ -432,6 +549,15 @@ const App = () => {
   useEffect(() => {
     if (activeTab !== 'blog') setBlogSlug(null);
   }, [activeTab]);
+
+  useEffect(() => {
+    if (!privacyOpen) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [privacyOpen]);
 
   const openEmailFallback = () => {
     const subject = encodeURIComponent(`Quote request — ${quoteForm.service} — ${quoteForm.name}`);
@@ -1341,9 +1467,15 @@ const App = () => {
         <div className="max-w-7xl mx-auto px-4 w-full">
           <div className="grid md:grid-cols-12 gap-16 md:gap-24 mb-16 text-center md:text-left">
             <div className="md:col-span-6 flex flex-col items-center md:items-start">
-              <div className="flex items-center gap-4 mb-8">
-                <div className="w-14 h-14 bg-white rounded flex items-center justify-center text-black font-black text-3xl shadow-lg">S</div>
-                <span className="font-black text-4xl tracking-tighter">
+              <div className="mb-8 flex flex-col items-center gap-4 md:flex-row md:items-center md:gap-4">
+                <div className="rounded-xl bg-white px-5 py-3 shadow-lg md:shrink-0 md:rounded-lg md:px-4 md:py-2.5">
+                  <img
+                    src="/S.W.M.logo.svg"
+                    alt="S.W.M Groundworks"
+                    className="mx-auto h-12 w-auto max-w-[200px] object-contain md:mx-0 md:h-14 md:max-w-[220px]"
+                  />
+                </div>
+                <span className="text-center font-black text-3xl tracking-tighter sm:text-4xl md:text-left md:text-4xl">
                   S.W.M <span className="text-zinc-600">GROUNDWORKS</span>
                 </span>
               </div>
@@ -1396,16 +1528,22 @@ const App = () => {
 
           <div className="pt-6 border-t border-zinc-900 flex justify-center">
             <div className="w-full max-w-4xl flex flex-col md:flex-row justify-between items-center gap-4 text-[8px] font-black tracking-[0.3em] text-zinc-700">
-              <p className="uppercase">© {new Date().getFullYear()} S.W.M GROUNDWORKS. ALL INFRASTRUCTURE RESERVED.</p>
+              <p className="uppercase">© {new Date().getFullYear()} S.W.M GROUNDWORKS. ALL RIGHTS RESERVED.</p>
               <div className="flex gap-8">
-                <a href="#" className="hover:text-white transition-colors uppercase">
-                  PRIVACY POLICY
-                </a>
+                <button
+                  type="button"
+                  onClick={() => setPrivacyOpen(true)}
+                  className="cursor-pointer uppercase transition-colors hover:text-white"
+                >
+                  Privacy policy
+                </button>
               </div>
             </div>
           </div>
         </div>
       </footer>
+
+      {privacyOpen && <PrivacyPolicyModal onClose={() => setPrivacyOpen(false)} />}
     </div>
   );
 };
