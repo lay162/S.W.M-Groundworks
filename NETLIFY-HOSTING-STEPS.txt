@@ -119,6 +119,42 @@ COMMON BUILD FAILURES
 - 404 on /.netlify/functions/enquiry: functions directory not deployed (ensure netlify.toml is in repo root and build succeeded)
 
 --------------------------------------------------------------------------------
+CUSTOM DOMAIN — NAMECHEAP (.co.uk) → NETLIFY
+--------------------------------------------------------------------------------
+You keep hosting on Netlify; the custom domain (e.g. swm-groundworks.co.uk) is the public address. Netlify build limits are separate from “having your own domain” — buying a domain does not remove Netlify limits, but your site can still use a paid Netlify plan or stay on free tier with a custom domain once DNS is set.
+
+1) BUY THE DOMAIN (Namecheap)
+   - Finish checkout for **swm-groundworks.co.uk** (or your exact spelling).
+   - In Namecheap: **Domain List** → **Manage** next to the domain.
+
+2) ADD THE DOMAIN IN NETLIFY
+   - Netlify → your site → **Domain management** (or **Project configuration** → **Domain management**).
+   - **Add a domain** → enter **swm-groundworks.co.uk** and confirm.
+   - Also add **www.swm-groundworks.co.uk** if Netlify suggests it (recommended).
+
+3) SET DNS AT NAMECHEAP (match what Netlify shows — values below are typical)
+   - Namecheap → domain **Manage** → **Advanced DNS**.
+   - Remove conflicting A/CNAME records for **@** and **www** if the panel warns you.
+   - Common setup:
+     - **Host** `www` → **CNAME Record** → **Value** your Netlify hostname, e.g. **swm-groundworks.netlify.app** (no `https://`, no trailing slash). TTL Automatic or 30 min.
+     - **Apex (@):** Namecheap’s basic DNS often cannot “flatten” a CNAME on the bare **.co.uk** root the way Netlify prefers. Easiest path:
+       **Option A (recommended):** In Netlify, set **primary domain** to **https://www.swm-groundworks.co.uk**, then in Namecheap **URL Redirect** (or **Redirect Domain**): **@** → **https://www.swm-groundworks.co.uk** (301 permanent). Visitors typing the short domain still land on the site.
+       **Option B:** If Netlify shows specific **A records** or **ALIAS** for the apex and Namecheap supports them, add exactly those rows (copy from Netlify’s DNS panel).
+
+4) WAIT FOR PROPAGATION
+   - DNS can take from a few minutes to 48 hours (often under an hour).
+   - Netlify → Domain management → your domain should move to **“Netlify DNS” / verified** or show a green check when SSL is ready.
+
+5) HTTPS (SSL)
+   - Netlify provisions a free Let’s Encrypt certificate automatically after DNS is correct. **HTTPS** toggle should stay on; avoid “mixed content” (only use https:// links to your own assets).
+
+6) SET PRIMARY DOMAIN IN NETLIFY
+   - Pick either **www** or **apex** as the **primary domain** so one canonical URL is used (good for SEO and sharing links).
+
+7) IF THE SITE STILL OPENS ON *.netlify.app
+   - That is normal until you share the new URL; you can add a **redirect** in Netlify from the old netlify.app hostname to the new domain (optional, in **Domain management** → **Options** on the default domain).
+
+--------------------------------------------------------------------------------
 LOCAL TEST (optional)
 --------------------------------------------------------------------------------
   cd swm-groundsworks
