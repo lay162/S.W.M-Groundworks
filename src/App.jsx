@@ -648,13 +648,17 @@ const App = () => {
   );
 
   const ServiceAreas = () => (
-    <section className="py-20 bg-zinc-900 text-white border-y border-zinc-800">
-      <div className="max-w-7xl mx-auto px-4 text-center">
-        <h3 className="text-[10px] font-black tracking-[0.4em] text-zinc-500 uppercase mb-12">Areas of Operation</h3>
-        <div className="flex flex-wrap justify-center gap-x-12 gap-y-8">
+    <section className="border-y border-zinc-200 bg-white py-16 text-black sm:py-20">
+      <div className="mx-auto max-w-7xl px-4 text-center">
+        <h3 className="mb-10 text-[10px] font-black uppercase tracking-[0.4em] text-zinc-500 sm:mb-12">Areas of Operation</h3>
+        <div className="flex flex-wrap justify-center gap-x-8 gap-y-6 sm:gap-x-12 sm:gap-y-8">
           {LOCATIONS.map((loc, i) => (
-            <div key={i} className="flex items-center gap-2 text-zinc-300 font-black tracking-widest text-sm hover:text-white transition-colors cursor-default">
-              <MapPin size={16} className="text-zinc-600" /> {loc.toUpperCase()}
+            <div
+              key={i}
+              className="flex cursor-default items-center gap-2 text-sm font-black tracking-widest text-black transition-colors hover:text-zinc-600"
+            >
+              <MapPin size={16} className="shrink-0 text-zinc-500" aria-hidden />
+              {loc.toUpperCase()}
             </div>
           ))}
         </div>
@@ -873,9 +877,9 @@ const App = () => {
           <Hero />
           <ServiceAreas />
           <GardenTransformationSection />
-          <section className="bg-white py-28 border-b border-zinc-100">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-16 text-center">
+          <section className="border-b border-zinc-800 bg-black py-16 text-white sm:py-20 md:py-24">
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+              <div className="grid grid-cols-2 gap-10 text-center md:grid-cols-4 md:gap-12 lg:gap-16">
                 {[
                   { label: 'Regional Experience', val: '22Y+' },
                   { label: 'Successful Projects', val: '500+' },
@@ -883,8 +887,8 @@ const App = () => {
                   { label: 'Insured Liability', val: '£5M' },
                 ].map((stat, i) => (
                   <div key={i}>
-                    <p className="text-5xl font-black text-black mb-3 tracking-tighter">{stat.val}</p>
-                    <p className="text-zinc-400 font-bold text-[10px] uppercase tracking-[0.3em] leading-tight px-4">{stat.label}</p>
+                    <p className="mb-2 text-4xl font-black tracking-tighter text-white sm:text-5xl md:text-[3.25rem]">{stat.val}</p>
+                    <p className="px-2 text-[10px] font-bold uppercase leading-tight tracking-[0.3em] text-zinc-400">{stat.label}</p>
                   </div>
                 ))}
               </div>
@@ -951,9 +955,9 @@ const App = () => {
       {activeTab === 'work' && <Gallery />}
 
       {activeTab === 'reviews' && (
-        <section className="border-b border-zinc-100 bg-gradient-to-b from-white via-white to-zinc-50/60 py-16 md:py-24 lg:py-28">
-          <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
-            <header className="mx-auto mb-12 max-w-2xl text-center md:mb-16">
+        <section className="border-b border-zinc-100 bg-gradient-to-b from-white via-white to-zinc-50/60 py-14 sm:py-16 md:py-24">
+          <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+            <header className="mx-auto mb-10 max-w-2xl text-center sm:mb-12">
               <p className="mb-3 text-xs font-black uppercase tracking-[0.35em] text-zinc-400">Verified Clients</p>
               <h2 className="text-4xl font-black leading-[0.95] tracking-tighter text-black sm:text-5xl md:text-6xl">
                 CLIENT <br className="sm:hidden" />
@@ -961,151 +965,141 @@ const App = () => {
               </h2>
             </header>
 
-            <div className="grid items-start gap-12 lg:grid-cols-12 lg:gap-14">
-              <div className="order-2 lg:order-1 lg:col-span-8">
-                {reviews.filter((r) => r.isApproved).length === 0 ? (
-                  <div className="rounded-2xl border-2 border-dashed border-zinc-200 bg-white px-8 py-24 text-center">
-                    <p className="text-xs font-black uppercase tracking-[0.45em] text-zinc-300">Archiving feedback</p>
-                  </div>
-                ) : (
-                  <ol className="divide-y divide-zinc-200/90 rounded-2xl border border-zinc-200/80 bg-white shadow-sm">
-                    {reviews
-                      .filter((r) => r.isApproved)
-                      .sort((a, b) => {
-                        const ta = a.reviewedAt ? new Date(a.reviewedAt).getTime() : 0;
-                        const tb = b.reviewedAt ? new Date(b.reviewedAt).getTime() : 0;
-                        return tb - ta;
-                      })
-                      .map((r, i) => {
-                        const parts = String(r.author || '')
-                          .trim()
-                          .split(/\s+/)
-                          .filter(Boolean);
-                        const initials =
-                          parts.length >= 2
-                            ? `${parts[0][0] || ''}${parts[parts.length - 1][0] || ''}`.toUpperCase()
-                            : (parts[0]?.slice(0, 2) || '?').toUpperCase();
-
-                        return (
-                          <li key={r.id || i}>
-                            <article className="flex gap-4 px-4 py-8 sm:gap-6 sm:px-6 md:py-9">
-                              <div
-                                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-black text-[11px] font-black text-white sm:h-12 sm:w-12 sm:text-xs"
-                                aria-hidden
-                              >
-                                {initials}
-                              </div>
-                              <div className="min-w-0 flex-1">
-                                <div className="mb-3 flex items-center gap-0.5" aria-label={`${r.rating} out of 5 stars`}>
-                                  {[...Array(5)].map((_, idx) => (
-                                    <Star
-                                      key={idx}
-                                      size={15}
-                                      className={idx < r.rating ? 'fill-black text-black' : 'text-zinc-200'}
-                                      fill={idx < r.rating ? 'currentColor' : 'none'}
-                                      stroke="currentColor"
-                                    />
-                                  ))}
-                                </div>
-                                <blockquote className="text-[15px] font-medium leading-relaxed text-zinc-800 sm:text-base">
-                                  {r.text}
-                                </blockquote>
-                                <footer className="mt-5 flex flex-wrap items-baseline gap-x-2 gap-y-1 border-t border-zinc-100 pt-4 text-[11px] sm:text-xs">
-                                  <cite className="not-italic">
-                                    <span className="font-black text-black">{r.author}</span>
-                                  </cite>
-                                  {r.reviewedAt && (
-                                    <>
-                                      <span className="text-zinc-300" aria-hidden>
-                                        ·
-                                      </span>
-                                      <span className="font-bold uppercase tracking-[0.12em] text-zinc-400">{formatLongDate(r.reviewedAt)}</span>
-                                    </>
-                                  )}
-                                  <span className="w-full text-[10px] font-black uppercase tracking-[0.22em] text-zinc-500 sm:mt-0 sm:inline sm:w-auto">
-                                    {r.location}
-                                    {r.jobType ? ` · ${r.jobType}` : ''}
-                                  </span>
-                                </footer>
-                              </div>
-                            </article>
-                          </li>
-                        );
-                      })}
-                  </ol>
-                )}
-              </div>
-
-              <aside className="order-1 lg:order-2 lg:col-span-4">
-                <div className="lg:sticky lg:top-28">
-                  <form
-                    onSubmit={handleReviewSubmit}
-                    className="rounded-2xl border border-zinc-200 bg-white p-8 shadow-sm sm:p-10"
-                  >
-                    <h3 className="mb-8 font-black text-xs uppercase tracking-[0.3em] text-black">SHARE YOUR EXPERIENCE</h3>
-                    <div className="space-y-6">
-                      <input
-                        required
-                        placeholder="FULL NAME"
-                        className="w-full rounded-lg border border-zinc-200 bg-zinc-50/80 px-5 py-4 text-[10px] font-black uppercase tracking-[0.3em] outline-none transition-all placeholder:text-zinc-400 focus:border-black"
-                        value={reviewForm.author}
-                        onChange={(e) => setReviewForm({ ...reviewForm, author: e.target.value.toUpperCase() })}
-                      />
-                      <label className="block">
-                        <span className="sr-only">Job type</span>
-                        <select
-                          required
-                          value={reviewForm.jobType}
-                          onChange={(e) => setReviewForm({ ...reviewForm, jobType: e.target.value })}
-                          className="w-full cursor-pointer rounded-lg border border-zinc-200 bg-zinc-50/80 px-5 py-4 text-[10px] font-black uppercase tracking-[0.3em] text-black outline-none transition-all focus:border-black"
-                        >
-                          <option value="" disabled className="text-zinc-400">
-                            JOB TYPE (WHAT WE DID)
-                          </option>
-                          {REVIEW_JOB_TYPE_OPTIONS.map((label) => (
-                            <option key={label} value={label}>
-                              {label}
-                            </option>
-                          ))}
-                        </select>
-                      </label>
-                      <div className="flex justify-center gap-2 sm:justify-start sm:gap-3">
-                        {[1, 2, 3, 4, 5].map((num) => (
-                          <button
-                            key={num}
-                            type="button"
-                            onClick={() => setReviewForm({ ...reviewForm, rating: num })}
-                            className={`rounded-md p-1.5 transition-colors ${reviewForm.rating >= num ? 'text-black' : 'text-zinc-300'}`}
-                          >
-                            <Star size={24} fill={reviewForm.rating >= num ? 'currentColor' : 'none'} />
-                          </button>
-                        ))}
-                      </div>
-                      <textarea
-                        required
-                        placeholder="DESCRIBE THE CRAFTSMANSHIP..."
-                        className="min-h-[140px] w-full rounded-lg border border-zinc-200 bg-zinc-50/80 px-5 py-4 text-[10px] font-black uppercase tracking-[0.3em] outline-none transition-all placeholder:text-zinc-400 focus:border-black"
-                        value={reviewForm.text}
-                        onChange={(e) => setReviewForm({ ...reviewForm, text: e.target.value })}
-                      />
+            <div className="mx-auto mb-14 w-full max-w-lg text-center sm:mb-16 md:mb-20">
+              <form
+                onSubmit={handleReviewSubmit}
+                className="rounded-2xl border border-zinc-200 bg-white p-6 text-left shadow-sm sm:p-8 md:p-10"
+              >
+                <h3 className="mb-6 text-center font-black text-xs uppercase tracking-[0.3em] text-black sm:mb-8">
+                  SHARE YOUR EXPERIENCE
+                </h3>
+                <div className="space-y-5 sm:space-y-6">
+                  <input
+                    required
+                    placeholder="FULL NAME"
+                    className="w-full min-h-[48px] rounded-lg border border-zinc-200 bg-zinc-50/80 px-4 py-3.5 text-[10px] font-black uppercase tracking-[0.3em] outline-none transition-all placeholder:text-zinc-400 focus:border-black sm:px-5 sm:py-4"
+                    value={reviewForm.author}
+                    onChange={(e) => setReviewForm({ ...reviewForm, author: e.target.value.toUpperCase() })}
+                  />
+                  <label className="block">
+                    <span className="sr-only">Job type</span>
+                    <select
+                      required
+                      value={reviewForm.jobType}
+                      onChange={(e) => setReviewForm({ ...reviewForm, jobType: e.target.value })}
+                      className="w-full min-h-[48px] cursor-pointer rounded-lg border border-zinc-200 bg-zinc-50/80 px-4 py-3.5 text-[10px] font-black uppercase tracking-[0.3em] text-black outline-none transition-all focus:border-black sm:px-5 sm:py-4"
+                    >
+                      <option value="" disabled className="text-zinc-400">
+                        JOB TYPE (WHAT WE DID)
+                      </option>
+                      {REVIEW_JOB_TYPE_OPTIONS.map((label) => (
+                        <option key={label} value={label}>
+                          {label}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                  <div className="flex flex-wrap justify-center gap-2 sm:gap-3" role="group" aria-label="Star rating">
+                    {[1, 2, 3, 4, 5].map((num) => (
                       <button
-                        type="submit"
-                        className="w-full rounded-lg bg-black py-5 text-[10px] font-black uppercase tracking-[0.35em] text-white transition-colors hover:bg-zinc-800"
+                        key={num}
+                        type="button"
+                        onClick={() => setReviewForm({ ...reviewForm, rating: num })}
+                        className={`min-h-[48px] min-w-[48px] rounded-md p-2 transition-colors touch-manipulation ${reviewForm.rating >= num ? 'text-black' : 'text-zinc-300'}`}
                       >
-                        POST FEEDBACK
+                        <Star size={24} className="mx-auto" fill={reviewForm.rating >= num ? 'currentColor' : 'none'} />
                       </button>
-                      {status.msg && (
-                        <p
-                          className={`text-center text-[10px] font-black uppercase tracking-[0.2em] ${status.type === 'success' ? 'text-green-600' : 'text-red-600'}`}
-                        >
-                          {status.msg.toUpperCase()}
-                        </p>
-                      )}
-                    </div>
-                  </form>
+                    ))}
+                  </div>
+                  <textarea
+                    required
+                    placeholder="DESCRIBE THE CRAFTSMANSHIP..."
+                    className="min-h-[140px] w-full rounded-lg border border-zinc-200 bg-zinc-50/80 px-4 py-3.5 text-[10px] font-black uppercase tracking-[0.3em] outline-none transition-all placeholder:text-zinc-400 focus:border-black sm:px-5 sm:py-4"
+                    value={reviewForm.text}
+                    onChange={(e) => setReviewForm({ ...reviewForm, text: e.target.value })}
+                  />
+                  <button
+                    type="submit"
+                    className="w-full min-h-[48px] rounded-lg bg-black py-4 text-[10px] font-black uppercase tracking-[0.35em] text-white transition-colors hover:bg-zinc-800 touch-manipulation sm:py-5"
+                  >
+                    POST FEEDBACK
+                  </button>
+                  {status.msg && (
+                    <p
+                      className={`text-center text-[10px] font-black uppercase tracking-[0.2em] ${status.type === 'success' ? 'text-green-600' : 'text-red-600'}`}
+                    >
+                      {status.msg.toUpperCase()}
+                    </p>
+                  )}
                 </div>
-              </aside>
+              </form>
             </div>
+
+            {reviews.filter((r) => r.isApproved).length === 0 ? (
+              <div className="mx-auto max-w-4xl rounded-2xl border-2 border-dashed border-zinc-200 bg-white px-6 py-20 text-center sm:py-24">
+                <p className="text-xs font-black uppercase tracking-[0.45em] text-zinc-300">Archiving feedback</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6 xl:grid-cols-4">
+                {reviews
+                  .filter((r) => r.isApproved)
+                  .sort((a, b) => {
+                    const ta = a.reviewedAt ? new Date(a.reviewedAt).getTime() : 0;
+                    const tb = b.reviewedAt ? new Date(b.reviewedAt).getTime() : 0;
+                    return tb - ta;
+                  })
+                  .map((r, i) => {
+                    const parts = String(r.author || '')
+                      .trim()
+                      .split(/\s+/)
+                      .filter(Boolean);
+                    const initials =
+                      parts.length >= 2
+                        ? `${parts[0][0] || ''}${parts[parts.length - 1][0] || ''}`.toUpperCase()
+                        : (parts[0]?.slice(0, 2) || '?').toUpperCase();
+
+                    return (
+                      <article
+                        key={r.id || i}
+                        className="flex h-full min-h-0 flex-col rounded-2xl border border-zinc-200/90 bg-white p-5 shadow-sm sm:p-6"
+                      >
+                        <div className="mb-3 flex items-start justify-between gap-3">
+                          <div
+                            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-black text-[10px] font-black text-white"
+                            aria-hidden
+                          >
+                            {initials}
+                          </div>
+                          <div className="flex shrink-0 gap-0.5 pt-0.5" aria-label={`${r.rating} out of 5 stars`}>
+                            {[...Array(5)].map((_, idx) => (
+                              <Star
+                                key={idx}
+                                size={15}
+                                className={idx < r.rating ? 'fill-black text-black' : 'text-zinc-200'}
+                                fill={idx < r.rating ? 'currentColor' : 'none'}
+                                stroke="currentColor"
+                              />
+                            ))}
+                          </div>
+                        </div>
+                        <blockquote className="min-h-0 flex-1 text-sm font-medium leading-relaxed text-zinc-800 [overflow-wrap:anywhere] sm:text-[15px]">
+                          {r.text}
+                        </blockquote>
+                        <footer className="mt-4 border-t border-zinc-100 pt-3 text-left">
+                          <p className="font-black text-sm text-black">{r.author}</p>
+                          {r.reviewedAt && (
+                            <p className="mt-1 text-[10px] font-bold uppercase tracking-[0.12em] text-zinc-400">{formatLongDate(r.reviewedAt)}</p>
+                          )}
+                          <p className="mt-1.5 text-[10px] font-black uppercase leading-snug tracking-[0.18em] text-zinc-500 [overflow-wrap:anywhere]">
+                            {r.location}
+                            {r.jobType ? ` · ${r.jobType}` : ''}
+                          </p>
+                        </footer>
+                      </article>
+                    );
+                  })}
+              </div>
+            )}
           </div>
         </section>
       )}
