@@ -1,0 +1,26 @@
+GITHUB REPO FOR THIS PROJECT (S.W.M Groundsworks site)
+
+CHECK BEFORE YOU LINK
+- This folder (swm-groundsworks) did NOT have its own Git repo at setup time — only add a remote from HERE after `git init`, or Git may use a parent folder’s repo (e.g. another project).
+
+YOUR NEW EMPTY REPO
+- https://github.com/lay162/S.W.M-Groundworks.git
+
+SAFE STEPS (PowerShell — run only inside this folder)
+
+  cd "C:\Users\laure\OneDrive\Documents\S.W.M GroundsWork\swm-groundsworks"
+  git init
+  git add .
+  git commit -m "Initial commit: S.W.M Groundsworks marketing site"
+  git branch -M main
+  git remote add origin https://github.com/lay162/S.W.M-Groundworks.git
+  git push -u origin main
+
+IF `git remote` ALREADY SHOWS THE WRONG REPO
+- You are not in swm-groundsworks, or git init was never run here. Do not push.
+- From this folder: `git remote -v` should show lay162/S.W.M-Groundworks.git only after you add it as above.
+
+IF GITHUB ASKS FOR LOGIN
+- Use GitHub Desktop, or a Personal Access Token as the password when Git prompts over HTTPS.
+
+Do not commit real secrets: keep `.env` local (it is listed in .gitignore). Use Netlify / `.env.example` for variable names only.

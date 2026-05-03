@@ -1,0 +1,100 @@
+NETLIFY — FIRST-TIME HOST (S.W.M Groundsworks)
+
+Your project is already set up for Netlify:
+- Build command: npm run build
+- Publish folder: dist
+- Functions: netlify/functions (quote form calls /.netlify/functions/enquiry)
+
+Use Git deploy (recommended) so every push rebuilds the site.
+
+--------------------------------------------------------------------------------
+STEP 0 — PUSH CODE TO GITHUB FIRST (if you have not yet)
+--------------------------------------------------------------------------------
+From folder: ...\S.W.M GroundsWork\swm-groundsworks
+
+  git status
+  git add .
+  git commit -m "Prepare Netlify deploy"
+  git remote add origin https://github.com/lay162/S.W.M-Groundworks.git
+  (if remote already exists and is wrong: git remote remove origin   then add again)
+  git branch -M main
+  git push -u origin main
+
+If push fails, fix auth (GitHub Desktop or a personal access token).
+
+--------------------------------------------------------------------------------
+STEP 1 — NETLIFY: ADD NEW SITE FROM GIT
+--------------------------------------------------------------------------------
+1. Go to https://app.netlify.com/ and log in.
+2. Add new site → Import an existing project.
+3. Choose GitHub → authorize Netlify if asked → pick repository **S.W.M-Groundworks**.
+
+(Only you can click through Netlify in your browser — the assistant cannot log into your account.)
+
+--------------------------------------------------------------------------------
+STEP 1B — SCREEN “3. Configure project and deploy” (fill every field below)
+--------------------------------------------------------------------------------
+You already picked repo **S.W.M-Groundworks** and branch **main**. On this page:
+
+  Team:              Lauren Moore (or your team — keep as shown)
+
+  Project name:      Optional. Example: swm-groundsworks
+                     (Becomes part of your default URL: name.netlify.app)
+
+  Branch to deploy:  Choose **main** from the dropdown (must not be empty)
+
+  Base directory:    Leave EMPTY (blank)
+                     — Your package.json and netlify.toml sit at the repo root, not in a subfolder.
+
+  Build command:       npm run build
+  Publish directory:   dist
+
+If Netlify shows “Deploy” settings collapsed, expand “Show advanced” or “Build settings” and set Build command + Publish directory exactly as above (Netlify does not always auto-fill these).
+
+Scroll to the bottom → click **Deploy S.W.M-Groundworks** (or **Deploy site**).
+
+Wait until the deploy finishes. If it fails, open the deploy log and read the first red error.
+
+--------------------------------------------------------------------------------
+STEP 2 — ENVIRONMENT VARIABLES (GOOGLE SHEETS)
+--------------------------------------------------------------------------------
+Site → Site configuration → Environment variables → Add variables:
+
+  GOOGLE_APPS_SCRIPT_URL = your Web App URL (…/exec)
+  GOOGLE_APPS_SCRIPT_SECRET = same string as SECRET inside your Apps Script
+
+Optional (Drive photo upload from form):
+  GOOGLE_APPS_SCRIPT_INCLUDE_PHOTOS = true
+
+Optional later (email):
+  OWNER_EMAIL, SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, etc. — see .env.example
+
+Optional (mailto fallback address in the built site):
+  VITE_BUSINESS_QUOTE_EMAIL = your public business email
+  (After adding any VITE_* variable, trigger a new deploy so the value is baked into the build.)
+
+After saving variables: Deploys → Trigger deploy → Clear cache and deploy site (or normal deploy).
+
+--------------------------------------------------------------------------------
+STEP 3 — OPEN THE LIVE URL
+--------------------------------------------------------------------------------
+Netlify gives you a random name like random-name-123.netlify.app.
+Site → Domain management → Options → you can rename to something clearer if available.
+
+Open the URL, scroll to the quote form, submit a test quote → check your Google Sheet for a new row.
+
+--------------------------------------------------------------------------------
+COMMON BUILD FAILURES
+--------------------------------------------------------------------------------
+- “npm run build” failed: open the deploy log; often missing dependency or Node version. Netlify default Node is usually fine; if not, add an .nvmrc with e.g. 20
+- Form says not configured: env vars missing or deploy not run after adding them
+- 404 on /.netlify/functions/enquiry: functions directory not deployed (ensure netlify.toml is in repo root and build succeeded)
+
+--------------------------------------------------------------------------------
+LOCAL TEST (optional)
+--------------------------------------------------------------------------------
+  cd swm-groundsworks
+  copy .env.example .env   (then fill real values locally)
+  npx netlify@latest dev
+
+Opens a local URL that runs Vite + functions together.

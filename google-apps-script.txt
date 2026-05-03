@@ -1,0 +1,28 @@
+GOOGLE SHEETS + APPS SCRIPT (S.W.M Groundsworks)
+
+Quick files in this folder:
+- FOR-GOOGLE-APPS-SCRIPT-PASTE-ONLY.txt → paste ONLY that into Apps Script Code.gs (avoids pasting the guide twice).
+- NETLIFY-HOSTING-STEPS.txt → first-time Netlify + env vars.
+
+--------------------------------------------------------------------------------
+FIX: YOU PASTED THE SCRIPT TWICE IN GOOGLE
+--------------------------------------------------------------------------------
+1. Open the sheet → Extensions → Apps Script.
+2. Open Code.gs. Press Ctrl+A (select all) → Delete.
+3. Open FOR-GOOGLE-APPS-SCRIPT-PASTE-ONLY.txt on your PC → copy ONLY the JavaScript (between the “copy” lines) → paste once into Code.gs.
+4. Set var SECRET = '...' and optional DRIVE_FOLDER_ID.
+5. Save → Deploy → Manage deployments → Edit → New version → Deploy.
+
+You must have exactly ONE of each: doPost, doGet, outJson, saveQuotePhotos_. Duplicate function names break the project.
+
+--------------------------------------------------------------------------------
+HEADERS ROW 1 (A1:J1)
+--------------------------------------------------------------------------------
+Timestamp | Name | Email | Phone | Service | Message | IP | PhotoCount | PhotoNames | PhotoLinks
+
+--------------------------------------------------------------------------------
+NETLIFY ENV
+--------------------------------------------------------------------------------
+GOOGLE_APPS_SCRIPT_URL, GOOGLE_APPS_SCRIPT_SECRET (match SECRET). Optional: GOOGLE_APPS_SCRIPT_INCLUDE_PHOTOS=true for Drive uploads.
+
+Full narrative guide was merged into the files above; script body matches FOR-GOOGLE-APPS-SCRIPT-PASTE-ONLY.txt.

@@ -1,0 +1,81 @@
+Paste ONLY this file into Google Apps Script → Code.gs (replace everything).
+Do not paste google-apps-script.txt (that file includes instructions and would duplicate logic if pasted twice).
+
+--- copy everything below this line into Code.gs ---
+
+function doPost(e) {
+  var SECRET = 'YOUR_SECRET';
+  var DRIVE_FOLDER_ID = '';
+
+  var data;
+  try {
+    data = JSON.parse(e.postData.contents);
+  } catch (err) {
+    return outJson(false);
+  }
+  if (!data || data.secret !== SECRET) {
+    return outJson(false);
+  }
+
+  var photoLinks = '';
+  if (DRIVE_FOLDER_ID && data.photos && data.photos.length) {
+    try {
+      photoLinks = saveQuotePhotos_(data.photos, DRIVE_FOLDER_ID);
+    } catch (err) {
+      photoLinks = 'Drive error: ' + err;
+    }
+  }
+
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  sheet.appendRow([
+    data.timestamp || new Date().toISOString(),
+    data.name || '',
+    data.email || '',
+    data.phone || '',
+    data.service || '',
+    data.message || '',
+    data.ip || '',
+    data.photoCount != null ? data.photoCount : '',
+    data.photoNames || '',
+    photoLinks
+  ]);
+  return outJson(true);
+}
+
+function doGet() {
+  return ContentService.createTextOutput(
+    'S.W.M quote webhook is live. New rows appear when the site submits a quote (POST), not when you open this page.'
+  ).setMimeType(ContentService.MimeType.TEXT);
+}
+
+function outJson(ok) {
+  return ContentService.createTextOutput(JSON.stringify({ ok: ok }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function saveQuotePhotos_(photos, folderId) {
+  var folder = DriveApp.getFolderById(folderId);
+  var urls = [];
+  for (var i = 0; i < photos.length; i++) {
+    var p = photos[i];
+    if (!p || !p.data) continue;
+    var bytes;
+    try {
+      bytes = Utilities.base64Decode(p.data);
+    } catch (e1) {
+      continue;
+    }
+    var rawName = String(p.name || 'photo.jpg');
+    var name = rawName.replace(/[^\w.\- ]+/g, '_');
+    if (name.length > 200) name = name.slice(0, 200);
+    var mime = p.mime || 'image/jpeg';
+    var blob = Utilities.newBlob(bytes, mime, name);
+    var file = folder.createFile(blob);
+    urls.push(file.getUrl());
+  }
+  return urls.join('; ');
+}
+
+--- stop copying above this line ---
+
+Remember: set SECRET and match it in Netlify as GOOGLE_APPS_SCRIPT_SECRET. Redeploy Web app after edits.
