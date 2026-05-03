@@ -21,8 +21,25 @@ HEADERS ROW 1 (A1:J1)
 Timestamp | Name | Email | Phone | Service | Message | IP | PhotoCount | PhotoNames | PhotoLinks
 
 --------------------------------------------------------------------------------
+THE “SECRET” (GOOGLE_APPS_SCRIPT_SECRET) — WHAT IT IS
+--------------------------------------------------------------------------------
+It is NOT a Google password and you do not “look it up” anywhere.
+
+1. Invent one long random phrase only you know, e.g. swmQuoteLog-k9mP2xQ7vL4nR8
+2. In Apps Script (Code.gs), first line inside doPost:  var SECRET = 'paste-the-same-phrase-here';
+3. In Netlify → Site configuration → Environment variables → add:
+     GOOGLE_APPS_SCRIPT_SECRET   =   the exact same phrase (no spaces at start/end)
+4. Save env vars → Trigger a new deploy on Netlify.
+
+The website’s server sends that phrase inside the JSON body; the script checks data.secret === SECRET so random people cannot spam your sheet.
+
+--------------------------------------------------------------------------------
 NETLIFY ENV
 --------------------------------------------------------------------------------
 GOOGLE_APPS_SCRIPT_URL, GOOGLE_APPS_SCRIPT_SECRET (match SECRET). Optional: GOOGLE_APPS_SCRIPT_INCLUDE_PHOTOS=true for Drive uploads.
+
+Sheets only (no Drive): leave DRIVE_FOLDER_ID = '' in the script; do NOT set INCLUDE_PHOTOS (or set false). Rows still get PhotoCount + PhotoNames.
+
+Email with photo attachments: requires OWNER_EMAIL + SMTP_* on Netlify later; until then, email is not sent.
 
 Full narrative guide was merged into the files above; script body matches FOR-GOOGLE-APPS-SCRIPT-PASTE-ONLY.txt.
