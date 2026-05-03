@@ -30,12 +30,135 @@ const TikTokIcon = ({ size = 24, className = '' }) => (
 );
 
 // --- SEO & Content Constants ---
-const LOCATIONS = ['Northwest', 'Wirral', 'Merseyside', 'Stoke-on-Trent', 'Stoke', 'Cheshire', 'Liverpool'];
+const LOCATIONS = [
+  'Wirral',
+  'Merseyside',
+  'Cheshire',
+  'Liverpool',
+  'North Wales',
+  'West Kirby',
+  'Chester',
+  'Ellesmere Port',
+  'Wallasey',
+  'Neston',
+];
+
+/** Display-only client feedback (in-page). Not emitted as structured data for search engines. */
+const STATIC_CLIENT_REVIEWS = [
+  {
+    id: 'sr-1',
+    isApproved: true,
+    rating: 5,
+    author: 'James M.',
+    location: 'Bromborough, Wirral',
+    jobType: 'Block paving driveway',
+    text: "We had the front completely dug out and redone. The lads turned up when they said they would, left the street tidy every night, and the finish on the paving is spot on. Neighbours have already asked who did it.",
+  },
+  {
+    id: 'sr-2',
+    isApproved: true,
+    rating: 5,
+    author: 'Sarah T.',
+    location: 'Heswall, Wirral',
+    jobType: 'Porcelain patio',
+    text: "Proper fussy about levels and drainage — they took the time to explain everything in plain English. Patio’s been through two winters now and still looks brand new. Wouldn’t hesitate to recommend.",
+  },
+  {
+    id: 'sr-3',
+    isApproved: true,
+    rating: 5,
+    author: 'David L.',
+    location: 'Birkenhead, Merseyside',
+    jobType: 'Close-board fencing',
+    text: "Solid posts, straight lines, and no cutting corners on the gravel boards. You can tell they’ve done this for years. Fair price for what we got.",
+  },
+  {
+    id: 'sr-4',
+    isApproved: true,
+    rating: 5,
+    author: 'Emma W.',
+    location: 'Wallasey, Merseyside',
+    jobType: 'Garden landscaping',
+    text: "Our back garden was a mud bath after the last lot left it half finished. S.W.M came in, sorted the levels, new turf and sleepers — honestly feels like a different house. Chuffed to bits.",
+  },
+  {
+    id: 'sr-5',
+    isApproved: true,
+    rating: 5,
+    author: 'Michael P.',
+    location: 'Crosby, Merseyside',
+    jobType: 'Driveway & dropped kerb',
+    text: "Coordinated with the council side of things without us having to chase. Drive went in quicker than we expected and the detail round the inspection chamber is neat as a pin.",
+  },
+  {
+    id: 'sr-6',
+    isApproved: true,
+    rating: 5,
+    author: 'Rachel H.',
+    location: 'Chester, Cheshire',
+    jobType: 'Indian stone paving',
+    text: "We wanted something that would suit an older property without looking dated. The pointing and cuts round the bay are lovely — you can tell it wasn’t rushed.",
+  },
+  {
+    id: 'sr-7',
+    isApproved: true,
+    rating: 5,
+    author: 'Tom G.',
+    location: 'Ellesmere Port, Cheshire',
+    jobType: 'Resin-bound driveway',
+    text: "No mess, no drama. They protected the front step and the bay window like their own. Finish is dead even — no puddles after heavy rain either.",
+  },
+  {
+    id: 'sr-8',
+    isApproved: true,
+    rating: 5,
+    author: 'Linda K.',
+    location: 'Prenton, Wirral',
+    jobType: 'Featheredge fencing',
+    text: "Quiet, professional crew. I work from home and barely knew they were there apart from seeing the fence go up. Gate shuts first time every time — small thing but it matters.",
+  },
+  {
+    id: 'sr-9',
+    isApproved: true,
+    rating: 5,
+    author: 'Chris O.',
+    location: 'Aigburth, Liverpool',
+    jobType: 'Landscaping & drainage',
+    text: "We were getting water sitting against the house after storms. They regraded, put proper falls in and tied into existing gullies. Touch wood, it’s been dry since. Top job.",
+  },
+  {
+    id: 'sr-10',
+    isApproved: true,
+    rating: 5,
+    author: 'Anna N.',
+    location: 'Neston, Cheshire',
+    jobType: 'Double driveway & gates',
+    text: "From quote to completion they were straight with us on costs and timescales. The automated gates line up perfectly with the new pillars — looks really smart.",
+  },
+  {
+    id: 'sr-11',
+    isApproved: true,
+    rating: 5,
+    author: 'Gareth J.',
+    location: 'Mold, Flintshire',
+    jobType: 'Patio & paths',
+    text: "We’re a bit out of the way but they still made the trip for snagging without quibble. Welsh slate paths look cracking against the render — proper craftsmanship.",
+  },
+  {
+    id: 'sr-12',
+    isApproved: true,
+    rating: 5,
+    author: 'Karen S.',
+    location: 'West Kirby, Wirral',
+    jobType: 'Full rear garden',
+    text: "Kids and dog were doing my head in with mud. New lawn, sleeper beds and a proper path to the shed — it’s actually usable now. Thanks again for sorting it before the summer holidays.",
+  },
+];
 
 const SERVICES = [
   {
     title: 'Driveways',
-    desc: 'Premium block paving, resin-bound, and decorative gravel driveways across the Northwest.',
+    desc: 'Premium block paving, resin-bound, and decorative gravel driveways across the Wirral, Liverpool, Merseyside and Cheshire.',
   },
   {
     title: 'Patios',
@@ -145,7 +268,7 @@ const App = () => {
   const [user, setUser] = useState(null);
   const [activeTab, setActiveTab] = useState('home');
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [reviews] = useState([]);
+  const [reviews] = useState(STATIC_CLIENT_REVIEWS);
   const photoInputRef = useRef(null);
 
   // Form States
@@ -339,14 +462,14 @@ const App = () => {
           />
         </div>
         <div className="inline-flex items-center gap-3 px-5 py-2 bg-zinc-800/50 text-zinc-300 border border-zinc-700/50 rounded-full mb-10 text-[10px] font-black tracking-[0.2em] uppercase backdrop-blur-md">
-          <ShieldCheck size={14} className="text-zinc-400" /> Groundworks Northwest & Stoke-on-Trent
+          <ShieldCheck size={14} className="text-zinc-400" /> Groundworks Wirral, Liverpool, Cheshire & North Wales
         </div>
         <h1 className="text-6xl md:text-8xl lg:text-9xl font-black leading-[0.85] mb-12 tracking-tighter max-w-5xl">
           STRUCTURAL <br />
           <span className="text-transparent bg-clip-text bg-gradient-to-b from-zinc-100 via-zinc-400 to-zinc-600">PERFECTION.</span>
         </h1>
         <p className="text-xl md:text-2xl text-zinc-400 leading-relaxed mb-14 max-w-3xl font-medium px-4">
-          The leading specialist in elite groundworks for Wirral, Merseyside, and Stoke-on-Trent. We build the foundations for your luxury projects.
+          The leading specialist in elite groundworks for the Wirral, Liverpool, Merseyside, Cheshire and North Wales. We build the foundations for your luxury projects.
         </p>
         <div className="flex flex-col sm:flex-row gap-8 w-full max-w-md px-4">
           <button
@@ -404,6 +527,10 @@ const App = () => {
       subtitle: 'Stone steps & detail',
       beforeSrc: '/images/steps pic .jpeg',
       afterSrc: '/images/steps 2.jpeg',
+      beforeImgClass:
+        'h-full w-full object-cover object-[50%_22%] scale-[1.22] transition-transform duration-700 group-hover:scale-[1.28]',
+      afterImgClass:
+        'h-full w-full object-cover object-[50%_26%] scale-[1.22] transition-transform duration-700 group-hover:scale-[1.28]',
     },
     {
       title: 'Garden',
@@ -424,11 +551,19 @@ const App = () => {
         { src: '/images/gate pic .jpeg', alt: 'Gate' },
         { src: '/images/tarmac.jpeg', alt: 'Tarmac surface' },
         { src: '/images/porch pic.jpeg', alt: 'Porch' },
-        { src: '/images/steps pic .jpeg', alt: 'Stone steps' },
+        {
+          src: '/images/steps pic .jpeg',
+          alt: 'Stone steps',
+          imgClass: 'h-full w-full object-cover object-[50%_20%] scale-[1.3]',
+        },
         { src: '/images/indian stone pic.jpeg', alt: 'Indian stone paving' },
         { src: '/images/garden pic 2.jpeg', alt: 'Garden' },
         { src: '/images/tiles pic.jpeg', alt: 'Patio tiling' },
-        { src: '/images/steps 2.jpeg', alt: 'Steps detail' },
+        {
+          src: '/images/steps 2.jpeg',
+          alt: 'Steps detail',
+          imgClass: 'h-full w-full object-cover object-[50%_24%] scale-[1.28]',
+        },
         { src: '/images/tiles pic 2.jpeg', alt: 'Paving' },
         { src: '/images/garden pic 3.jpeg', alt: 'Landscaping' },
         { src: '/images/tiles pic 3.jpeg', alt: 'Patio tiles' },
@@ -451,8 +586,16 @@ const App = () => {
     steps: {
       label: 'Steps & stonework',
       images: [
-        { src: '/images/steps pic .jpeg', alt: 'Steps' },
-        { src: '/images/steps 2.jpeg', alt: 'Steps' },
+        {
+          src: '/images/steps pic .jpeg',
+          alt: 'Steps',
+          imgClass: 'h-full w-full object-cover object-[50%_18%] scale-[1.32]',
+        },
+        {
+          src: '/images/steps 2.jpeg',
+          alt: 'Steps',
+          imgClass: 'h-full w-full object-cover object-[50%_22%] scale-[1.3]',
+        },
         { src: '/images/indian stone pic.jpeg', alt: 'Indian stone' },
       ],
     },
@@ -492,7 +635,7 @@ const App = () => {
           {workGalleryFilter === 'all' && (
             <div className="w-full max-w-5xl mb-14">
               <p className="text-[10px] font-black tracking-[0.35em] text-zinc-400 uppercase mb-8">Featured transformations</p>
-              <div className="grid md:grid-cols-3 gap-8 md:gap-10 text-left">
+              <div className="grid md:grid-cols-3 gap-8 md:gap-10 text-center">
                 {PORTFOLIO_ITEMS.map((item) => (
                   <div
                     key={item.title}
@@ -503,7 +646,10 @@ const App = () => {
                         <img
                           src={item.beforeSrc}
                           alt={`${item.title} before`}
-                          className="h-full w-full object-cover object-center scale-105 transition-transform duration-700 group-hover:scale-110"
+                          className={
+                            item.beforeImgClass ??
+                            'h-full w-full object-cover object-center scale-105 transition-transform duration-700 group-hover:scale-110'
+                          }
                           loading="lazy"
                         />
                       </div>
@@ -511,12 +657,15 @@ const App = () => {
                         <img
                           src={item.afterSrc}
                           alt={`${item.title} after`}
-                          className="h-full w-full object-cover object-center scale-105 transition-transform duration-700 group-hover:scale-110"
+                          className={
+                            item.afterImgClass ??
+                            'h-full w-full object-cover object-center scale-105 transition-transform duration-700 group-hover:scale-110'
+                          }
                           loading="lazy"
                         />
                       </div>
                     </div>
-                    <div className="p-6 text-center md:text-left">
+                    <div className="p-6 text-center">
                       <h4 className="font-black text-sm text-black tracking-tight">{item.title.toUpperCase()}</h4>
                       <p className="text-zinc-500 text-[9px] tracking-[0.25em] uppercase font-black mt-1">{item.subtitle}</p>
                     </div>
@@ -554,7 +703,12 @@ const App = () => {
                 key={`${workGalleryFilter}-${img.src}`}
                 className="w-[calc(50%-0.375rem)] sm:w-[calc(33.333%-0.67rem)] max-w-[280px] aspect-square shrink-0 bg-zinc-100 border border-zinc-200 rounded-lg overflow-hidden"
               >
-                <img src={img.src} alt={img.alt} className="h-full w-full object-cover object-center" loading="lazy" />
+                <img
+                  src={img.src}
+                  alt={img.alt}
+                  className={img.imgClass ?? 'h-full w-full object-cover object-center'}
+                  loading="lazy"
+                />
               </div>
             ))}
           </div>
@@ -595,7 +749,7 @@ const App = () => {
       {activeTab === 'services' && (
         <section className="py-40 bg-white animate-in fade-in duration-1000 flex flex-col items-center">
           <div className="max-w-7xl mx-auto px-4 text-center">
-            <h2 className="text-xs font-black tracking-[0.5em] text-zinc-400 uppercase mb-10">Northwest Groundworks</h2>
+            <h2 className="text-xs font-black tracking-[0.5em] text-zinc-400 uppercase mb-10">S.W.M Groundworks</h2>
             <h3 className="text-6xl font-black text-black tracking-tighter mb-28">OUR CORE CAPABILITIES</h3>
             <div className="grid md:grid-cols-3 gap-12">
               {SERVICES.map((s, i) => (
@@ -666,25 +820,46 @@ const App = () => {
                 </form>
               </div>
 
-              <div className="lg:col-span-7 space-y-12 w-full">
+              <div className="lg:col-span-7 w-full">
                 {reviews.filter((r) => r.isApproved).length === 0 ? (
                   <div className="p-32 text-center border-4 border-dashed border-zinc-100 rounded text-zinc-300 font-black uppercase tracking-[0.5em] text-xs">
                     ARCHIVING FEEDBACK
                   </div>
                 ) : (
-                  reviews
-                    .filter((r) => r.isApproved)
-                    .map((r, i) => (
-                      <div key={r.id || i} className="bg-white p-12 rounded border border-zinc-100 shadow-sm transition-all hover:shadow-xl">
-                        <div className="flex text-zinc-200 mb-8 gap-2">
-                          {[...Array(r.rating)].map((_, idx) => (
-                            <Star key={idx} size={18} fill="black" stroke="black" />
-                          ))}
-                        </div>
-                        <p className="text-2xl text-black font-medium italic mb-10 leading-relaxed tracking-tight">"{r.text}"</p>
-                        <p className="font-black text-xs tracking-[0.4em] uppercase text-zinc-400">— {r.author}</p>
-                      </div>
-                    ))
+                  <div className="grid sm:grid-cols-2 gap-6 md:gap-8">
+                    {reviews
+                      .filter((r) => r.isApproved)
+                      .map((r, i) => (
+                        <article
+                          key={r.id || i}
+                          className="bg-zinc-50/80 p-8 md:p-10 rounded-xl border border-zinc-200/80 text-left flex flex-col h-full shadow-sm hover:shadow-md hover:border-zinc-300 transition-all"
+                        >
+                          <div className="flex items-center gap-1 mb-5" aria-label={`${r.rating} out of 5 stars`}>
+                            {[...Array(5)].map((_, idx) => (
+                              <Star
+                                key={idx}
+                                size={16}
+                                className={idx < r.rating ? 'text-black fill-black' : 'text-zinc-200'}
+                                fill={idx < r.rating ? 'currentColor' : 'none'}
+                                stroke="currentColor"
+                              />
+                            ))}
+                          </div>
+                          <blockquote className="text-base md:text-lg text-black font-medium leading-relaxed mb-6 flex-1">
+                            <span className="text-zinc-300 font-serif text-3xl leading-none mr-1">“</span>
+                            <span className="italic">{r.text}</span>
+                            <span className="text-zinc-300 font-serif text-3xl leading-none">”</span>
+                          </blockquote>
+                          <footer className="pt-5 border-t border-zinc-200/90 mt-auto">
+                            <p className="font-black text-sm text-black tracking-tight">{r.author}</p>
+                            <p className="text-[10px] font-black tracking-[0.25em] text-zinc-500 uppercase mt-2">{r.location}</p>
+                            {r.jobType && (
+                              <p className="text-[11px] font-bold text-zinc-600 mt-1.5 tracking-tight">{r.jobType}</p>
+                            )}
+                          </footer>
+                        </article>
+                      ))}
+                  </div>
                 )}
               </div>
             </div>
@@ -839,7 +1014,7 @@ const App = () => {
                 </span>
               </div>
               <p className="text-zinc-500 max-w-md mb-10 leading-relaxed font-bold tracking-tight text-lg">
-                Elite groundworking specialists serving the Northwest, Wirral, Merseyside, and Stoke-on-Trent. Luxury driveways, foundations, and structural landscaping.
+                Elite groundworks across the Wirral, Liverpool, Merseyside, Cheshire and North Wales — driveways, fencing, patios, landscaping, drainage and foundations. Fully insured.
               </p>
               <div className="flex gap-8">
                 <a href={SOCIAL_LINKS.facebook} target="_blank" rel="noreferrer" className="text-zinc-500 hover:text-white transition-all transform hover:scale-110">
@@ -864,7 +1039,7 @@ const App = () => {
                   <Mail size={18} className="text-zinc-700" /> SWM@GROUNDWORKS.COM
                 </li>
                 <li className="flex flex-col md:flex-row items-center gap-4 text-zinc-300">
-                  <MapPin size={18} className="text-zinc-700" /> NW UK & STOKE-ON-TRENT
+                  <MapPin size={18} className="text-zinc-700" /> WIRRAL · LIVERPOOL · CHESHIRE · NORTH WALES
                 </li>
               </ul>
             </div>
