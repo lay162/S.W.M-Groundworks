@@ -137,6 +137,10 @@ export async function handler(event) {
   const phone = clampString(payload.phone, 60).trim();
   const service = clampString(payload.service, 80).trim();
   const message = clampString(payload.message, 4000).trim();
+  const marketingConsent =
+    payload.marketingConsent === true ||
+    String(payload.marketingConsent || '').toLowerCase() === 'true';
+  const marketingConsentLabel = marketingConsent ? 'Yes' : 'No';
 
   if (!isNonEmptyString(name) || !isNonEmptyString(email) || !isNonEmptyString(phone) || !isNonEmptyString(message)) {
     return json(400, { ok: false, error: 'Missing required fields.' });
@@ -162,6 +166,7 @@ export async function handler(event) {
         phone,
         service,
         message,
+        marketingConsent: marketingConsentLabel,
         ip: ip || '',
         photoCount,
         photoNames,
@@ -198,6 +203,7 @@ export async function handler(event) {
       `Email: ${email}`,
       `Phone: ${phone}`,
       service ? `Service: ${service}` : null,
+      `Offers / promotions consent: ${marketingConsentLabel}`,
       '',
       'Message:',
       message,

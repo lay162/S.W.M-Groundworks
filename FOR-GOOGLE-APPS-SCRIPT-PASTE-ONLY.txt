@@ -27,6 +27,9 @@ function doPost(e) {
   }
 
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var mc = data.marketingConsent;
+  var consentLabel = mc === true || mc === 'Yes' || mc === 'yes' ? 'Yes' : 'No';
+
   sheet.appendRow([
     data.timestamp || new Date().toISOString(),
     data.name || '',
@@ -37,7 +40,8 @@ function doPost(e) {
     data.ip || '',
     data.photoCount != null ? data.photoCount : '',
     data.photoNames || '',
-    photoLinks
+    photoLinks,
+    consentLabel
   ]);
   return outJson(true);
 }

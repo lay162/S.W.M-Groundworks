@@ -420,6 +420,7 @@ const App = () => {
     phone: '',
     service: 'Driveways',
     message: '',
+    marketingConsent: false,
     website: '', // honeypot (spam)
   });
   const [quoteFiles, setQuoteFiles] = useState([]);
@@ -440,6 +441,7 @@ const App = () => {
         `EMAIL: ${quoteForm.email}`,
         `PHONE: ${quoteForm.phone}`,
         `SERVICE: ${quoteForm.service}`,
+        `OFFERS / PROMOTIONS CONSENT: ${quoteForm.marketingConsent ? 'YES' : 'NO'}`,
         ``,
         `MESSAGE:`,
         quoteForm.message,
@@ -484,12 +486,13 @@ const App = () => {
         phone: quoteForm.phone,
         service: quoteForm.service,
         message: quoteForm.message,
+        marketingConsent: Boolean(quoteForm.marketingConsent),
         website: quoteForm.website,
         attachments,
         createdAt: new Date().toISOString(),
         status: 'new',
       });
-      setQuoteForm({ name: '', email: '', phone: '', service: 'Driveways', message: '', website: '' });
+      setQuoteForm({ name: '', email: '', phone: '', service: 'Driveways', message: '', marketingConsent: false, website: '' });
       setQuoteFiles([]);
       if (photoInputRef.current) photoInputRef.current.value = '';
       setStatus({ type: 'success', msg: 'Quote request sent successfully! We will contact you soon.' });
@@ -1300,6 +1303,21 @@ const App = () => {
                       ))}
                     </ul>
                   )}
+                </div>
+
+                <div className="text-left">
+                  <label className="flex cursor-pointer items-start gap-4 rounded-lg border border-zinc-200 bg-zinc-50/80 p-5 text-left transition-colors hover:border-zinc-300 sm:p-6">
+                    <input
+                      type="checkbox"
+                      checked={quoteForm.marketingConsent}
+                      onChange={(e) => setQuoteForm({ ...quoteForm, marketingConsent: e.target.checked })}
+                      className="mt-1 h-5 w-5 shrink-0 cursor-pointer rounded border-zinc-300 text-black focus:ring-2 focus:ring-black focus:ring-offset-2"
+                    />
+                    <span className="text-xs font-bold leading-relaxed tracking-tight text-zinc-700">
+                      I agree S.W.M Groundworks may contact me by email or phone with future offers, promotions and news. I
+                      can unsubscribe at any time. (Optional — you can still request a quote without ticking this.)
+                    </span>
+                  </label>
                 </div>
 
                 <button

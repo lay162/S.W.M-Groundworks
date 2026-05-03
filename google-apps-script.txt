@@ -16,9 +16,11 @@ FIX: YOU PASTED THE SCRIPT TWICE IN GOOGLE
 You must have exactly ONE of each: doPost, doGet, outJson, saveQuotePhotos_. Duplicate function names break the project.
 
 --------------------------------------------------------------------------------
-HEADERS ROW 1 (A1:J1)
+HEADERS ROW 1 (A1:K1)
 --------------------------------------------------------------------------------
-Timestamp | Name | Email | Phone | Service | Message | IP | PhotoCount | PhotoNames | PhotoLinks
+Timestamp | Name | Email | Phone | Service | Message | IP | PhotoCount | PhotoNames | PhotoLinks | Marketing consent
+
+Add column **K** (Marketing consent) if your sheet was created from the old template — values **Yes** / **No** from the quote form checkbox.
 
 --------------------------------------------------------------------------------
 THE “SECRET” (GOOGLE_APPS_SCRIPT_SECRET) — WHAT IT IS
