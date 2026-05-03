@@ -266,12 +266,12 @@ const App = () => {
             <div className="flex-shrink-0 flex items-center gap-3">
               <img
                 src="/S.W.M.logo.svg"
-                alt="S.W.M Groundsworks logo"
+                alt="S.W.M Groundworks logo"
                 className="h-12 w-auto max-w-[120px] object-contain"
               />
               <div className="flex flex-col -space-y-1">
                 <span className="font-black text-xl tracking-tighter text-black">S.W.M</span>
-                <span className="text-[10px] font-black tracking-[0.3em] text-zinc-400">GROUNDSWORKS</span>
+                <span className="text-[10px] font-black tracking-[0.3em] text-zinc-400">GROUNDWORKS</span>
               </div>
             </div>
           </div>
@@ -333,19 +333,19 @@ const App = () => {
         <div className="rounded-2xl p-2 sm:p-3 mb-10">
           <img
             src="/S.W.M.logo.svg"
-            alt="S.W.M Groundsworks"
+            alt="S.W.M Groundworks"
             className="h-44 sm:h-52 md:h-64 w-auto object-contain opacity-95 mix-blend-multiply [filter:contrast(1.05)_brightness(1.08)] drop-shadow-[0_18px_45px_rgba(0,0,0,0.55)]"
           />
         </div>
         <div className="inline-flex items-center gap-3 px-5 py-2 bg-zinc-800/50 text-zinc-300 border border-zinc-700/50 rounded-full mb-10 text-[10px] font-black tracking-[0.2em] uppercase backdrop-blur-md">
-          <ShieldCheck size={14} className="text-zinc-400" /> Groundsworks Northwest & Stoke-on-Trent
+          <ShieldCheck size={14} className="text-zinc-400" /> Groundworks Northwest & Stoke-on-Trent
         </div>
         <h1 className="text-6xl md:text-8xl lg:text-9xl font-black leading-[0.85] mb-12 tracking-tighter max-w-5xl">
           STRUCTURAL <br />
           <span className="text-transparent bg-clip-text bg-gradient-to-b from-zinc-100 via-zinc-400 to-zinc-600">PERFECTION.</span>
         </h1>
         <p className="text-xl md:text-2xl text-zinc-400 leading-relaxed mb-14 max-w-3xl font-medium px-4">
-          The leading specialist in elite groundsworks for Wirral, Merseyside, and Stoke-on-Trent. We build the foundations for your luxury projects.
+          The leading specialist in elite groundworks for Wirral, Merseyside, and Stoke-on-Trent. We build the foundations for your luxury projects.
         </p>
         <div className="flex flex-col sm:flex-row gap-8 w-full max-w-md px-4">
           <button
@@ -461,7 +461,7 @@ const App = () => {
               '/images/garden pic 2.jpeg',
             ].map((src) => (
               <div key={src} className="bg-zinc-100 border border-zinc-200 rounded overflow-hidden aspect-square">
-                <img src={src} alt="S.W.M Groundsworks work" className="h-full w-full object-cover" loading="lazy" />
+                <img src={src} alt="S.W.M Groundworks work" className="h-full w-full object-cover" loading="lazy" />
               </div>
             ))}
           </div>
@@ -502,7 +502,7 @@ const App = () => {
       {activeTab === 'services' && (
         <section className="py-40 bg-white animate-in fade-in duration-1000 flex flex-col items-center">
           <div className="max-w-7xl mx-auto px-4 text-center">
-            <h2 className="text-xs font-black tracking-[0.5em] text-zinc-400 uppercase mb-10">Northwest Groundsworks</h2>
+            <h2 className="text-xs font-black tracking-[0.5em] text-zinc-400 uppercase mb-10">Northwest Groundworks</h2>
             <h3 className="text-6xl font-black text-black tracking-tighter mb-28">OUR CORE CAPABILITIES</h3>
             <div className="grid md:grid-cols-3 gap-12">
               {SERVICES.map((s, i) => (
@@ -742,7 +742,7 @@ const App = () => {
               <div className="flex items-center gap-4 mb-8">
                 <div className="w-14 h-14 bg-white rounded flex items-center justify-center text-black font-black text-3xl shadow-lg">S</div>
                 <span className="font-black text-4xl tracking-tighter">
-                  S.W.M <span className="text-zinc-600">GROUNDSWORKS</span>
+                  S.W.M <span className="text-zinc-600">GROUNDWORKS</span>
                 </span>
               </div>
               <p className="text-zinc-500 max-w-md mb-10 leading-relaxed font-bold tracking-tight text-lg">
@@ -768,7 +768,7 @@ const App = () => {
                   <Smartphone size={18} className="text-zinc-700" /> 07375 996 207
                 </li>
                 <li className="flex flex-col md:flex-row items-center gap-4 text-zinc-300">
-                  <Mail size={18} className="text-zinc-700" /> SWM@GROUNDSWORKS.COM
+                  <Mail size={18} className="text-zinc-700" /> SWM@GROUNDWORKS.COM
                 </li>
                 <li className="flex flex-col md:flex-row items-center gap-4 text-zinc-300">
                   <MapPin size={18} className="text-zinc-700" /> NW UK & STOKE-ON-TRENT
@@ -794,7 +794,7 @@ const App = () => {
 
           <div className="pt-6 border-t border-zinc-900 flex justify-center">
             <div className="w-full max-w-4xl flex flex-col md:flex-row justify-between items-center gap-4 text-[8px] font-black tracking-[0.3em] text-zinc-700">
-              <p className="uppercase">© {new Date().getFullYear()} S.W.M GROUNDSWORKS. ALL INFRASTRUCTURE RESERVED.</p>
+              <p className="uppercase">© {new Date().getFullYear()} S.W.M GROUNDWORKS. ALL INFRASTRUCTURE RESERVED.</p>
               <div className="flex gap-8">
                 <a href="#" className="hover:text-white transition-colors uppercase">
                   PRIVACY POLICY

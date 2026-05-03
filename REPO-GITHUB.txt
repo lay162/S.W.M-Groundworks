@@ -1,4 +1,4 @@
-GITHUB REPO FOR THIS PROJECT (S.W.M Groundsworks site)
+GITHUB REPO FOR THIS PROJECT (S.W.M Groundworks site)
 
 CHECK BEFORE YOU LINK
 - This folder (swm-groundsworks) did NOT have its own Git repo at setup time — only add a remote from HERE after `git init`, or Git may use a parent folder’s repo (e.g. another project).
@@ -11,7 +11,7 @@ SAFE STEPS (PowerShell — run only inside this folder)
   cd "C:\Users\laure\OneDrive\Documents\S.W.M GroundsWork\swm-groundsworks"
   git init
   git add .
-  git commit -m "Initial commit: S.W.M Groundsworks marketing site"
+  git commit -m "Initial commit: S.W.M Groundworks marketing site"
   git branch -M main
   git remote add origin https://github.com/lay162/S.W.M-Groundworks.git
   git push -u origin main

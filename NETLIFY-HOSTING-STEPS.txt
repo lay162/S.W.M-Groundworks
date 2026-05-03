@@ -1,4 +1,4 @@
-NETLIFY — FIRST-TIME HOST (S.W.M Groundsworks)
+NETLIFY — FIRST-TIME HOST (S.W.M Groundworks)
 
 Your project is already set up for Netlify:
 - Build command: npm run build
@@ -42,7 +42,8 @@ You already picked repo **S.W.M-Groundworks** and branch **main**. On this page:
 
   Team:              Lauren Moore (or your team — keep as shown)
 
-  Project name:      Optional. Example: swm-groundsworks
+  Project name:      Optional. Example: swm-groundworks
+                     (Netlify URLs cannot use dots — use letters, numbers, hyphens only.)
                      (Becomes part of your default URL: name.netlify.app)
 
   Branch to deploy:  Choose **main** from the dropdown (must not be empty)
@@ -85,9 +86,15 @@ After saving variables: Deploys → Trigger deploy → Clear cache and deploy si
 STEP 3 — OPEN THE LIVE URL
 --------------------------------------------------------------------------------
 Netlify gives you a random name like random-name-123.netlify.app.
-Site → Domain management → Options → you can rename to something clearer if available.
 
-Open the URL, scroll to the quote form, submit a test quote → check your Google Sheet for a new row.
+CHANGE THE *.NETLIFY.APP ADDRESS (fix spelling / branding)
+- Netlify does NOT allow “s.w.m” with dots in the free subdomain. Use something like: swm-groundworks
+- In the dashboard: open your site → Site configuration → General → Site details → “Change site name”
+  (or: Domain management → find the default xxxxx.netlify.app → Options → “Edit site name” — labels vary slightly.)
+- Enter a new name that is available (green check). Save. Your site is now at https://NEWNAME.netlify.app
+- Old bookmarks to the previous name will stop working unless you add the old name as a domain alias (usually not needed).
+
+Open your https://YOURNAME.netlify.app URL, scroll to the quote form, submit a test quote → check your Google Sheet for a new row.
 
 --------------------------------------------------------------------------------
 COMMON BUILD FAILURES

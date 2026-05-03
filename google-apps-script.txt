@@ -1,4 +1,4 @@
-GOOGLE SHEETS + APPS SCRIPT (S.W.M Groundsworks)
+GOOGLE SHEETS + APPS SCRIPT (S.W.M Groundworks)
 
 Quick files in this folder:
 - FOR-GOOGLE-APPS-SCRIPT-PASTE-ONLY.txt → paste ONLY that into Apps Script Code.gs (avoids pasting the guide twice).
