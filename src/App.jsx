@@ -160,6 +160,7 @@ const App = () => {
   const [quoteFiles, setQuoteFiles] = useState([]);
   const [reviewForm, setReviewForm] = useState({ author: '', rating: 5, text: '' });
   const [status, setStatus] = useState({ type: '', msg: '' });
+  const [workGalleryFilter, setWorkGalleryFilter] = useState('all');
 
   const openEmailFallback = () => {
     const subject = encodeURIComponent(`Quote request — ${quoteForm.service} — ${quoteForm.name}`);
@@ -412,63 +413,155 @@ const App = () => {
     },
   ];
 
-  const Gallery = () => (
-    <section className="py-32 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 className="text-xs font-black tracking-[0.4em] text-zinc-400 uppercase mb-6">Proven Excellence</h2>
-        <h3 className="text-5xl font-black text-black tracking-tighter mb-20">Portfolio of Work</h3>
+  /** Work tab + home gallery: category id → { label, images }. "all" is mixed order across projects. */
+  const WORK_GALLERY = {
+    all: {
+      label: 'All work',
+      images: [
+        { src: '/images/fence pic.jpeg', alt: 'Fencing installation' },
+        { src: '/images/driveway pic.jpeg', alt: 'Driveway' },
+        { src: '/images/garden pic.jpeg', alt: 'Garden landscaping' },
+        { src: '/images/gate pic .jpeg', alt: 'Gate' },
+        { src: '/images/tarmac.jpeg', alt: 'Tarmac surface' },
+        { src: '/images/porch pic.jpeg', alt: 'Porch' },
+        { src: '/images/steps pic .jpeg', alt: 'Stone steps' },
+        { src: '/images/indian stone pic.jpeg', alt: 'Indian stone paving' },
+        { src: '/images/garden pic 2.jpeg', alt: 'Garden' },
+        { src: '/images/tiles pic.jpeg', alt: 'Patio tiling' },
+        { src: '/images/steps 2.jpeg', alt: 'Steps detail' },
+        { src: '/images/tiles pic 2.jpeg', alt: 'Paving' },
+        { src: '/images/garden pic 3.jpeg', alt: 'Landscaping' },
+        { src: '/images/tiles pic 3.jpeg', alt: 'Patio tiles' },
+      ],
+    },
+    fencing: {
+      label: 'Fencing & gates',
+      images: [
+        { src: '/images/fence pic.jpeg', alt: 'Fencing' },
+        { src: '/images/gate pic .jpeg', alt: 'Gate' },
+      ],
+    },
+    driveways: {
+      label: 'Driveways',
+      images: [
+        { src: '/images/driveway pic.jpeg', alt: 'Driveway' },
+        { src: '/images/tarmac.jpeg', alt: 'Tarmac driveway' },
+      ],
+    },
+    steps: {
+      label: 'Steps & stonework',
+      images: [
+        { src: '/images/steps pic .jpeg', alt: 'Steps' },
+        { src: '/images/steps 2.jpeg', alt: 'Steps' },
+        { src: '/images/indian stone pic.jpeg', alt: 'Indian stone' },
+      ],
+    },
+    gardens: {
+      label: 'Gardens',
+      images: [
+        { src: '/images/garden pic.jpeg', alt: 'Garden' },
+        { src: '/images/garden pic 2.jpeg', alt: 'Garden' },
+        { src: '/images/garden pic 3.jpeg', alt: 'Garden' },
+      ],
+    },
+    patios: {
+      label: 'Patios & paving',
+      images: [
+        { src: '/images/tiles pic.jpeg', alt: 'Patio tiles' },
+        { src: '/images/tiles pic 2.jpeg', alt: 'Paving' },
+        { src: '/images/tiles pic 3.jpeg', alt: 'Patio' },
+      ],
+    },
+    porches: {
+      label: 'Porches',
+      images: [{ src: '/images/porch pic.jpeg', alt: 'Porch' }],
+    },
+  };
 
-        <div className="grid md:grid-cols-3 gap-12 text-left">
-          {PORTFOLIO_ITEMS.map((item) => (
-            <div key={item.title} className="group bg-white rounded-lg overflow-hidden border border-zinc-100 shadow-sm transition-all hover:shadow-2xl">
-              <div className="grid grid-cols-2 h-64 md:h-72">
-                <div className="relative bg-zinc-100 flex items-center justify-center border-r border-zinc-200 overflow-hidden">
-                  <img
-                    src={item.beforeSrc}
-                    alt={`${item.title} before`}
-                    className="h-full w-full object-cover object-[50%_20%] scale-[1.12] transition-transform duration-1000 group-hover:scale-[1.18]"
-                    loading="lazy"
-                  />
-                </div>
-                <div className="relative bg-zinc-50 flex items-center justify-center overflow-hidden">
-                  <img
-                    src={item.afterSrc}
-                    alt={`${item.title} after`}
-                    className="h-full w-full object-cover object-[50%_20%] scale-[1.12] transition-transform duration-1000 group-hover:scale-[1.18]"
-                    loading="lazy"
-                  />
-                </div>
-              </div>
-              <div className="p-10">
-                <h3 className="font-black text-xl mb-3 text-black">{item.title.toUpperCase()}</h3>
-                <p className="text-zinc-500 text-[10px] tracking-widest uppercase font-black">{item.subtitle.toUpperCase()}</p>
+  const WORK_GALLERY_ORDER = ['all', 'fencing', 'driveways', 'steps', 'gardens', 'patios', 'porches'];
+
+  const Gallery = () => {
+    const activeWork = WORK_GALLERY[workGalleryFilter] ?? WORK_GALLERY.all;
+
+    return (
+      <section className="py-24 md:py-32 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center text-center">
+          <h2 className="text-[10px] font-black tracking-[0.45em] text-zinc-400 uppercase mb-4">Portfolio</h2>
+          <h3 className="text-4xl md:text-5xl font-black text-black tracking-tighter mb-10">Our work</h3>
+
+          {workGalleryFilter === 'all' && (
+            <div className="w-full max-w-5xl mb-14">
+              <p className="text-[10px] font-black tracking-[0.35em] text-zinc-400 uppercase mb-8">Featured transformations</p>
+              <div className="grid md:grid-cols-3 gap-8 md:gap-10 text-left">
+                {PORTFOLIO_ITEMS.map((item) => (
+                  <div
+                    key={item.title}
+                    className="group bg-white rounded-lg overflow-hidden border border-zinc-200 shadow-sm transition-shadow hover:shadow-xl"
+                  >
+                    <div className="grid grid-cols-2 h-52 sm:h-56">
+                      <div className="relative bg-zinc-100 border-r border-zinc-200 overflow-hidden">
+                        <img
+                          src={item.beforeSrc}
+                          alt={`${item.title} before`}
+                          className="h-full w-full object-cover object-center scale-105 transition-transform duration-700 group-hover:scale-110"
+                          loading="lazy"
+                        />
+                      </div>
+                      <div className="relative bg-zinc-50 overflow-hidden">
+                        <img
+                          src={item.afterSrc}
+                          alt={`${item.title} after`}
+                          className="h-full w-full object-cover object-center scale-105 transition-transform duration-700 group-hover:scale-110"
+                          loading="lazy"
+                        />
+                      </div>
+                    </div>
+                    <div className="p-6 text-center md:text-left">
+                      <h4 className="font-black text-sm text-black tracking-tight">{item.title.toUpperCase()}</h4>
+                      <p className="text-zinc-500 text-[9px] tracking-[0.25em] uppercase font-black mt-1">{item.subtitle}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-          ))}
-        </div>
+          )}
 
-        <div className="mt-20">
-          <h4 className="text-[10px] font-black tracking-[0.4em] text-zinc-400 uppercase mb-10">More work</h4>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {[
-              '/images/fence pic.jpeg',
-              '/images/gate pic .jpeg',
-              '/images/porch pic.jpeg',
-              '/images/indian stone pic.jpeg',
-              '/images/tiles pic.jpeg',
-              '/images/tiles pic 2.jpeg',
-              '/images/tiles pic 3.jpeg',
-              '/images/garden pic 2.jpeg',
-            ].map((src) => (
-              <div key={src} className="bg-zinc-100 border border-zinc-200 rounded overflow-hidden aspect-square">
-                <img src={src} alt="S.W.M Groundworks work" className="h-full w-full object-cover" loading="lazy" />
+          <p className="text-[10px] font-black tracking-[0.35em] text-zinc-400 uppercase mb-4">Browse by category</p>
+          <div className="flex flex-wrap justify-center gap-2 mb-12 max-w-3xl">
+            {WORK_GALLERY_ORDER.map((id) => {
+              const cat = WORK_GALLERY[id];
+              const isOn = workGalleryFilter === id;
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => setWorkGalleryFilter(id)}
+                  className={`px-4 py-2.5 rounded-full text-[9px] font-black tracking-[0.2em] uppercase transition-colors border ${
+                    isOn
+                      ? 'bg-black text-white border-black'
+                      : 'bg-white text-zinc-500 border-zinc-200 hover:border-zinc-400 hover:text-black'
+                  }`}
+                >
+                  {cat.label}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="flex w-full flex-wrap justify-center gap-3 sm:gap-4 max-w-5xl mx-auto">
+            {activeWork.images.map((img) => (
+              <div
+                key={`${workGalleryFilter}-${img.src}`}
+                className="w-[calc(50%-0.375rem)] sm:w-[calc(33.333%-0.67rem)] max-w-[280px] aspect-square shrink-0 bg-zinc-100 border border-zinc-200 rounded-lg overflow-hidden"
+              >
+                <img src={img.src} alt={img.alt} className="h-full w-full object-cover object-center" loading="lazy" />
               </div>
             ))}
           </div>
         </div>
-      </div>
-    </section>
-  );
+      </section>
+    );
+  };
 
   return (
     <div className="min-h-screen bg-white font-sans text-black selection:bg-black selection:text-white">
