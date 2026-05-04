@@ -193,15 +193,6 @@ main {
   letter-spacing: -0.02em;
 }
 
-.jobtitle.text {
-  font-size: 1rem;
-  margin: 0.25rem 0;
-  color: #000;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-}
-
 .desc.text {
   text-align: center;
   line-height: 1.5;
@@ -286,6 +277,7 @@ main {
   border-radius: 14px;
   background: #ffffff;
   border: 2px solid #c5a059;
+  color: #111;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -300,8 +292,9 @@ main {
 }
 
 .actionBtn .icon.action svg {
-  stroke: #111;
-  color: #111;
+  width: 24px;
+  height: 24px;
+  stroke: currentColor;
 }
 
 .actionBtn p {
