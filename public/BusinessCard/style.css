@@ -1,0 +1,482 @@
+/* Mirrors Next Level Cleaning card structure, re-skinned for SWM (black/zinc). */
+* {
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body,
+#body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #09090b;
+  background: -webkit-linear-gradient(135deg, #09090b 0%, #000000 100%);
+  background: -moz-linear-gradient(135deg, #09090b 0%, #000000 100%);
+  background: -o-linear-gradient(135deg, #09090b 0%, #000000 100%);
+  background: linear-gradient(135deg, #09090b 0%, #000000 100%);
+  background-attachment: fixed;
+  background-size: 100% 100%;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.cardHeader {
+  position: relative;
+  height: 80px;
+  background: transparent;
+  width: 100%;
+  overflow: visible;
+  margin: 0;
+  padding: 0;
+  z-index: 5;
+}
+
+.headerImgC {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin: 0;
+  padding: 0;
+  pointer-events: none;
+}
+
+#topActions {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1000;
+  display: flex;
+  pointer-events: auto;
+}
+
+#topActions > div {
+  display: flex;
+  align-items: center;
+}
+
+#topActions > div > * + * {
+  margin-left: 0.75rem;
+}
+
+#topActions a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 50%;
+  position: relative;
+  z-index: 1001;
+  pointer-events: auto;
+  text-decoration: none;
+  transition: transform 0.2s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+#topActions a:hover {
+  transform: scale(1.05);
+}
+
+#topActions .icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#topActions .icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+#topActions .icon svg,
+#topActions .icon svg path,
+#topActions .icon svg circle,
+#topActions .icon svg g {
+  stroke: #111 !important;
+  fill: #111 !important;
+}
+
+main {
+  background-color: white;
+  margin: 4rem auto 2rem auto;
+  padding: 0;
+  max-width: 420px;
+  width: 90%;
+  min-width: 280px;
+  border-radius: 12px;
+  padding-bottom: 1rem;
+  position: relative;
+  z-index: 10;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+#profile {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 0;
+  margin: 0;
+  margin-top: -40px;
+  margin-bottom: 1rem;
+  position: relative;
+  z-index: 20;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  main {
+    max-width: 400px;
+    width: auto;
+  }
+
+  #topActions {
+    position: absolute;
+    top: 1rem;
+    right: calc((100vw - 400px) / 2 + 1rem);
+    z-index: 1000;
+  }
+}
+
+#profile > img,
+#profileImage {
+  width: 160px;
+  height: 160px;
+  border-radius: 50%;
+  object-fit: contain;
+  border: 4px solid white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 20;
+  display: block;
+  margin: 0;
+  align-self: center;
+  background: white;
+  padding: 14px;
+}
+
+#info {
+  text-align: center;
+  padding: 0 1rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+.name.text {
+  font-size: 1.5rem;
+  font-weight: 800;
+  margin: 0.5rem 0 0.25rem 0;
+  color: #000;
+  letter-spacing: -0.02em;
+}
+
+.jobtitle.text {
+  font-size: 1rem;
+  margin: 0.25rem 0;
+  color: #000;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.desc.text {
+  text-align: center;
+  line-height: 1.5;
+  color: #111;
+  margin: 1rem 0;
+  padding: 1rem;
+  background: white;
+  border-radius: 12px;
+}
+
+.text {
+  text-align: center;
+  line-height: 1.5;
+  color: #000;
+}
+
+.actions {
+  margin: 1.5rem 0;
+}
+
+#cta {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+#vcard {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+  color: #fff;
+  padding: 0.75rem 1.25rem;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 0.95rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: none;
+  cursor: pointer;
+}
+
+#vcard > * + * {
+  margin-left: 0.5rem;
+}
+
+#vcard:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.actionsC {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin-top: 1rem;
+  width: 100%;
+}
+
+.actionsC > * {
+  margin: 0.375rem;
+}
+
+.actions:not(.secondary) .actionsC {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  max-width: 240px;
+  margin: 1rem auto 0 auto;
+  justify-items: center;
+  width: auto;
+}
+
+.actions.secondary {
+  margin-top: 1.5rem;
+}
+
+.actionBtn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.actionBtn > a {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  background: #111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+}
+
+.actionBtn > a:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+}
+
+.actionBtn .icon.action svg {
+  stroke: #fff;
+}
+
+.actionBtn p {
+  margin: 0.5rem 0 0 0;
+  font-size: 0.85rem;
+  color: #111;
+  font-weight: 700;
+}
+
+.secBtn > a {
+  background: #111;
+}
+
+.contentStream {
+  padding: 0 1rem 0.75rem;
+}
+
+.streamSection {
+  margin: 1.25rem 0;
+  padding: 0.75rem;
+  border: 1px solid #e4e4e7;
+  border-radius: 12px;
+  background: #fafafa;
+}
+
+.streamTitle {
+  margin: 0.25rem 0 0.75rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  font-size: 0.75rem;
+  color: #111;
+}
+
+.videoWrap {
+  border-radius: 12px;
+  overflow: hidden;
+  background: #000;
+}
+
+.cardVideo {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.portfolio {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+.portfolioGroup {
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #e4e4e7;
+  padding: 0.75rem;
+}
+
+.portfolioLabel {
+  margin: 0 0 0.5rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.7rem;
+  color: #71717a;
+}
+
+.portfolioGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+}
+
+.portfolioGrid img {
+  width: 100%;
+  height: 92px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid #e4e4e7;
+}
+
+footer {
+  margin-top: 1.25rem;
+  padding: 1rem;
+  border-top: 1px solid #e4e4e7;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  font-weight: 800;
+}
+
+footer a {
+  color: #000;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Modal (copied structure) */
+#modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  z-index: 9999;
+}
+
+#modal.open {
+  display: flex;
+}
+
+#modalView {
+  width: 100%;
+  max-width: 420px;
+  background: white;
+  border-radius: 16px;
+  padding: 1rem;
+  position: relative;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+#closeModal {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 10000;
+}
+
+#closeModal a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.85);
+  cursor: pointer;
+}
+
+#closeModal svg {
+  width: 22px;
+  height: 22px;
+}
+
+#copyView,
+#qrView {
+  display: none;
+}
+
+#copyView.active,
+#qrView.active {
+  display: block;
+}
+
+#copyURL {
+  width: 100%;
+  margin-top: 0.75rem;
+  background: #000;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 0.8rem 0.9rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+#qr {
+  background: white;
+  border-radius: 12px;
+  padding: 0.75rem;
+  display: flex;
+  justify-content: center;
+}
+
