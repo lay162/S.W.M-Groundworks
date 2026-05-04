@@ -303,6 +303,15 @@ main {
   stroke: currentColor;
 }
 
+.actionBtn .icon.action svg,
+.actionBtn .icon.action svg path,
+.actionBtn .icon.action svg rect,
+.actionBtn .icon.action svg circle,
+.actionBtn .icon.action svg line,
+.actionBtn .icon.action svg polyline {
+  stroke: #000 !important;
+}
+
 .actionBtn p {
   margin: 0.5rem 0 0 0;
   font-size: 0.85rem;
