@@ -614,14 +614,6 @@ const App = () => {
   }, [activeTab]);
 
   useEffect(() => {
-    const tab = new URLSearchParams(window.location.search).get('tab');
-    if (tab === 'quote') {
-      setActiveTab('quote');
-      window.history.replaceState({}, '', window.location.pathname);
-    }
-  }, []);
-
-  useEffect(() => {
     if (!privacyOpen) return;
     const prev = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
