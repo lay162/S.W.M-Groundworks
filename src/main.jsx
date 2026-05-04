@@ -3,6 +3,12 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.jsx'
 
+// GitHub Pages directory paths need a trailing slash to load that folder's index.html.
+// If someone hits /BusinessCard (no slash), we redirect before React mounts.
+if (window.location.pathname === '/BusinessCard') {
+  window.location.replace('/BusinessCard/')
+}
+
 class RootErrorBoundary extends Component {
   constructor(props) {
     super(props)
