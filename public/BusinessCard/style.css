@@ -223,8 +223,8 @@ main {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: #000000;
-  color: #ffffff;
+  background: #c5a059;
+  color: #000000;
   padding: 0.75rem 1.25rem;
   border-radius: 12px;
   text-decoration: none;
@@ -233,6 +233,10 @@ main {
   transition: transform 0.2s, box-shadow 0.2s;
   border: none;
   cursor: pointer;
+}
+
+#vcard svg {
+  stroke: currentColor;
 }
 
 #vcard > * + * {
@@ -284,6 +288,16 @@ main {
   text-decoration: none;
   transition: transform 0.2s, box-shadow 0.2s;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+}
+
+/* Gold fill for social button(s) */
+.actionBtn > a[aria-label="facebook"],
+.actionBtn > a[aria-label="instagram"],
+.actionBtn > a[aria-label="tiktok"],
+.actionBtn > a[aria-label="linkedin"] {
+  background: #c5a059;
+  color: #000000;
+  border-color: #c5a059;
 }
 
 .actionBtn > a:hover {
