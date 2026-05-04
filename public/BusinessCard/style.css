@@ -244,6 +244,35 @@ main {
   cursor: pointer;
 }
 
+#quoteCta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #ffd700 !important;
+  color: #000000 !important;
+  padding: 0.75rem 1.25rem;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 0.95rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: none;
+  cursor: pointer;
+}
+
+#quoteCta svg {
+  stroke: currentColor;
+}
+
+#quoteCta > * + * {
+  margin-left: 0.5rem;
+}
+
+#quoteCta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
 #vcard svg {
   stroke: currentColor;
 }

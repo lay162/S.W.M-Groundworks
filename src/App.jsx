@@ -372,7 +372,7 @@ const InstagramIcon = ({ size = 24, className = '' }) => (
 const MAILTO_QUOTE_EMAIL =
   (typeof import.meta.env.VITE_BUSINESS_QUOTE_EMAIL === 'string' &&
     import.meta.env.VITE_BUSINESS_QUOTE_EMAIL.trim()) ||
-  'info@swm-groundworks.co.uk';
+  'quotes@swm-groundworks.co.uk';
 
 const GOOGLE_SCRIPT_URL =
   typeof import.meta.env.VITE_GOOGLE_APPS_SCRIPT_URL === 'string'
@@ -612,6 +612,14 @@ const App = () => {
   useEffect(() => {
     if (activeTab !== 'blog') setBlogSlug(null);
   }, [activeTab]);
+
+  useEffect(() => {
+    const tab = new URLSearchParams(window.location.search).get('tab');
+    if (tab === 'quote') {
+      setActiveTab('quote');
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }, []);
 
   useEffect(() => {
     if (!privacyOpen) return;
