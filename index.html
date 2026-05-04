@@ -4,6 +4,16 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <script>
+      // GitHub Pages serves the SPA fallback for unknown paths (index/404).
+      // Some mobile browsers then cache that fallback for /BusinessCard (no slash).
+      // This redirect is scoped ONLY to /BusinessCard and forwards to the real folder page /BusinessCard/.
+      (function () {
+        try {
+          if (window.location.pathname === '/BusinessCard') window.location.replace('/BusinessCard/');
+        } catch {}
+      })();
+    </script>
     <title>S.W.M Groundworks | Driveways, Fencing & Landscaping | Wirral, Liverpool, Cheshire & North Wales</title>
     <meta
       name="description"
