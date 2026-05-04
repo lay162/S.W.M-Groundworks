@@ -593,6 +593,14 @@ const App = () => {
   const [reviews] = useState(STATIC_CLIENT_REVIEWS);
   const photoInputRef = useRef(null);
 
+  useEffect(() => {
+    // GitHub Pages directory paths need a trailing slash to load that folder's index.html.
+    // If someone visits /BusinessCard (no slash), redirect so they get /BusinessCard/.
+    if (window.location.pathname === '/BusinessCard') {
+      window.location.replace('/BusinessCard/');
+    }
+  }, []);
+
   // Form States
   const [quoteForm, setQuoteForm] = useState({
     name: '',
