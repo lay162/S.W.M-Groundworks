@@ -372,7 +372,7 @@ const InstagramIcon = ({ size = 24, className = '' }) => (
 const MAILTO_QUOTE_EMAIL =
   (typeof import.meta.env.VITE_BUSINESS_QUOTE_EMAIL === 'string' &&
     import.meta.env.VITE_BUSINESS_QUOTE_EMAIL.trim()) ||
-  'you@example.com';
+  'info@swm-groundworks.co.uk';
 
 const GOOGLE_SCRIPT_URL =
   typeof import.meta.env.VITE_GOOGLE_APPS_SCRIPT_URL === 'string'
@@ -570,8 +570,11 @@ function PrivacyPolicyModal({ onClose }) {
             <h3 className="mb-2 font-black text-black">Contact</h3>
             <p>
               Questions about this policy or your data:{' '}
-              <a href="mailto:SWM@GROUNDWORKS.COM" className="font-bold text-black underline underline-offset-2">
-                SWM@GROUNDWORKS.COM
+              <a
+                href="mailto:info@swm-groundworks.co.uk"
+                className="font-bold text-black underline underline-offset-2"
+              >
+                info@swm-groundworks.co.uk
               </a>{' '}
               or the phone number shown in our footer.
             </p>
@@ -1577,7 +1580,7 @@ const App = () => {
                   <Smartphone size={18} className="text-zinc-700" /> 07375 996 207
                 </li>
                 <li className="flex flex-col md:flex-row items-center gap-4 text-zinc-300">
-                  <Mail size={18} className="text-zinc-700" /> SWM@GROUNDWORKS.COM
+                  <Mail size={18} className="text-zinc-700" /> info@swm-groundworks.co.uk
                 </li>
                 <li className="flex flex-col md:flex-row items-center gap-4 text-zinc-300">
                   <MapPin size={18} className="text-zinc-700" /> WIRRAL · LIVERPOOL · CHESHIRE · NORTH WALES
