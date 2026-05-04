@@ -193,6 +193,15 @@ main {
   letter-spacing: -0.02em;
 }
 
+.subhead.text {
+  margin: 0.5rem 0 0;
+  padding: 0 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #111;
+  line-height: 1.5;
+}
+
 .desc.text {
   text-align: center;
   line-height: 1.5;
