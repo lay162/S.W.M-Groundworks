@@ -20,6 +20,7 @@ import {
   Play,
 } from 'lucide-react';
 import { BLOG_POSTS } from './data/blogPosts.js';
+import { WORK_GALLERY, WORK_GALLERY_ORDER, PORTFOLIO_ITEMS } from './data/workGallery.js';
 
 // --- Custom TikTok Icon to match Lucide style ---
 const TikTokIcon = ({ size = 24, className = '' }) => (
@@ -281,7 +282,7 @@ const SERVICES = [
   {
     title: 'Patios',
     desc: 'High-end porcelain and natural stone patio installations for luxury outdoor living.',
-    image: '/images/work/patios/tiles pic.jpeg',
+    image: '/images/work/patios/indian stone 5.jpeg',
     workFilter: 'patios',
     iconKey: 'patios',
   },
@@ -295,22 +296,22 @@ const SERVICES = [
   {
     title: 'Landscaping',
     desc: 'Complete architectural garden transformations and heavy-duty landscaping.',
-    image: '/images/work/gardens/garden pic.jpeg',
+    image: '/images/work/gardens/garden pic 3.jpeg',
     workFilter: 'gardens',
     iconKey: 'landscaping',
   },
   {
     title: 'Drainage',
     desc: 'Expert ground drainage solutions to prevent flooding and manage runoff.',
-    image: '/images/work/gardens/garden pic 2.jpeg',
-    workFilter: 'all',
+    image: '/images/work/gardens/Garden Dig off .jpeg',
+    workFilter: 'gardens',
     iconKey: 'drainage',
   },
   {
     title: 'Foundations',
     desc: 'Precision-engineered foundations and concrete footings for extensions and new builds.',
-    image: '/images/work/steps/steps 2.jpeg',
-    workFilter: 'steps',
+    image: '/images/work/foundations/Concrete Floor Digout.jpeg',
+    workFilter: 'foundations',
     iconKey: 'foundations',
   },
 ];
@@ -616,10 +617,32 @@ const App = () => {
   const [status, setStatus] = useState({ type: '', msg: '' });
   const [workGalleryFilter, setWorkGalleryFilter] = useState('all');
   const [blogSlug, setBlogSlug] = useState(null);
+  const workGalleryGridRef = useRef(null);
+
+  const scrollWorkGalleryIntoView = () => {
+    requestAnimationFrame(() => {
+      const el = workGalleryGridRef.current;
+      if (!el) return;
+      const navOffset = 96;
+      const top = el.getBoundingClientRect().top + window.scrollY - navOffset;
+      window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
+    });
+  };
+
+  const selectWorkGalleryCategory = (id) => {
+    setWorkGalleryFilter(id);
+    scrollWorkGalleryIntoView();
+  };
 
   useEffect(() => {
     if (activeTab !== 'blog') setBlogSlug(null);
   }, [activeTab]);
+
+  useEffect(() => {
+    if (activeTab !== 'work') return;
+    const id = window.setTimeout(scrollWorkGalleryIntoView, 80);
+    return () => window.clearTimeout(id);
+  }, [activeTab, workGalleryFilter]);
 
   useEffect(() => {
     if (!privacyOpen) return;
@@ -806,35 +829,44 @@ const App = () => {
   );
 
   const Hero = () => (
-    <section className="relative py-28 lg:py-48 overflow-hidden bg-black text-white flex flex-col items-center text-center">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 flex flex-col items-center">
-        <div className="rounded-2xl p-2 sm:p-3 mb-10">
+    <section className="relative w-full overflow-x-hidden bg-black py-20 text-white sm:py-28 lg:py-48">
+      <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col items-center px-4 text-center sm:px-6 lg:px-8">
+        <div className="mb-8 flex w-full justify-center sm:mb-10">
           <img
             src="/S.W.M.logo.svg"
             alt="S.W.M Groundworks"
-            className="h-44 sm:h-52 md:h-64 w-auto object-contain opacity-95 mix-blend-multiply [filter:contrast(1.05)_brightness(1.08)] drop-shadow-[0_18px_45px_rgba(0,0,0,0.55)]"
+            className="mx-auto block h-36 w-auto max-w-[min(100%,280px)] object-contain opacity-95 drop-shadow-[0_18px_45px_rgba(0,0,0,0.55)] sm:h-44 sm:max-w-[320px] md:h-52 lg:h-64"
           />
         </div>
-        <div className="inline-flex items-center gap-3 px-5 py-2 bg-zinc-800/50 text-zinc-300 border border-zinc-700/50 rounded-full mb-10 text-[10px] font-black tracking-[0.2em] uppercase backdrop-blur-md">
-          <ShieldCheck size={14} className="text-zinc-400" /> Groundworks Wirral, Liverpool, Cheshire & North Wales
+        <div className="mb-8 flex w-full max-w-xl justify-center px-1 sm:mb-10">
+          <div className="inline-flex max-w-full flex-wrap items-center justify-center gap-x-2 gap-y-1 rounded-full border border-zinc-700/50 bg-zinc-800/50 px-4 py-2.5 text-[9px] font-black uppercase tracking-[0.15em] text-zinc-300 backdrop-blur-md sm:gap-3 sm:px-5 sm:text-[10px] sm:tracking-[0.2em]">
+            <ShieldCheck size={14} className="shrink-0 text-zinc-400" aria-hidden />
+            <span className="text-center leading-snug">
+              Groundworks Wirral, Liverpool, Cheshire &amp; North Wales
+            </span>
+          </div>
         </div>
-        <h1 className="text-6xl md:text-8xl lg:text-9xl font-black leading-[0.85] mb-12 tracking-tighter max-w-5xl">
+        <h1 className="mx-auto mb-10 w-full max-w-5xl text-4xl font-black leading-[0.9] tracking-tighter sm:mb-12 sm:text-6xl md:text-8xl lg:text-9xl">
           STRUCTURAL <br />
-          <span className="text-transparent bg-clip-text bg-gradient-to-b from-zinc-100 via-zinc-400 to-zinc-600">PERFECTION.</span>
+          <span className="text-transparent bg-clip-text bg-gradient-to-b from-zinc-100 via-zinc-400 to-zinc-600">
+            PERFECTION.
+          </span>
         </h1>
-        <p className="text-xl md:text-2xl text-zinc-400 leading-relaxed mb-14 max-w-3xl font-medium px-4">
+        <p className="mx-auto mb-12 max-w-3xl px-1 text-base font-medium leading-relaxed text-zinc-400 sm:mb-14 sm:px-2 sm:text-xl md:text-2xl">
           The leading specialist in elite groundworks for the Wirral, Liverpool, Merseyside, Cheshire and North Wales. We build the foundations for your luxury projects.
         </p>
-        <div className="flex flex-col sm:flex-row gap-8 w-full max-w-md px-4">
+        <div className="mx-auto flex w-full max-w-md flex-col items-stretch gap-4 sm:flex-row sm:gap-6">
           <button
+            type="button"
             onClick={() => setActiveTab('quote')}
-            className="flex-1 bg-white text-black px-12 py-6 rounded font-black text-xs tracking-[0.3em] flex items-center justify-center gap-3 hover:bg-zinc-200 transition-all active:scale-95 shadow-2xl shadow-white/5"
+            className="flex w-full items-center justify-center gap-3 rounded bg-white px-8 py-5 font-black text-xs tracking-[0.3em] text-black shadow-2xl shadow-white/5 transition-all hover:bg-zinc-200 active:scale-95 sm:flex-1 sm:px-12 sm:py-6"
           >
-            START PROJECT <ArrowRight size={18} />
+            START PROJECT <ArrowRight size={18} aria-hidden />
           </button>
           <button
+            type="button"
             onClick={() => setActiveTab('work')}
-            className="flex-1 bg-transparent text-white border border-zinc-700 px-12 py-6 rounded font-black text-xs tracking-[0.3em] hover:bg-zinc-900 transition-all active:scale-95"
+            className="flex w-full items-center justify-center rounded border border-zinc-700 bg-transparent px-8 py-5 font-black text-xs tracking-[0.3em] text-white transition-all hover:bg-zinc-900 active:scale-95 sm:flex-1 sm:px-12 sm:py-6"
           >
             SEE RESULTS
           </button>
@@ -873,127 +905,19 @@ const App = () => {
     </section>
   );
 
-  const PORTFOLIO_ITEMS = [
-    {
-      title: 'Driveway',
-      subtitle: 'Tarmac / finishing',
-      beforeSrc: '/images/work/driveways/driveway pic.jpeg',
-      afterSrc: '/images/work/driveways/tarmac.jpeg',
-    },
-    {
-      title: 'Steps',
-      subtitle: 'Stone steps & detail',
-      beforeSrc: '/images/work/steps/steps pic .jpeg',
-      afterSrc: '/images/work/steps/steps 2.jpeg',
-      beforeImgClass:
-        'h-full w-full object-cover object-[50%_22%] scale-[1.22] transition-transform duration-700 group-hover:scale-[1.28]',
-      afterImgClass:
-        'h-full w-full object-cover object-[50%_26%] scale-[1.22] transition-transform duration-700 group-hover:scale-[1.28]',
-    },
-    {
-      title: 'Garden',
-      subtitle: 'Landscaping finish',
-      beforeSrc: '/images/work/gardens/garden pic.jpeg',
-      afterSrc: '/images/work/gardens/garden pic 3.jpeg',
-    },
-  ];
-
-  /** Work tab + home gallery: category id → { label, images }. "all" is mixed order across projects. */
-  const WORK_GALLERY = {
-    all: {
-      label: 'All work',
-      images: [
-        { src: '/images/work/fencing/fence pic.jpeg', alt: 'Fencing installation' },
-        { src: '/images/work/driveways/driveway pic.jpeg', alt: 'Driveway' },
-        { src: '/images/work/gardens/garden pic.jpeg', alt: 'Garden landscaping' },
-        { src: '/images/work/fencing/gate pic .jpeg', alt: 'Gate' },
-        { src: '/images/work/driveways/tarmac.jpeg', alt: 'Tarmac surface' },
-        { src: '/images/work/porches/porch pic.jpeg', alt: 'Porch' },
-        {
-          src: '/images/work/steps/steps pic .jpeg',
-          alt: 'Stone steps',
-          imgClass: 'h-full w-full object-cover object-[50%_20%] scale-[1.3]',
-        },
-        { src: '/images/work/patios/indian stone pic.jpeg', alt: 'Indian stone paving' },
-        { src: '/images/work/gardens/garden pic 2.jpeg', alt: 'Garden' },
-        { src: '/images/work/patios/tiles pic.jpeg', alt: 'Patio tiling' },
-        {
-          src: '/images/work/steps/steps 2.jpeg',
-          alt: 'Steps detail',
-          imgClass: 'h-full w-full object-cover object-[50%_24%] scale-[1.28]',
-        },
-        { src: '/images/work/patios/tiles pic 2.jpeg', alt: 'Paving' },
-        { src: '/images/work/gardens/garden pic 3.jpeg', alt: 'Landscaping' },
-        { src: '/images/work/patios/tiles pic 3.jpeg', alt: 'Patio tiles' },
-      ],
-    },
-    fencing: {
-      label: 'Fencing & gates',
-      images: [
-        { src: '/images/work/fencing/fence pic.jpeg', alt: 'Fencing' },
-        { src: '/images/work/fencing/gate pic .jpeg', alt: 'Gate' },
-      ],
-    },
-    driveways: {
-      label: 'Driveways',
-      images: [
-        { src: '/images/work/driveways/driveway pic.jpeg', alt: 'Driveway' },
-        { src: '/images/work/driveways/tarmac.jpeg', alt: 'Tarmac driveway' },
-      ],
-    },
-    steps: {
-      label: 'Steps & stonework',
-      images: [
-        {
-          src: '/images/work/steps/steps pic .jpeg',
-          alt: 'Steps',
-          imgClass: 'h-full w-full object-cover object-[50%_18%] scale-[1.32]',
-        },
-        {
-          src: '/images/work/steps/steps 2.jpeg',
-          alt: 'Steps',
-          imgClass: 'h-full w-full object-cover object-[50%_22%] scale-[1.3]',
-        },
-        { src: '/images/work/patios/indian stone pic.jpeg', alt: 'Indian stone' },
-      ],
-    },
-    gardens: {
-      label: 'Gardens',
-      images: [
-        { src: '/images/work/gardens/garden pic.jpeg', alt: 'Garden' },
-        { src: '/images/work/gardens/garden pic 2.jpeg', alt: 'Garden' },
-        { src: '/images/work/gardens/garden pic 3.jpeg', alt: 'Garden' },
-      ],
-    },
-    patios: {
-      label: 'Patios & paving',
-      images: [
-        { src: '/images/work/patios/tiles pic.jpeg', alt: 'Patio tiles' },
-        { src: '/images/work/patios/tiles pic 2.jpeg', alt: 'Paving' },
-        { src: '/images/work/patios/tiles pic 3.jpeg', alt: 'Patio' },
-      ],
-    },
-    porches: {
-      label: 'Porches',
-      images: [{ src: '/images/work/porches/porch pic.jpeg', alt: 'Porch' }],
-    },
-  };
-
-  const WORK_GALLERY_ORDER = ['all', 'fencing', 'driveways', 'steps', 'gardens', 'patios', 'porches'];
-
   const Gallery = () => {
     const activeWork = WORK_GALLERY[workGalleryFilter] ?? WORK_GALLERY.all;
 
     return (
-      <section className="py-24 md:py-32 bg-white">
+      <section id="work-portfolio" className="scroll-mt-24 py-24 md:py-32 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center text-center">
           <h2 className="text-[10px] font-black tracking-[0.45em] text-zinc-400 uppercase mb-4">Portfolio</h2>
           <h3 className="text-4xl md:text-5xl font-black text-black tracking-tighter mb-10">Our work</h3>
 
           {workGalleryFilter === 'all' && (
-            <div className="w-full max-w-5xl mb-14">
+            <div className="mb-14 w-full max-w-7xl">
               <p className="text-[10px] font-black tracking-[0.35em] text-zinc-400 uppercase mb-8">Featured transformations</p>
-              <div className="grid md:grid-cols-3 gap-8 md:gap-10 text-center">
+              <div className="grid grid-cols-1 gap-8 text-center sm:grid-cols-2 sm:gap-10 xl:grid-cols-4">
                 {PORTFOLIO_ITEMS.map((item) => (
                   <div
                     key={item.title}
@@ -1042,7 +966,7 @@ const App = () => {
                 <button
                   key={id}
                   type="button"
-                  onClick={() => setWorkGalleryFilter(id)}
+                  onClick={() => selectWorkGalleryCategory(id)}
                   className={`px-4 py-2.5 rounded-full text-[9px] font-black tracking-[0.2em] uppercase transition-colors border ${
                     isOn
                       ? 'bg-black text-white border-black'
@@ -1055,7 +979,12 @@ const App = () => {
             })}
           </div>
 
-          <div className="flex w-full flex-wrap justify-center gap-3 sm:gap-4 max-w-5xl mx-auto">
+          <div
+            ref={workGalleryGridRef}
+            className="mx-auto flex w-full max-w-5xl flex-wrap justify-center gap-3 scroll-mt-28 sm:gap-4"
+            aria-live="polite"
+            aria-label={`${activeWork.label} gallery`}
+          >
             {activeWork.images.map((img) => (
               <div
                 key={`${workGalleryFilter}-${img.src}`}
@@ -1123,7 +1052,6 @@ const App = () => {
                     onClick={() => {
                       setWorkGalleryFilter(s.workFilter);
                       setActiveTab('work');
-                      window.scrollTo({ top: 0, behavior: 'smooth' });
                     }}
                     className="group relative flex w-full flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white text-center shadow-sm transition-all duration-500 hover:-translate-y-1 hover:border-zinc-300 hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2"
                   >
