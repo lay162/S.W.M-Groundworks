@@ -19,15 +19,15 @@ Use the folder that best matches the job. If you are not sure yet, use misc/.
 FILE TIPS
   • JPG or JPEG is best (same as your current photos).
   • Use simple names, e.g. driveway-wirral-2025.jpeg (avoid odd characters).
-  • You do NOT need to edit any code when adding files — only drop them in a folder.
+  • Removing a photo from a folder is fine — it will drop off the site on the next build.
+  • After add/remove, run: npm run sync-gallery  (or npm run build — sync runs automatically)
 
-WHEN YOU ARE READY
-  Come back in chat and say something like:
-  “I added new photos in driveways and misc — please add them to the gallery.”
-  We will wire them into src/data/workGallery.js (Our work / Portfolio).
+WHEN YOU ARE READY (optional)
+  Come back in chat if you want a specific job order (prep → finish) tweaked by hand.
 
-WHAT WE UPDATE IN CODE (you do not need to do this):
-  • src/data/workGallery.js — gallery lists and progress order
+WHAT UPDATES THE SITE:
+  • npm run sync-gallery — rebuilds src/data/workGallery.js from these folders
+  • npm run build — syncs then builds for GitHub Pages
   • src/App.jsx — SERVICES cards (optional hero image per service)
   • public/BusinessCard/index.html — optional, if you want them on the digital card
 
