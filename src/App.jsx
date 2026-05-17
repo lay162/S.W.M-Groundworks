@@ -17,7 +17,6 @@ import {
   Trees,
   Droplets,
   Landmark,
-  Play,
 } from 'lucide-react';
 import { BLOG_POSTS } from './data/blogPosts.js';
 import { WORK_GALLERY, WORK_GALLERY_ORDER, PORTFOLIO_ITEMS } from './data/workGallery.js';
@@ -187,84 +186,104 @@ function formatLongDate(iso) {
   return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 }
 
-/** First garden before/after reel — add MP4 at public/videos/garden-transformation-01.mp4 (see public/videos/README.txt). */
-const GARDEN_TRANSFORMATION_VIDEO_SRC = '/videos/garden-transformation-01.mp4';
-const GARDEN_TRANSFORMATION_POSTER = '/images/work/gardens/garden pic 3.jpeg';
+/** Same garden job — stage 1 (start) through 5 (finished). */
+const GARDEN_PROGRESS_FRAMES = [
+  { src: '/images/work/gardens/garden before 1.jpeg', label: 'Stage 1 — site prep' },
+  { src: '/images/work/gardens/garden before 2.jpeg', label: 'Stage 2 — groundwork' },
+  { src: '/images/work/gardens/garden before 3.jpeg', label: 'Stage 3 — paving in progress' },
+  { src: '/images/work/gardens/garden before 4.jpeg', label: 'Stage 4 — near completion' },
+  { src: '/images/work/gardens/garden before 5.jpeg', label: 'Stage 5 — finished' },
+];
 
-function GardenTransformationSection() {
-  const [videoAvailable, setVideoAvailable] = useState(null);
+const GARDEN_SLIDE_MS = 3800;
+const GARDEN_FADE_MS = 1600;
+
+function GardenProgressSlideshow() {
+  const [index, setIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
+  const count = GARDEN_PROGRESS_FRAMES.length;
 
   useEffect(() => {
-    let cancelled = false;
-    fetch(GARDEN_TRANSFORMATION_VIDEO_SRC, { method: 'HEAD' })
-      .then((res) => {
-        if (!cancelled) setVideoAvailable(res.ok);
-      })
-      .catch(() => {
-        if (!cancelled) setVideoAvailable(false);
-      });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
+    if (paused || count < 2) return undefined;
+    const prefersReduced =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced) return undefined;
 
+    const id = window.setInterval(() => {
+      setIndex((i) => (i + 1) % count);
+    }, GARDEN_SLIDE_MS);
+    return () => window.clearInterval(id);
+  }, [paused, count]);
+
+  const frame = GARDEN_PROGRESS_FRAMES[index];
+
+  return (
+    <div
+      className="relative mx-auto aspect-[4/3] max-h-[70vh] w-full overflow-hidden rounded-2xl border border-zinc-800 bg-black shadow-2xl shadow-black/40 sm:aspect-video"
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      {GARDEN_PROGRESS_FRAMES.map((f, i) => (
+        <img
+          key={f.src}
+          src={f.src}
+          alt={f.label}
+          className="absolute inset-0 h-full w-full object-cover transition-opacity ease-in-out"
+          style={{
+            opacity: i === index ? 1 : 0,
+            transitionDuration: `${GARDEN_FADE_MS}ms`,
+            zIndex: i === index ? 1 : 0,
+          }}
+          loading={i <= 1 ? 'eager' : 'lazy'}
+          decoding="async"
+        />
+      ))}
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-black/90 via-black/50 to-transparent px-4 pb-4 pt-16 sm:px-6 sm:pb-6"
+        aria-hidden
+      />
+      <div className="absolute bottom-4 left-4 right-4 z-20 flex flex-col gap-3 sm:bottom-6 sm:left-6 sm:right-6">
+        <div className="flex items-end justify-between gap-4">
+          <p className="text-left text-sm font-bold text-white sm:text-base">{frame.label}</p>
+          <p className="shrink-0 text-[10px] font-black uppercase tracking-[0.25em] text-zinc-400">
+            {index + 1} / {count}
+          </p>
+        </div>
+        <div className="flex justify-center gap-2" role="tablist" aria-label="Garden project stages">
+          {GARDEN_PROGRESS_FRAMES.map((f, i) => (
+            <button
+              key={f.src}
+              type="button"
+              role="tab"
+              aria-selected={i === index}
+              aria-label={f.label}
+              onClick={() => setIndex(i)}
+              className={`h-1.5 rounded-full transition-all ${
+                i === index ? 'w-8 bg-white' : 'w-3 bg-white/35 hover:bg-white/55'
+              }`}
+            />
+          ))}
+        </div>
+        <p className="text-center text-[9px] font-semibold uppercase tracking-[0.2em] text-zinc-500">
+          {paused ? 'Paused — move away to resume' : 'Playing through — same job start to finish'}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function GardenTransformationSection() {
   return (
     <section className="bg-zinc-950 py-20 md:py-28 text-white border-y border-zinc-800">
       <div className="mx-auto max-w-5xl px-4 text-center sm:px-6">
         <h2 className="mb-3 text-[10px] font-black uppercase tracking-[0.45em] text-zinc-500">On the ground</h2>
         <h3 className="mb-4 text-3xl font-black tracking-tighter text-white sm:text-4xl md:text-5xl">Garden transformation</h3>
         <p className="mx-auto mb-10 max-w-xl text-sm font-medium leading-relaxed text-zinc-400">
-          Before-and-after walkthrough on one reel — sits on the home page above the stills gallery so visitors see scale
-          and movement first.
+          One garden, one job — watch it move automatically from the first dig through to the finished patio and lawn.
+          No scrolling needed.
         </p>
-        <div className="relative mx-auto aspect-video max-h-[70vh] w-full overflow-hidden rounded-2xl border border-zinc-800 bg-black shadow-2xl shadow-black/40">
-          {videoAvailable === true ? (
-            <video
-              className="h-full w-full object-cover"
-              controls
-              playsInline
-              preload="metadata"
-              poster={GARDEN_TRANSFORMATION_POSTER}
-            >
-              <source src={GARDEN_TRANSFORMATION_VIDEO_SRC} type="video/mp4" />
-            </video>
-          ) : (
-            <>
-              <img
-                src={GARDEN_TRANSFORMATION_POSTER}
-                alt="Garden project — video placeholder"
-                className="h-full w-full object-cover opacity-90"
-                loading="lazy"
-              />
-              <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-t from-black/85 via-black/45 to-black/30 px-6">
-                <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full border-2 border-white/30 bg-white/10 text-white backdrop-blur-sm">
-                  <Play size={28} className="ml-1 text-white" fill="white" aria-hidden />
-                </div>
-                <p className="max-w-md text-sm font-bold leading-relaxed text-white">
-                  {videoAvailable === false
-                    ? 'Upload your finished reel as MP4 to deploy it here — no code change needed.'
-                    : 'Checking for video…'}
-                </p>
-                <p className="mt-3 max-w-lg text-xs font-semibold leading-relaxed text-zinc-400">
-                  Save as <span className="font-mono text-zinc-300">public/videos/garden-transformation-01.mp4</span> then
-                  redeploy (or refresh locally). See <span className="font-mono">public/videos/README.txt</span>.
-                </p>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setVideoAvailable(null);
-                    fetch(GARDEN_TRANSFORMATION_VIDEO_SRC, { method: 'HEAD' })
-                      .then((res) => setVideoAvailable(res.ok))
-                      .catch(() => setVideoAvailable(false));
-                  }}
-                  className="mt-6 text-[10px] font-black uppercase tracking-[0.28em] text-zinc-400 underline decoration-zinc-600 underline-offset-4 hover:text-white"
-                >
-                  I’ve added the file — check again
-                </button>
-              </div>
-            </>
-          )}
-        </div>
+        <GardenProgressSlideshow />
       </div>
     </section>
   );
@@ -296,7 +315,7 @@ const SERVICES = [
   {
     title: 'Landscaping',
     desc: 'Complete architectural garden transformations and heavy-duty landscaping.',
-    image: '/images/work/gardens/garden pic 3.jpeg',
+    image: '/images/work/gardens/garden before 5.jpeg',
     workFilter: 'gardens',
     iconKey: 'landscaping',
   },

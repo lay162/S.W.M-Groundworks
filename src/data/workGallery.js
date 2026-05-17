@@ -84,6 +84,11 @@ const STEPS = {
 const GARDENS = {
   label: 'Gardens',
   images: [
+    img('gardens', 'garden before 1.jpeg', 'Garden before 1'),
+    img('gardens', 'garden before 2.jpeg', 'Garden before 2'),
+    img('gardens', 'garden before 3.jpeg', 'Garden before 3'),
+    img('gardens', 'garden before 4.jpeg', 'Garden before 4'),
+    img('gardens', 'garden before 5.jpeg', 'Garden before 5'),
     img('gardens', 'Garden Dig off .jpeg', 'Garden Dig off'),
     img('gardens', 'garden pic 2.jpeg', 'Garden pic 2'),
     img('gardens', 'garden pic 3.jpeg', 'Garden pic 3'),

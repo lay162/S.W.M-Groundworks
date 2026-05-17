@@ -70,7 +70,16 @@ const ORDER_OVERRIDE = {
     'steps 7.jpeg',
     'Keykurb Step .jpeg',
   ],
-  gardens: ['Garden Dig off .jpeg', 'garden pic 2.jpeg', 'garden pic 3.jpeg'],
+  gardens: [
+    'garden before 1.jpeg',
+    'garden before 2.jpeg',
+    'garden before 3.jpeg',
+    'garden before 4.jpeg',
+    'garden before 5.jpeg',
+    'Garden Dig off .jpeg',
+    'garden pic 2.jpeg',
+    'garden pic 3.jpeg',
+  ],
   patios: [
     'kanla grey indian stone .jpeg',
     'kandla grey indian stone 1.jpeg',
