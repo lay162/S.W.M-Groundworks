@@ -195,16 +195,15 @@ const GARDEN_PROGRESS_FRAMES = [
   { src: '/images/work/gardens/garden before 5.jpeg', label: 'Stage 5 — finished' },
 ];
 
-const GARDEN_SLIDE_MS = 3800;
-const GARDEN_FADE_MS = 1600;
+const GARDEN_SLIDE_MS = 2200;
+const GARDEN_FADE_MS = 900;
 
 function GardenProgressSlideshow() {
   const [index, setIndex] = useState(0);
-  const [paused, setPaused] = useState(false);
   const count = GARDEN_PROGRESS_FRAMES.length;
 
   useEffect(() => {
-    if (paused || count < 2) return undefined;
+    if (count < 2) return undefined;
     const prefersReduced =
       typeof window !== 'undefined' &&
       window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -214,16 +213,12 @@ function GardenProgressSlideshow() {
       setIndex((i) => (i + 1) % count);
     }, GARDEN_SLIDE_MS);
     return () => window.clearInterval(id);
-  }, [paused, count]);
+  }, [count]);
 
   const frame = GARDEN_PROGRESS_FRAMES[index];
 
   return (
-    <div
-      className="relative mx-auto aspect-[4/3] max-h-[70vh] w-full overflow-hidden rounded-2xl border border-zinc-800 bg-black shadow-2xl shadow-black/40 sm:aspect-video"
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-    >
+    <div className="relative mx-auto aspect-[4/3] max-h-[70vh] w-full overflow-hidden rounded-2xl border border-zinc-800 bg-black shadow-2xl shadow-black/40 sm:aspect-video">
       {GARDEN_PROGRESS_FRAMES.map((f, i) => (
         <img
           key={f.src}
@@ -265,9 +260,6 @@ function GardenProgressSlideshow() {
             />
           ))}
         </div>
-        <p className="text-center text-[9px] font-semibold uppercase tracking-[0.2em] text-zinc-500">
-          {paused ? 'Paused — move away to resume' : 'Playing through — same job start to finish'}
-        </p>
       </div>
     </div>
   );
