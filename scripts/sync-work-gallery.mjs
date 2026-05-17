@@ -57,7 +57,6 @@ const ORDER_OVERRIDE = {
     'BlockPaved Path 2.jpeg',
     'Front Path .jpeg',
     'Front Path 2.jpeg',
-    'Front Path 3.jpeg',
     'Golden Gravel Driveway .jpeg',
   ],
   steps: [

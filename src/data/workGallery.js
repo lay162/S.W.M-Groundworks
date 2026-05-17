@@ -52,7 +52,6 @@ const DRIVEWAYS = {
     img('driveways', 'BlockPaved Path 2.jpeg', 'BlockPaved Path 2'),
     img('driveways', 'Front Path .jpeg', 'Front Path'),
     img('driveways', 'Front Path 2.jpeg', 'Front Path 2'),
-    img('driveways', 'Front Path 3.jpeg', 'Front Path 3'),
     img('driveways', 'Golden Gravel Driveway .jpeg', 'Golden Gravel Driveway'),
   ],
 };
