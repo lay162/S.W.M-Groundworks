@@ -146,29 +146,12 @@ export const WORK_GALLERY = {
   ...CATEGORIES,
 };
 
+/** Before/after only when both photos are the same job. Other work: use category tabs below. */
 export const PORTFOLIO_ITEMS = [
   {
     title: 'Extension roof',
-    subtitle: 'Build to completion',
+    subtitle: 'Same extension — stage 1 to completion',
     beforeSrc: '/images/work/extensions/Exstension roof 1.jpeg',
     afterSrc: '/images/work/extensions/Exstension Roof Complete.jpeg',
-  },
-  {
-    title: 'Indian stone patio',
-    subtitle: 'Kandla grey — prep to finish',
-    beforeSrc: '/images/work/patios/kanla grey indian stone .jpeg',
-    afterSrc: '/images/work/patios/indian stone 5.jpeg',
-  },
-  {
-    title: 'Tarmac driveway',
-    subtitle: 'Prep to finish',
-    beforeSrc: '/images/work/driveways/Tarmac Drive Prep.jpeg',
-    afterSrc: '/images/work/driveways/Tarmac Driveway .jpeg',
-  },
-  {
-    title: 'Garden',
-    subtitle: 'Dig off to finish',
-    beforeSrc: '/images/work/gardens/Garden Dig off .jpeg',
-    afterSrc: '/images/work/gardens/garden pic 3.jpeg',
   },
 ];

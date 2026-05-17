@@ -916,18 +916,25 @@ const App = () => {
 
           {workGalleryFilter === 'all' && (
             <div className="mb-14 w-full max-w-7xl">
-              <p className="text-[10px] font-black tracking-[0.35em] text-zinc-400 uppercase mb-8">Featured transformations</p>
-              <div className="grid grid-cols-1 gap-8 text-center sm:grid-cols-2 sm:gap-10 xl:grid-cols-4">
+              <p className="mb-3 text-[10px] font-black uppercase tracking-[0.35em] text-zinc-400">Featured project</p>
+              <p className="mx-auto mb-8 max-w-lg text-sm font-medium leading-relaxed text-zinc-500">
+                One before-and-after we can match to the same job. For driveways, patios, gardens and the rest, use the
+                categories below — those photos are not paired as transformations.
+              </p>
+              <div className="mx-auto grid max-w-md grid-cols-1 gap-8 text-center">
                 {PORTFOLIO_ITEMS.map((item) => (
                   <div
                     key={item.title}
                     className="group bg-white rounded-lg overflow-hidden border border-zinc-200 shadow-sm transition-shadow hover:shadow-xl"
                   >
                     <div className="grid grid-cols-2 h-52 sm:h-56">
-                      <div className="relative bg-zinc-100 border-r border-zinc-200 overflow-hidden">
+                      <div className="relative overflow-hidden border-r border-zinc-200 bg-zinc-100">
+                        <span className="absolute left-2 top-2 z-10 rounded bg-black/70 px-2 py-0.5 text-[8px] font-black uppercase tracking-widest text-white">
+                          Earlier
+                        </span>
                         <img
                           src={item.beforeSrc}
-                          alt={`${item.title} before`}
+                          alt={`${item.title} — earlier stage`}
                           className={
                             item.beforeImgClass ??
                             'h-full w-full object-cover object-center scale-105 transition-transform duration-700 group-hover:scale-110'
@@ -935,10 +942,13 @@ const App = () => {
                           loading="lazy"
                         />
                       </div>
-                      <div className="relative bg-zinc-50 overflow-hidden">
+                      <div className="relative overflow-hidden bg-zinc-50">
+                        <span className="absolute left-2 top-2 z-10 rounded bg-black/70 px-2 py-0.5 text-[8px] font-black uppercase tracking-widest text-white">
+                          Complete
+                        </span>
                         <img
                           src={item.afterSrc}
-                          alt={`${item.title} after`}
+                          alt={`${item.title} — complete`}
                           className={
                             item.afterImgClass ??
                             'h-full w-full object-cover object-center scale-105 transition-transform duration-700 group-hover:scale-110'
