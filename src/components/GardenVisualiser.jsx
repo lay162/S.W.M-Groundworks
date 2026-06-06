@@ -11,6 +11,7 @@ import {
 const DISCLAIMER =
   'Generated visual preview only — not an exact survey or quote. Final design, levels and drainage are assessed on a site visit; your price and quotation are confirmed after that visit, not during it.';
 
+
 function MaterialThumb({ material, selected, onSelect }) {
   const [failed, setFailed] = useState(false);
   const src = materialImageUrl(material.texture);
@@ -27,7 +28,7 @@ function MaterialThumb({ material, selected, onSelect }) {
         selected ? 'border-black ring-2 ring-black ring-offset-2' : 'border-zinc-200 hover:border-zinc-400'
       }`}
     >
-      <div className="relative h-28 sm:h-32 bg-zinc-100">
+      <div className="relative h-24 sm:h-28 bg-zinc-100">
         {!failed ? (
           <img
             src={src}
@@ -97,15 +98,10 @@ export function GardenVisualiser({
   const attachStream = useCallback(async () => {
     if (!videoRef.current || !cameraStream) return;
     videoRef.current.srcObject = cameraStream;
-    videoRef.current.setAttribute('playsinline', 'true');
-    videoRef.current.setAttribute('webkit-playsinline', 'true');
     try {
       await videoRef.current.play();
     } catch {
-      // iOS may need a second attempt after layout.
-      window.setTimeout(() => {
-        videoRef.current?.play().catch(() => {});
-      }, 100);
+      // iOS can reject play() until the element is visible; ignore.
     }
   }, [cameraStream]);
 
@@ -131,28 +127,96 @@ export function GardenVisualiser({
     });
   };
 
-  const cameraSection = (
-    <div className="mb-8">
-      <p className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.4em] mb-3">Live camera preview</p>
-      <p className="text-sm font-medium text-zinc-600 mb-4 leading-relaxed">
-        Tap <span className="font-black text-black">OPEN CAMERA</span>, allow access when asked, then pick your stone or tile below — the overlay updates on your screen.
+  return (
+    <div className="w-full max-w-3xl mx-auto text-left">
+      <div className="mb-6 rounded-lg border border-zinc-200 bg-zinc-50 px-4 py-3 flex gap-3 items-start">
+        <AlertTriangle className="shrink-0 text-zinc-500 mt-0.5" size={18} aria-hidden />
+        <p className="text-[11px] font-bold leading-relaxed text-zinc-600 tracking-tight">{DISCLAIMER}</p>
+      </div>
+
+      <p className="text-xs font-bold text-zinc-500 mb-6 leading-relaxed">
+        Pick a finish like you would at a paving supplier — Raj Green, Kandla Grey, porcelain, or cobbled borders. Swatches are clean material reference images (no supplier branding).
       </p>
 
-      <div className="relative overflow-hidden rounded-2xl border border-zinc-200 bg-black aspect-[3/4] sm:aspect-[4/3] max-h-[65vh]">
+      <div className="mb-8">
+        <p className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.4em] mb-4">Choose category</p>
+        <div className="flex flex-wrap gap-2 mb-6">
+          {VISUALISER_CATEGORIES.map((c) => (
+            <button
+              key={c.id}
+              type="button"
+              onClick={() => selectMaterial(c.materials[0].id, c.id)}
+              className={`px-4 py-2 rounded text-[10px] font-black tracking-widest uppercase border transition-colors ${
+                categoryId === c.id
+                  ? 'bg-black text-white border-black'
+                  : 'bg-zinc-50 text-zinc-600 border-zinc-200 hover:border-zinc-400'
+              }`}
+            >
+              {c.label}
+            </button>
+          ))}
+        </div>
+
+        <p className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.4em] mb-3">Selected finish</p>
+        <div className="mb-4 overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-100">
+          {!selectedPreviewFailed ? (
+            <img
+              src={materialSrc}
+              alt={material.supplierLabel}
+              loading="eager"
+              fetchPriority="high"
+              decoding="async"
+              className="h-40 sm:h-52 w-full object-cover"
+              onError={() => setSelectedPreviewFailed(true)}
+            />
+          ) : (
+            <div className="flex h-40 sm:h-52 items-center justify-center text-[10px] font-bold uppercase tracking-wider text-zinc-400">
+              Preview unavailable
+            </div>
+          )}
+          <div className="border-t border-zinc-200 bg-white px-4 py-3">
+            <p className="text-sm font-black text-black">{material.name}</p>
+            <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider mt-1">{material.supplierLabel}</p>
+            {showsEdgeInPhoto && (
+              <p className="text-[9px] font-black text-zinc-400 uppercase tracking-widest mt-2">
+                Includes cobbled edge as shown in photo
+              </p>
+            )}
+          </div>
+        </div>
+
+        <p className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.4em] mb-4">Colours &amp; finishes</p>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          {category.materials.map((m) => (
+            <MaterialThumb
+              key={m.id}
+              material={m}
+              selected={materialId === m.id}
+              onSelect={() => selectMaterial(m.id, category.id)}
+            />
+          ))}
+        </div>
+      </div>
+
+      <p className="text-sm font-medium text-zinc-600 mb-4 leading-relaxed">
+        Point your camera at your patio, driveway or garden. Switch materials above — the overlay updates live on your screen.
+      </p>
+
+      <div className="relative overflow-hidden rounded-2xl border border-zinc-200 bg-black aspect-[3/4] sm:aspect-[4/3] max-h-[70vh]">
         {!cameraOn && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-5 bg-zinc-900 text-center px-6 z-10">
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-6 bg-zinc-900 text-center px-6 z-10">
             <Camera className="text-zinc-500" size={48} aria-hidden />
             <p className="text-xs font-bold text-zinc-400 max-w-xs leading-relaxed">
-              Works on iPhone &amp; Android — Safari, Chrome, Samsung Internet, Firefox. Tap below and allow camera access.
+              Allow camera access when your phone asks — best on iPhone or Android in Safari or Chrome.
             </p>
             <button
               type="button"
               onClick={onRequestCamera}
-              className="px-8 py-4 bg-white text-black font-black text-[10px] tracking-[0.35em] rounded hover:bg-zinc-100 active:scale-95"
+              className="px-8 py-4 bg-white text-black font-black text-[10px] tracking-[0.35em] rounded hover:bg-zinc-100"
             >
               OPEN CAMERA
             </button>
-            {cameraError && <p className="text-[10px] font-bold text-red-400 max-w-sm leading-relaxed">{cameraError}</p>}
+            {cameraError && <p className="text-[10px] font-bold text-red-400 max-w-sm">{cameraError}</p>}
           </div>
         )}
 
@@ -161,7 +225,6 @@ export function GardenVisualiser({
           playsInline
           muted
           autoPlay
-          disablePictureInPicture
           className={`absolute inset-0 h-full w-full object-cover ${cameraOn ? 'opacity-100' : 'opacity-0'}`}
         />
 
@@ -254,8 +317,8 @@ export function GardenVisualiser({
       </div>
 
       {cameraOn && (
-        <div className="mt-4 grid grid-cols-1 gap-3">
-          <label className="text-[9px] font-black text-zinc-400 uppercase tracking-widest flex items-center gap-2">
+        <div className="mt-4 grid grid-cols-3 gap-3 sm:grid-cols-3">
+          <label className="text-[9px] font-black text-zinc-400 uppercase tracking-widest col-span-3 flex items-center gap-2">
             <Maximize2 size={12} /> Width
             <input
               type="range"
@@ -269,7 +332,7 @@ export function GardenVisualiser({
               className="flex-1 accent-black"
             />
           </label>
-          <label className="text-[9px] font-black text-zinc-400 uppercase tracking-widest flex items-center gap-2">
+          <label className="text-[9px] font-black text-zinc-400 uppercase tracking-widest col-span-3 flex items-center gap-2">
             <Maximize2 size={12} className="rotate-90" /> Depth
             <input
               type="range"
@@ -283,13 +346,12 @@ export function GardenVisualiser({
               className="flex-1 accent-black"
             />
           </label>
-          <label className="text-[9px] font-black text-zinc-400 uppercase tracking-widest flex items-center gap-2">
-            <RotateCcw size={12} /> Rotate ({previewRotate}°)
+          <label className="text-[9px] font-black text-zinc-400 uppercase tracking-widest col-span-3 flex items-center gap-2">
+            <RotateCcw size={12} /> Rotate
             <input
               type="range"
-              min={-180}
-              max={180}
-              step={5}
+              min={-30}
+              max={30}
               value={previewRotate}
               onChange={(e) => {
                 setPreviewRotate(Number(e.target.value));
@@ -298,84 +360,10 @@ export function GardenVisualiser({
               className="flex-1 accent-black"
             />
           </label>
-          <p className="text-[9px] font-bold text-zinc-400 -mt-1">
-            Spin 180° to lay tiles portrait or landscape on your view.
-          </p>
         </div>
       )}
-    </div>
-  );
 
-  return (
-    <div className="w-full max-w-3xl mx-auto text-left">
-      <div className="mb-6 rounded-lg border border-zinc-200 bg-zinc-50 px-4 py-3 flex gap-3 items-start">
-        <AlertTriangle className="shrink-0 text-zinc-500 mt-0.5" size={18} aria-hidden />
-        <p className="text-[11px] font-bold leading-relaxed text-zinc-600 tracking-tight">{DISCLAIMER}</p>
-      </div>
-
-      {cameraSection}
-
-      <div className="mb-8 pt-6 border-t border-zinc-200">
-        <p className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.4em] mb-4">Choose category</p>
-        <div className="flex flex-wrap gap-2 mb-6">
-          {VISUALISER_CATEGORIES.map((c) => (
-            <button
-              key={c.id}
-              type="button"
-              onClick={() => selectMaterial(c.materials[0].id, c.id)}
-              className={`px-4 py-2 rounded text-[10px] font-black tracking-widest uppercase border transition-colors ${
-                categoryId === c.id
-                  ? 'bg-black text-white border-black'
-                  : 'bg-zinc-50 text-zinc-600 border-zinc-200 hover:border-zinc-400'
-              }`}
-            >
-              {c.label}
-            </button>
-          ))}
-        </div>
-
-        <p className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.4em] mb-3">Selected finish</p>
-        <div className="mb-4 overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-100">
-          {!selectedPreviewFailed ? (
-            <img
-              src={materialSrc}
-              alt={material.supplierLabel}
-              loading="eager"
-              fetchPriority="high"
-              decoding="async"
-              className="h-44 sm:h-52 w-full object-cover"
-              onError={() => setSelectedPreviewFailed(true)}
-            />
-          ) : (
-            <div className="flex h-44 sm:h-52 items-center justify-center text-[10px] font-bold uppercase tracking-wider text-zinc-400">
-              Preview unavailable
-            </div>
-          )}
-          <div className="border-t border-zinc-200 bg-white px-4 py-3">
-            <p className="text-sm font-black text-black">{material.name}</p>
-            <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider mt-1">{material.supplierLabel}</p>
-            {showsEdgeInPhoto && (
-              <p className="text-[9px] font-black text-zinc-400 uppercase tracking-widest mt-2">
-                Includes cobbled edge as shown in photo
-              </p>
-            )}
-          </div>
-        </div>
-
-        <p className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.4em] mb-4">Colours &amp; finishes</p>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-          {category.materials.map((m) => (
-            <MaterialThumb
-              key={m.id}
-              material={m}
-              selected={materialId === m.id}
-              onSelect={() => selectMaterial(m.id, category.id)}
-            />
-          ))}
-        </div>
-      </div>
-
-      <div className="pt-8 border-t border-zinc-200 text-center">
+      <div className="mt-10 pt-8 border-t border-zinc-200 text-center">
         <p className="text-xs font-bold text-zinc-500 mb-6 max-w-md mx-auto">
           Happy with how it looks? Continue to the quote form — you will still need to describe your project in your own words.
         </p>
@@ -388,7 +376,7 @@ export function GardenVisualiser({
           HAPPY WITH DESIGN — REQUEST QUOTE <ArrowRight size={18} />
         </button>
         {!hasInteracted && (
-          <p className="text-[10px] font-bold text-zinc-400 mt-4">Open the camera, then tap a material colour below.</p>
+          <p className="text-[10px] font-bold text-zinc-400 mt-4">Tap a material colour above, then allow camera access.</p>
         )}
       </div>
     </div>
