@@ -398,8 +398,25 @@ const GOOGLE_SCRIPT_SECRET =
 /** Consistent subject prefix so Zoho can filter every quote into the Quotes folder. */
 const QUOTE_EMAIL_SUBJECT_PREFIX = 'Quote request';
 
-function formatSiteAddress({ addressLine1, addressLine2, town, postcode }) {
-  return [addressLine1, addressLine2, town, postcode].map((s) => String(s || '').trim()).filter(Boolean).join(', ');
+function formatAddress({ line1, line2, town, postcode }) {
+  return [line1, line2, town, postcode].map((s) => String(s || '').trim()).filter(Boolean).join(', ');
+}
+
+function workAddressFromForm(form) {
+  if (form.siteDifferent) {
+    return {
+      line1: form.siteAddressLine1,
+      line2: form.siteAddressLine2,
+      town: form.siteTown,
+      postcode: form.sitePostcode,
+    };
+  }
+  return {
+    line1: form.homeAddressLine1,
+    line2: form.homeAddressLine2,
+    town: form.homeTown,
+    postcode: form.homePostcode,
+  };
 }
 
 async function submitEnquiry(payload) {
@@ -421,6 +438,7 @@ async function submitEnquiry(payload) {
   const addressLine2 = String(payload.addressLine2 || '').trim();
   const town = String(payload.town || '').trim();
   const postcode = String(payload.postcode || '').trim().toUpperCase();
+  const homeAddress = String(payload.homeAddress || '').trim();
 
   const body = {
     secret: GOOGLE_SCRIPT_SECRET,
@@ -433,7 +451,8 @@ async function submitEnquiry(payload) {
     addressLine2,
     town,
     postcode,
-    siteAddress: formatSiteAddress({ addressLine1, addressLine2, town, postcode }),
+    siteAddress: formatAddress({ line1: addressLine1, line2: addressLine2, town, postcode }),
+    homeAddress,
     service: payload.service,
     message: payload.message,
     marketingConsent: marketingConsent ? 'Yes' : 'No',
@@ -638,10 +657,15 @@ const App = () => {
     name: '',
     email: '',
     phone: '',
-    addressLine1: '',
-    addressLine2: '',
-    town: '',
-    postcode: '',
+    homeAddressLine1: '',
+    homeAddressLine2: '',
+    homeTown: '',
+    homePostcode: '',
+    siteDifferent: false,
+    siteAddressLine1: '',
+    siteAddressLine2: '',
+    siteTown: '',
+    sitePostcode: '',
     service: 'Driveways',
     message: '',
     marketingConsent: false,
@@ -689,14 +713,22 @@ const App = () => {
   }, [privacyOpen]);
 
   const openEmailFallback = () => {
-    const siteAddress = formatSiteAddress(quoteForm);
+    const homeAddress = formatAddress({
+      line1: quoteForm.homeAddressLine1,
+      line2: quoteForm.homeAddressLine2,
+      town: quoteForm.homeTown,
+      postcode: quoteForm.homePostcode,
+    });
+    const work = workAddressFromForm(quoteForm);
+    const siteAddress = formatAddress(work);
     const subject = encodeURIComponent(`${QUOTE_EMAIL_SUBJECT_PREFIX} — ${quoteForm.service} — ${quoteForm.name}`);
     const body = encodeURIComponent(
       [
         `NAME: ${quoteForm.name}`,
         `EMAIL: ${quoteForm.email}`,
         `PHONE: ${quoteForm.phone}`,
-        `SITE ADDRESS: ${siteAddress}`,
+        `HOME ADDRESS: ${homeAddress}`,
+        `SITE ADDRESS: ${siteAddress}${quoteForm.siteDifferent ? '' : ' (same as home)'}`,
         `SERVICE: ${quoteForm.service}`,
         `OFFERS / PROMOTIONS CONSENT: ${quoteForm.marketingConsent ? 'YES' : 'NO'}`,
         ``,
@@ -723,6 +755,15 @@ const App = () => {
       setTimeout(() => setStatus({ type: '', msg: '' }), 5000);
       return;
     }
+    if (quoteForm.siteDifferent) {
+      const siteLine1 = quoteForm.siteAddressLine1.trim();
+      const siteTown = quoteForm.siteTown.trim();
+      const sitePostcode = quoteForm.sitePostcode.trim();
+      if (!siteLine1 || !siteTown || !sitePostcode) {
+        setStatus({ type: 'error', msg: 'Please complete the site address or untick “different address”.' });
+        return;
+      }
+    }
     try {
       const files = quoteFiles.slice(0, MAX_QUOTE_PHOTOS);
       for (const f of files) {
@@ -741,17 +782,31 @@ const App = () => {
         return;
       }
 
+      const homeAddress = formatAddress({
+        line1: quoteForm.homeAddressLine1,
+        line2: quoteForm.homeAddressLine2,
+        town: quoteForm.homeTown,
+        postcode: quoteForm.homePostcode,
+      });
+      const work = workAddressFromForm(quoteForm);
+      const siteAddress = formatAddress(work);
+      let message = quoteForm.message;
+      if (quoteForm.siteDifferent) {
+        message = `Home address: ${homeAddress}\nSite address: ${siteAddress}\n\n${message}`;
+      }
+
       await submitEnquiry({
         type: 'quote',
         name: quoteForm.name,
         email: quoteForm.email,
         phone: quoteForm.phone,
-        addressLine1: quoteForm.addressLine1,
-        addressLine2: quoteForm.addressLine2,
-        town: quoteForm.town,
-        postcode: quoteForm.postcode,
+        addressLine1: work.line1,
+        addressLine2: work.line2,
+        town: work.town,
+        postcode: work.postcode,
+        homeAddress,
         service: quoteForm.service,
-        message: quoteForm.message,
+        message,
         marketingConsent: Boolean(quoteForm.marketingConsent),
         website: quoteForm.website,
         attachments,
@@ -762,10 +817,15 @@ const App = () => {
         name: '',
         email: '',
         phone: '',
-        addressLine1: '',
-        addressLine2: '',
-        town: '',
-        postcode: '',
+        homeAddressLine1: '',
+        homeAddressLine2: '',
+        homeTown: '',
+        homePostcode: '',
+        siteDifferent: false,
+        siteAddressLine1: '',
+        siteAddressLine2: '',
+        siteTown: '',
+        sitePostcode: '',
         service: 'Driveways',
         message: '',
         marketingConsent: false,
@@ -1391,13 +1451,15 @@ const App = () => {
       )}
 
       {activeTab === 'quote' && (
-        <section className="py-40 flex items-center justify-center bg-zinc-50">
-          <div className="max-w-4xl w-full px-4">
-            <div className="bg-white rounded p-16 md:p-24 shadow-2xl border border-zinc-100 text-center flex flex-col items-center">
-              <h2 className="text-xs font-black tracking-[0.5em] text-zinc-400 uppercase mb-10">Consultation</h2>
-              <h3 className="text-6xl font-black text-black tracking-tighter mb-20">PROJECT INQUIRY</h3>
+        <section className="py-16 sm:py-24 md:py-32 lg:py-40 flex items-center justify-center bg-zinc-50">
+          <div className="max-w-4xl w-full px-4 sm:px-6">
+            <div className="bg-white rounded p-6 sm:p-12 md:p-16 lg:p-24 shadow-2xl border border-zinc-100 text-center flex flex-col items-center">
+              <h2 className="text-xs font-black tracking-[0.5em] text-zinc-400 uppercase mb-6 sm:mb-10">Consultation</h2>
+              <h3 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-black tracking-tighter mb-10 sm:mb-16 md:mb-20">
+                PROJECT INQUIRY
+              </h3>
 
-              <form onSubmit={handleQuoteSubmit} className="space-y-12 w-full max-w-2xl">
+              <form onSubmit={handleQuoteSubmit} className="space-y-8 sm:space-y-10 md:space-y-12 w-full max-w-2xl">
                 <input
                   value={quoteForm.website}
                   onChange={(e) => setQuoteForm({ ...quoteForm, website: e.target.value })}
@@ -1406,21 +1468,24 @@ const App = () => {
                   autoComplete="off"
                 />
 
-                <div className="grid md:grid-cols-2 gap-10">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 md:gap-10">
                   <div className="text-left">
-                    <label className="block text-[9px] font-black text-zinc-400 mb-4 uppercase tracking-[0.4em]">FULL NAME</label>
+                    <label className="block text-[9px] font-black text-zinc-400 mb-3 sm:mb-4 uppercase tracking-[0.4em]">FULL NAME</label>
                     <input
                       required
-                      className="w-full px-6 py-5 bg-zinc-50 border border-zinc-200 rounded focus:border-black outline-none transition-all font-black text-xs tracking-widest uppercase"
+                      className="w-full px-4 sm:px-6 py-4 sm:py-5 bg-zinc-50 border border-zinc-200 rounded focus:border-black outline-none transition-all font-black text-base sm:text-xs tracking-widest uppercase"
                       value={quoteForm.name}
                       onChange={(e) => setQuoteForm({ ...quoteForm, name: e.target.value.toUpperCase() })}
                     />
                   </div>
                   <div className="text-left">
-                    <label className="block text-[9px] font-black text-zinc-400 mb-4 uppercase tracking-[0.4em]">CONTACT NUMBER</label>
+                    <label className="block text-[9px] font-black text-zinc-400 mb-3 sm:mb-4 uppercase tracking-[0.4em]">CONTACT NUMBER</label>
                     <input
                       required
-                      className="w-full px-6 py-5 bg-zinc-50 border border-zinc-200 rounded focus:border-black outline-none transition-all font-black text-xs"
+                      type="tel"
+                      inputMode="tel"
+                      autoComplete="tel"
+                      className="w-full px-4 sm:px-6 py-4 sm:py-5 bg-zinc-50 border border-zinc-200 rounded focus:border-black outline-none transition-all font-black text-base sm:text-xs"
                       value={quoteForm.phone}
                       onChange={(e) => setQuoteForm({ ...quoteForm, phone: e.target.value })}
                     />
@@ -1428,61 +1493,63 @@ const App = () => {
                 </div>
 
                 <div className="text-left">
-                  <label className="block text-[9px] font-black text-zinc-400 mb-4 uppercase tracking-[0.4em]">EMAIL IDENTIFICATION</label>
+                  <label className="block text-[9px] font-black text-zinc-400 mb-3 sm:mb-4 uppercase tracking-[0.4em]">EMAIL IDENTIFICATION</label>
                   <input
                     required
                     type="email"
-                    className="w-full px-6 py-5 bg-zinc-50 border border-zinc-200 rounded focus:border-black outline-none transition-all font-black text-xs"
+                    inputMode="email"
+                    autoComplete="email"
+                    className="w-full px-4 sm:px-6 py-4 sm:py-5 bg-zinc-50 border border-zinc-200 rounded focus:border-black outline-none transition-all font-black text-base sm:text-xs"
                     value={quoteForm.email}
                     onChange={(e) => setQuoteForm({ ...quoteForm, email: e.target.value })}
                   />
                 </div>
 
-                <div className="text-left space-y-10">
-                  <p className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.4em]">SITE ADDRESS (WHERE THE WORK IS)</p>
-                  <div className="grid md:grid-cols-2 gap-10">
+                <div className="text-left space-y-6 sm:space-y-8">
+                  <p className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.4em]">YOUR HOME ADDRESS</p>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 md:gap-10">
                     <div className="md:col-span-2 text-left">
-                      <label className="block text-[9px] font-black text-zinc-400 mb-4 uppercase tracking-[0.4em]">
+                      <label className="block text-[9px] font-black text-zinc-400 mb-3 sm:mb-4 uppercase tracking-[0.4em]">
                         ADDRESS LINE 1 (HOUSE / NUMBER &amp; STREET)
                       </label>
                       <input
                         required
-                        autoComplete="address-line1"
-                        className="w-full px-6 py-5 bg-zinc-50 border border-zinc-200 rounded focus:border-black outline-none transition-all font-black text-xs"
-                        value={quoteForm.addressLine1}
-                        onChange={(e) => setQuoteForm({ ...quoteForm, addressLine1: e.target.value })}
+                        autoComplete="street-address"
+                        className="w-full px-4 sm:px-6 py-4 sm:py-5 bg-zinc-50 border border-zinc-200 rounded focus:border-black outline-none transition-all font-black text-base sm:text-xs"
+                        value={quoteForm.homeAddressLine1}
+                        onChange={(e) => setQuoteForm({ ...quoteForm, homeAddressLine1: e.target.value })}
                       />
                     </div>
                     <div className="md:col-span-2 text-left">
-                      <label className="block text-[9px] font-black text-zinc-400 mb-4 uppercase tracking-[0.4em]">
+                      <label className="block text-[9px] font-black text-zinc-400 mb-3 sm:mb-4 uppercase tracking-[0.4em]">
                         ADDRESS LINE 2 (OPTIONAL)
                       </label>
                       <input
                         autoComplete="address-line2"
                         placeholder="Flat, unit, building name…"
-                        className="w-full px-6 py-5 bg-zinc-50 border border-zinc-200 rounded focus:border-black outline-none transition-all font-black text-xs"
-                        value={quoteForm.addressLine2}
-                        onChange={(e) => setQuoteForm({ ...quoteForm, addressLine2: e.target.value })}
+                        className="w-full px-4 sm:px-6 py-4 sm:py-5 bg-zinc-50 border border-zinc-200 rounded focus:border-black outline-none transition-all font-black text-base sm:text-xs"
+                        value={quoteForm.homeAddressLine2}
+                        onChange={(e) => setQuoteForm({ ...quoteForm, homeAddressLine2: e.target.value })}
                       />
                     </div>
                     <div className="text-left">
-                      <label className="block text-[9px] font-black text-zinc-400 mb-4 uppercase tracking-[0.4em]">TOWN / CITY</label>
+                      <label className="block text-[9px] font-black text-zinc-400 mb-3 sm:mb-4 uppercase tracking-[0.4em]">TOWN / CITY</label>
                       <input
                         required
                         autoComplete="address-level2"
-                        className="w-full px-6 py-5 bg-zinc-50 border border-zinc-200 rounded focus:border-black outline-none transition-all font-black text-xs"
-                        value={quoteForm.town}
-                        onChange={(e) => setQuoteForm({ ...quoteForm, town: e.target.value })}
+                        className="w-full px-4 sm:px-6 py-4 sm:py-5 bg-zinc-50 border border-zinc-200 rounded focus:border-black outline-none transition-all font-black text-base sm:text-xs"
+                        value={quoteForm.homeTown}
+                        onChange={(e) => setQuoteForm({ ...quoteForm, homeTown: e.target.value })}
                       />
                     </div>
                     <div className="text-left">
-                      <label className="block text-[9px] font-black text-zinc-400 mb-4 uppercase tracking-[0.4em]">POSTCODE</label>
+                      <label className="block text-[9px] font-black text-zinc-400 mb-3 sm:mb-4 uppercase tracking-[0.4em]">POSTCODE</label>
                       <input
                         required
                         autoComplete="postal-code"
-                        className="w-full px-6 py-5 bg-zinc-50 border border-zinc-200 rounded focus:border-black outline-none transition-all font-black text-xs uppercase"
-                        value={quoteForm.postcode}
-                        onChange={(e) => setQuoteForm({ ...quoteForm, postcode: e.target.value.toUpperCase() })}
+                        className="w-full px-4 sm:px-6 py-4 sm:py-5 bg-zinc-50 border border-zinc-200 rounded focus:border-black outline-none transition-all font-black text-base sm:text-xs uppercase"
+                        value={quoteForm.homePostcode}
+                        onChange={(e) => setQuoteForm({ ...quoteForm, homePostcode: e.target.value.toUpperCase() })}
                         pattern="[A-Za-z]{1,2}[0-9][A-Za-z0-9]?[ ]?[0-9][A-Za-z]{2}"
                         title="Enter a valid UK postcode, e.g. CH41 5DL"
                       />
@@ -1491,9 +1558,90 @@ const App = () => {
                 </div>
 
                 <div className="text-left">
-                  <label className="block text-[9px] font-black text-zinc-400 mb-4 uppercase tracking-[0.4em]">SERVICE CATEGORY</label>
+                  <label className="flex cursor-pointer items-start gap-3 sm:gap-4 rounded-lg border border-zinc-200 bg-zinc-50/80 p-4 sm:p-5 text-left transition-colors hover:border-zinc-300">
+                    <input
+                      type="checkbox"
+                      checked={quoteForm.siteDifferent}
+                      onChange={(e) =>
+                        setQuoteForm({
+                          ...quoteForm,
+                          siteDifferent: e.target.checked,
+                          ...(e.target.checked
+                            ? {}
+                            : {
+                                siteAddressLine1: '',
+                                siteAddressLine2: '',
+                                siteTown: '',
+                                sitePostcode: '',
+                              }),
+                        })
+                      }
+                      className="mt-1 h-5 w-5 shrink-0 cursor-pointer rounded border-zinc-300 text-black focus:ring-2 focus:ring-black focus:ring-offset-2"
+                    />
+                    <span className="text-xs sm:text-sm font-bold leading-relaxed tracking-tight text-zinc-700">
+                      The work site is at a different address from my home
+                    </span>
+                  </label>
+                </div>
+
+                {quoteForm.siteDifferent && (
+                  <div className="text-left space-y-6 sm:space-y-8">
+                    <p className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.4em]">SITE ADDRESS (WHERE THE WORK IS)</p>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8 md:gap-10">
+                      <div className="md:col-span-2 text-left">
+                        <label className="block text-[9px] font-black text-zinc-400 mb-3 sm:mb-4 uppercase tracking-[0.4em]">
+                          SITE ADDRESS LINE 1
+                        </label>
+                        <input
+                          required
+                          autoComplete="off"
+                          className="w-full px-4 sm:px-6 py-4 sm:py-5 bg-zinc-50 border border-zinc-200 rounded focus:border-black outline-none transition-all font-black text-base sm:text-xs"
+                          value={quoteForm.siteAddressLine1}
+                          onChange={(e) => setQuoteForm({ ...quoteForm, siteAddressLine1: e.target.value })}
+                        />
+                      </div>
+                      <div className="md:col-span-2 text-left">
+                        <label className="block text-[9px] font-black text-zinc-400 mb-3 sm:mb-4 uppercase tracking-[0.4em]">
+                          SITE ADDRESS LINE 2 (OPTIONAL)
+                        </label>
+                        <input
+                          autoComplete="off"
+                          placeholder="Flat, unit, building name…"
+                          className="w-full px-4 sm:px-6 py-4 sm:py-5 bg-zinc-50 border border-zinc-200 rounded focus:border-black outline-none transition-all font-black text-base sm:text-xs"
+                          value={quoteForm.siteAddressLine2}
+                          onChange={(e) => setQuoteForm({ ...quoteForm, siteAddressLine2: e.target.value })}
+                        />
+                      </div>
+                      <div className="text-left">
+                        <label className="block text-[9px] font-black text-zinc-400 mb-3 sm:mb-4 uppercase tracking-[0.4em]">SITE TOWN / CITY</label>
+                        <input
+                          required
+                          autoComplete="off"
+                          className="w-full px-4 sm:px-6 py-4 sm:py-5 bg-zinc-50 border border-zinc-200 rounded focus:border-black outline-none transition-all font-black text-base sm:text-xs"
+                          value={quoteForm.siteTown}
+                          onChange={(e) => setQuoteForm({ ...quoteForm, siteTown: e.target.value })}
+                        />
+                      </div>
+                      <div className="text-left">
+                        <label className="block text-[9px] font-black text-zinc-400 mb-3 sm:mb-4 uppercase tracking-[0.4em]">SITE POSTCODE</label>
+                        <input
+                          required
+                          autoComplete="off"
+                          className="w-full px-4 sm:px-6 py-4 sm:py-5 bg-zinc-50 border border-zinc-200 rounded focus:border-black outline-none transition-all font-black text-base sm:text-xs uppercase"
+                          value={quoteForm.sitePostcode}
+                          onChange={(e) => setQuoteForm({ ...quoteForm, sitePostcode: e.target.value.toUpperCase() })}
+                          pattern="[A-Za-z]{1,2}[0-9][A-Za-z0-9]?[ ]?[0-9][A-Za-z]{2}"
+                          title="Enter a valid UK postcode, e.g. CH41 5DL"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <div className="text-left">
+                  <label className="block text-[9px] font-black text-zinc-400 mb-3 sm:mb-4 uppercase tracking-[0.4em]">SERVICE CATEGORY</label>
                   <select
-                    className="w-full px-6 py-5 bg-zinc-50 border border-zinc-200 rounded focus:border-black outline-none transition-all font-black text-xs uppercase appearance-none cursor-pointer"
+                    className="w-full px-4 sm:px-6 py-4 sm:py-5 bg-zinc-50 border border-zinc-200 rounded focus:border-black outline-none transition-all font-black text-base sm:text-xs uppercase appearance-none cursor-pointer"
                     value={quoteForm.service}
                     onChange={(e) => setQuoteForm({ ...quoteForm, service: e.target.value })}
                   >
@@ -1507,24 +1655,24 @@ const App = () => {
                 </div>
 
                 <div className="text-left">
-                  <label className="block text-[9px] font-black text-zinc-400 mb-4 uppercase tracking-[0.4em]">TECHNICAL SPECIFICATIONS</label>
+                  <label className="block text-[9px] font-black text-zinc-400 mb-3 sm:mb-4 uppercase tracking-[0.4em]">TECHNICAL SPECIFICATIONS</label>
                   <textarea
                     required
-                    className="w-full px-6 py-5 bg-zinc-50 border border-zinc-200 rounded focus:border-black outline-none transition-all min-h-[180px] font-black text-xs tracking-tight"
+                    className="w-full px-4 sm:px-6 py-4 sm:py-5 bg-zinc-50 border border-zinc-200 rounded focus:border-black outline-none transition-all min-h-[140px] sm:min-h-[180px] font-black text-base sm:text-xs tracking-tight"
                     placeholder="DIMENSIONS, CURRENT GROUND COMPOSITION, DRAINAGE ACCESS..."
                     value={quoteForm.message}
                     onChange={(e) => setQuoteForm({ ...quoteForm, message: e.target.value })}
                   />
                 </div>
 
-                <div className="text-left">
-                  <label className="block text-[9px] font-black text-zinc-400 mb-4 uppercase tracking-[0.4em]">
+                <div className="text-center">
+                  <label className="block text-[9px] font-black text-zinc-400 mb-3 sm:mb-4 uppercase tracking-[0.4em]">
                     SITE PHOTOS (OPTIONAL)
                   </label>
-                  <p className="text-[10px] font-bold text-zinc-500 mb-4 tracking-tight">
+                  <p className="text-[10px] font-bold text-zinc-500 mb-4 tracking-tight max-w-md mx-auto">
                     Take new photos or choose from your gallery — multiple files allowed.
                   </p>
-                  <label className="inline-flex items-center justify-center w-full sm:w-auto px-8 py-4 bg-zinc-900 text-white font-black text-[10px] tracking-[0.3em] rounded cursor-pointer hover:bg-black transition-colors">
+                  <label className="inline-flex items-center justify-center mx-auto px-8 py-4 bg-zinc-900 text-white font-black text-[10px] tracking-[0.3em] rounded cursor-pointer hover:bg-black transition-colors">
                     <input
                       ref={photoInputRef}
                       type="file"
@@ -1541,7 +1689,7 @@ const App = () => {
                     ADD / TAKE PHOTOS
                   </label>
                   {quoteFiles.length > 0 && (
-                    <ul className="mt-6 space-y-2 text-left">
+                    <ul className="mt-6 space-y-2 text-left max-w-md mx-auto">
                       {quoteFiles.map((f, idx) => (
                         <li
                           key={`${f.name}-${idx}-${f.lastModified}`}
