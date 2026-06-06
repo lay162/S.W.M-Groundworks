@@ -88,12 +88,24 @@ When you own **swm-groundworks.co.uk**:
 2. GitHub shows the **DNS records** to add at Namecheap (**Advanced DNS**). Typical pattern:
    - **A** records for **@** → GitHub’s IPs (copy from GitHub; they can change — always use GitHub’s current list).
    - **CNAME** for **www** → **lay162.github.io** (your GitHub username + .github.io).
-3. Wait for DNS (minutes to 48h). Turn **Enforce HTTPS** ON in GitHub → repo → **Settings** → **Pages**.
-   If http://swm-groundworks.co.uk does not redirect to https://, camera on phones will fail until HTTPS works.
-   The site also runs a client-side http→https redirect in index.html as a backup.
-4. **index.html** canonical / **og:url** / JSON-LD **url** are set to **https://swm-groundworks.co.uk/** — update that file if you use a different hostname.
+3. Wait for DNS (minutes to 48h).
+4. **PADLOCK / HTTPS (REQUIRED FOR CAMERA ON PHONES):**
+   GitHub → **lay162/S.W.M-Groundworks** → **Settings** → **Pages** → under Custom domain:
+   - Domain must show **swm-groundworks.co.uk** with a green **DNS check successful**.
+   - Turn **Enforce HTTPS** **ON**.
+   - If **Enforce HTTPS** is greyed out: remove the custom domain, wait 10 minutes, add it again, wait up to 24h for the certificate, then enable.
+   Test in a browser: **http://swm-groundworks.co.uk** must redirect to **https://** (padlock). If http still loads with no padlock, HTTPS is not fixed yet.
+   index.html also redirects http→https in JavaScript as a backup (Samsung Internet needs the padlock for camera).
+5. **Namecheap Advanced DNS** (remove anything that conflicts):
+   - **A** @ → 185.199.108.153
+   - **A** @ → 185.199.109.153
+   - **A** @ → 185.199.110.153
+   - **A** @ → 185.199.111.153
+   - **CNAME** www → lay162.github.io
+   - Delete old Netlify A/CNAME records and any URL redirect that sends **www** to **http://** (not https).
+6. **index.html** canonical / **og:url** / JSON-LD **url** are set to **https://swm-groundworks.co.uk/** — update that file if you use a different hostname.
 
-**apex vs www:** Many registrars make **www** easier; you can redirect **@** → **https://www.swm-groundworks.co.uk** at Namecheap and set the GitHub custom domain to **www**.
+**apex vs www:** **https://www** already redirects to **https://swm-groundworks.co.uk**. Avoid bookmarks starting with **http://**.
 
 --------------------------------------------------------------------------------
 5) SPA REFRESH (404 ON DEEP LINK)

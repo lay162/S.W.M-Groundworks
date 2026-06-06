@@ -1,6 +1,23 @@
 <!doctype html>
 <html lang="en-GB">
   <head>
+    <script>
+      (function () {
+        try {
+          var h = location.hostname;
+          if (
+            location.protocol === 'http:' &&
+            h !== 'localhost' &&
+            h !== '127.0.0.1' &&
+            h.slice(-10) !== '.github.io'
+          ) {
+            location.replace(
+              'https://' + h + location.pathname + location.search + location.hash
+            );
+          }
+        } catch (e) {}
+      })();
+    </script>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/S.W.M.logo.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
@@ -10,19 +27,7 @@
     <script>
       (function () {
         try {
-          var loc = window.location;
-          var host = loc.hostname;
-          // Camera API requires HTTPS — redirect http:// to https:// (GitHub apex may not auto-redirect).
-          if (
-            loc.protocol === 'http:' &&
-            host !== 'localhost' &&
-            host !== '127.0.0.1' &&
-            !host.endsWith('.github.io')
-          ) {
-            loc.replace('https://' + host + loc.pathname + loc.search + loc.hash);
-            return;
-          }
-          if (loc.pathname === '/BusinessCard') loc.replace('/BusinessCard/');
+          if (window.location.pathname === '/BusinessCard') window.location.replace('/BusinessCard/');
         } catch {}
       })();
     </script>
