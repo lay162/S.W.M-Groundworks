@@ -1,7 +1,22 @@
 /**
  * Material previews use textures from S.W.M job photos (public/images/work/).
- * Paths are root-absolute so thumbnails load on GitHub Pages and custom domain.
+ * Paths are stored with readable spaces; materialImageUrl() encodes them for mobile browsers.
  */
+
+const COBBLED_EDGE_PATH = '/images/work/driveways/Block paving drive.jpeg';
+
+export function materialImageUrl(texture) {
+  if (!texture) return '';
+  const relative = texture.replace(/^\//, '');
+  const encoded = relative.split('/').map((part) => encodeURIComponent(part)).join('/');
+  if (typeof window !== 'undefined' && window.location?.origin) {
+    return `${window.location.origin}/${encoded}`;
+  }
+  const base = import.meta.env.BASE_URL || './';
+  return `${base}${encoded}`;
+}
+
+export const COBBLED_EDGE_TEXTURE = COBBLED_EDGE_PATH;
 export const VISUALISER_CATEGORIES = [
   {
     id: 'indian-stone',
@@ -10,7 +25,7 @@ export const VISUALISER_CATEGORIES = [
       {
         id: 'raj-green',
         name: 'Raj Green',
-        supplierLabel: 'Raj Green Indian sandstone',
+        supplierLabel: 'Raj Green Indian sandstone — cobbled edge as shown',
         texture: '/images/work/patios/indian stone 5.jpeg',
       },
       {
@@ -22,7 +37,7 @@ export const VISUALISER_CATEGORIES = [
       {
         id: 'kandla-grey',
         name: 'Kandla Grey',
-        supplierLabel: 'Kandla Grey Indian sandstone',
+        supplierLabel: 'Kandla Grey Indian sandstone — cobbled edge as shown',
         texture: '/images/work/patios/kandla grey indian stone 1.jpeg',
       },
       {
@@ -58,7 +73,7 @@ export const VISUALISER_CATEGORIES = [
       {
         id: 'cream-frame',
         name: 'Cream (charcoal frame)',
-        supplierLabel: 'Cream porcelain with charcoal border',
+        supplierLabel: 'Cream porcelain with charcoal cobbled border',
         texture: '/images/work/patios/white porcalian with charcoal picture frame boarder.jpeg',
       },
       {
@@ -70,7 +85,7 @@ export const VISUALISER_CATEGORIES = [
       {
         id: 'porcelain-block-edge',
         name: 'Porcelain & block edge',
-        supplierLabel: 'Porcelain with block paving edge',
+        supplierLabel: 'Porcelain with cobbled block edge',
         texture: '/images/work/patios/porcalian tiles with block edge.jpeg',
       },
     ],

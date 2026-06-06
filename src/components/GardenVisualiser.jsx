@@ -1,12 +1,24 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Camera, RotateCcw, Maximize2, AlertTriangle, ArrowRight } from 'lucide-react';
-import { VISUALISER_CATEGORIES, findMaterial } from '../data/visualiserMaterials.js';
+import {
+  VISUALISER_CATEGORIES,
+  COBBLED_EDGE_TEXTURE,
+  findMaterial,
+  materialImageUrl,
+} from '../data/visualiserMaterials.js';
 
 const DISCLAIMER =
-  'Generated visual preview only — not an exact survey or quote. Final design, levels, drainage and price are confirmed on a site visit.';
+  'Generated visual preview only — not an exact survey or quote. Final design, levels and drainage are assessed on a site visit; your price and quotation are confirmed after that visit, not during it.';
+
+const COBBLED_EDGE_CATEGORIES = new Set(['indian-stone', 'porcelain']);
 
 function MaterialThumb({ material, selected, onSelect }) {
   const [failed, setFailed] = useState(false);
+  const src = materialImageUrl(material.texture);
+
+  useEffect(() => {
+    setFailed(false);
+  }, [src]);
 
   return (
     <button
@@ -19,9 +31,10 @@ function MaterialThumb({ material, selected, onSelect }) {
       <div className="relative h-24 sm:h-28 bg-zinc-100">
         {!failed ? (
           <img
-            src={material.texture}
+            src={src}
             alt={material.name}
             loading="eager"
+            fetchPriority="high"
             decoding="async"
             className="h-full w-full object-cover"
             onError={() => setFailed(true)}
@@ -62,6 +75,9 @@ export function GardenVisualiser({
   const material = findMaterial(materialId);
   const category = VISUALISER_CATEGORIES.find((c) => c.id === categoryId) || VISUALISER_CATEGORIES[0];
   const cameraOn = Boolean(cameraStream);
+  const materialSrc = materialImageUrl(material.texture);
+  const edgeSrc = materialImageUrl(COBBLED_EDGE_TEXTURE);
+  const showCobbledEdge = COBBLED_EDGE_CATEGORIES.has(categoryId);
 
   useEffect(() => {
     setSelectedPreviewFailed(false);
@@ -71,9 +87,11 @@ export function GardenVisualiser({
     VISUALISER_CATEGORIES.forEach((cat) => {
       cat.materials.forEach((m) => {
         const img = new Image();
-        img.src = m.texture;
+        img.src = materialImageUrl(m.texture);
       });
     });
+    const edge = new Image();
+    edge.src = materialImageUrl(COBBLED_EDGE_TEXTURE);
   }, []);
 
   const attachStream = useCallback(async () => {
@@ -138,9 +156,10 @@ export function GardenVisualiser({
         <div className="mb-4 overflow-hidden rounded-2xl border border-zinc-200 bg-zinc-100">
           {!selectedPreviewFailed ? (
             <img
-              src={material.texture}
+              src={materialSrc}
               alt={material.supplierLabel}
               loading="eager"
+              fetchPriority="high"
               decoding="async"
               className="h-40 sm:h-52 w-full object-cover"
               onError={() => setSelectedPreviewFailed(true)}
@@ -201,20 +220,74 @@ export function GardenVisualiser({
 
         {cameraOn && (
           <div
-            className="absolute left-1/2 pointer-events-none border-2 border-white/70 shadow-[0_0_0_1px_rgba(0,0,0,0.3)]"
+            className="absolute left-1/2 pointer-events-none"
             style={{
               bottom: '8%',
               width: `${previewWidth}%`,
               height: `${previewDepth}%`,
               transform: `translateX(-50%) perspective(500px) rotateX(52deg) rotateZ(${previewRotate}deg)`,
               transformOrigin: '50% 100%',
-              backgroundImage: `url(${material.texture})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              opacity: 0.92,
             }}
             aria-hidden
-          />
+          >
+            <div
+              className="absolute inset-0 border-2 border-white/70 shadow-[0_0_0_1px_rgba(0,0,0,0.3)]"
+              style={{
+                backgroundImage: `url("${materialSrc}")`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                opacity: 0.92,
+              }}
+            />
+            {showCobbledEdge && (
+              <>
+                <div
+                  className="absolute left-0 right-0"
+                  style={{
+                    top: '-9%',
+                    height: '9%',
+                    backgroundImage: `url("${edgeSrc}")`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    opacity: 0.95,
+                  }}
+                />
+                <div
+                  className="absolute top-0 bottom-0"
+                  style={{
+                    left: '-5%',
+                    width: '5%',
+                    backgroundImage: `url("${edgeSrc}")`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    opacity: 0.95,
+                  }}
+                />
+                <div
+                  className="absolute top-0 bottom-0"
+                  style={{
+                    right: '-5%',
+                    width: '5%',
+                    backgroundImage: `url("${edgeSrc}")`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    opacity: 0.95,
+                  }}
+                />
+                <div
+                  className="absolute left-0 right-0"
+                  style={{
+                    bottom: '-7%',
+                    height: '7%',
+                    backgroundImage: `url("${edgeSrc}")`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    opacity: 0.95,
+                  }}
+                />
+              </>
+            )}
+          </div>
         )}
 
         {cameraOn && (
