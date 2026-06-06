@@ -31,6 +31,11 @@ const TAB_SEO = {
     description:
       'Practical groundworks advice — drainage, driveways, excavations, fencing, patios and foundations for homes across Merseyside, Cheshire and North Wales.',
   },
+  visualise: {
+    title: 'Garden Visualiser | Preview Paving & Turf in Your Garden | S.W.M Groundworks',
+    description:
+      'Free camera preview — see Raj Green sandstone, Kandla Grey, porcelain, block paving and artificial turf in your garden before you request a quote. North West groundworks.',
+  },
   quote: {
     title: 'Request a Quote | Groundworks & Excavations | S.W.M Groundworks',
     description:

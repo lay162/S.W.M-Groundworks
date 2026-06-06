@@ -21,6 +21,18 @@ import {
 import { BLOG_POSTS } from './data/blogPosts.js';
 import { WORK_GALLERY, WORK_GALLERY_ORDER, PORTFOLIO_ITEMS } from './data/workGallery.js';
 import { applyPageSeo, injectSupplementalStructuredData } from './seo.js';
+import { GardenVisualiser } from './components/GardenVisualiser.jsx';
+
+const VISUALISER_MSG_MARKER = 'What I would like done (please describe):';
+const MIN_VISUALISER_USER_DESC = 25;
+
+function buildVisualiserQuoteMessage({ finalMaterial, triedMaterials }) {
+  const tried =
+    triedMaterials.length > 0
+      ? triedMaterials.map((t) => t.name).join('; ')
+      : finalMaterial.supplierLabel;
+  return `Garden visualiser — materials I previewed: ${tried}\nChosen finish: ${finalMaterial.supplierLabel}\n\n${VISUALISER_MSG_MARKER}\n`;
+}
 
 // --- Custom TikTok Icon to match Lucide style ---
 const TikTokIcon = ({ size = 24, className = '' }) => (
@@ -677,7 +689,9 @@ const App = () => {
   const [status, setStatus] = useState({ type: '', msg: '' });
   const [workGalleryFilter, setWorkGalleryFilter] = useState('all');
   const [blogSlug, setBlogSlug] = useState(null);
+  const [quoteFromVisualiser, setQuoteFromVisualiser] = useState(false);
   const workGalleryGridRef = useRef(null);
+  const quoteFormRef = useRef(null);
 
   const scrollWorkGalleryIntoView = () => {
     requestAnimationFrame(() => {
@@ -755,6 +769,18 @@ const App = () => {
     setUser({ uid: 'local' });
   }, []);
 
+  const handleContinueFromVisualiser = ({ finalMaterial, triedMaterials }) => {
+    setQuoteFromVisualiser(true);
+    setQuoteForm((prev) => ({
+      ...prev,
+      message: buildVisualiserQuoteMessage({ finalMaterial, triedMaterials }),
+    }));
+    setActiveTab('quote');
+    window.setTimeout(() => {
+      quoteFormRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 120);
+  };
+
   // Handlers
   const handleQuoteSubmit = async (e) => {
     e.preventDefault();
@@ -770,6 +796,20 @@ const App = () => {
       const sitePostcode = quoteForm.sitePostcode.trim();
       if (!siteLine1 || !siteTown || !sitePostcode) {
         setStatus({ type: 'error', msg: 'Please complete the site address or untick “different address”.' });
+        return;
+      }
+    }
+    if (quoteFromVisualiser) {
+      const markerIdx = quoteForm.message.indexOf(VISUALISER_MSG_MARKER);
+      const userPart =
+        markerIdx >= 0
+          ? quoteForm.message.slice(markerIdx + VISUALISER_MSG_MARKER.length).trim()
+          : quoteForm.message.trim();
+      if (userPart.length < MIN_VISUALISER_USER_DESC) {
+        setStatus({
+          type: 'error',
+          msg: 'Please describe what you would like done in the message box (at least a brief summary of your project).',
+        });
         return;
       }
     }
@@ -841,6 +881,7 @@ const App = () => {
         website: '',
       });
       setQuoteFiles([]);
+      setQuoteFromVisualiser(false);
       if (photoInputRef.current) photoInputRef.current.value = '';
       setStatus({ type: 'success', msg: 'Quote request sent successfully! We will contact you soon.' });
       setTimeout(() => setStatus({ type: '', msg: '' }), 5000);
@@ -905,7 +946,7 @@ const App = () => {
           </div>
 
           <div className="hidden md:flex items-center space-x-10">
-            {['home', 'services', 'work', 'reviews', 'blog'].map((item) => (
+            {['home', 'services', 'work', 'reviews', 'blog', 'visualise'].map((item) => (
               <button
                 key={item}
                 onClick={() => setActiveTab(item)}
@@ -936,7 +977,7 @@ const App = () => {
 
       {isMenuOpen && (
         <div className="md:hidden bg-white border-b border-zinc-100 p-8 space-y-6 animate-in slide-in-from-top-4 duration-300">
-          {['home', 'services', 'work', 'reviews', 'blog', 'quote'].map((item) => (
+          {['home', 'services', 'work', 'reviews', 'blog', 'visualise', 'quote'].map((item) => (
             <button
               key={item}
               onClick={() => {
@@ -1459,8 +1500,25 @@ const App = () => {
         </section>
       )}
 
+      {activeTab === 'visualise' && (
+        <section className="py-16 sm:py-24 md:py-32 flex items-center justify-center bg-zinc-50">
+          <div className="max-w-4xl w-full px-4 sm:px-6">
+            <div className="bg-white rounded p-6 sm:p-12 md:p-16 shadow-2xl border border-zinc-100 text-center flex flex-col items-center">
+              <h2 className="text-xs font-black tracking-[0.5em] text-zinc-400 uppercase mb-6 sm:mb-10">Beta</h2>
+              <h3 className="text-3xl sm:text-4xl md:text-5xl font-black text-black tracking-tighter mb-4 sm:mb-6">
+                GARDEN VISUALISER
+              </h3>
+              <p className="text-sm font-medium text-zinc-500 mb-10 max-w-lg">
+                Preview Raj Green, Kandla Grey, porcelain, block paving and artificial turf through your camera — switch materials until you are happy.
+              </p>
+              <GardenVisualiser onContinueToQuote={handleContinueFromVisualiser} />
+            </div>
+          </div>
+        </section>
+      )}
+
       {activeTab === 'quote' && (
-        <section className="py-16 sm:py-24 md:py-32 lg:py-40 flex items-center justify-center bg-zinc-50">
+        <section ref={quoteFormRef} className="py-16 sm:py-24 md:py-32 lg:py-40 flex items-center justify-center bg-zinc-50">
           <div className="max-w-4xl w-full px-4 sm:px-6">
             <div className="bg-white rounded p-6 sm:p-12 md:p-16 lg:p-24 shadow-2xl border border-zinc-100 text-center flex flex-col items-center">
               <h2 className="text-xs font-black tracking-[0.5em] text-zinc-400 uppercase mb-6 sm:mb-10">Consultation</h2>
@@ -1663,12 +1721,22 @@ const App = () => {
                   </select>
                 </div>
 
+                {quoteFromVisualiser && (
+                  <p className="text-left text-[10px] font-bold text-zinc-600 tracking-tight rounded-lg border border-zinc-200 bg-zinc-50 px-4 py-3">
+                    Add a brief description below — what you want done, sizes, access, drainage, etc. (required).
+                  </p>
+                )}
+
                 <div className="text-left">
                   <label className="block text-[9px] font-black text-zinc-400 mb-3 sm:mb-4 uppercase tracking-[0.4em]">TECHNICAL SPECIFICATIONS</label>
                   <textarea
                     required
                     className="w-full px-4 sm:px-6 py-4 sm:py-5 bg-zinc-50 border border-zinc-200 rounded focus:border-black outline-none transition-all min-h-[140px] sm:min-h-[180px] font-black text-base sm:text-xs tracking-tight"
-                    placeholder="DIMENSIONS, CURRENT GROUND COMPOSITION, DRAINAGE ACCESS..."
+                    placeholder={
+                      quoteFromVisualiser
+                        ? 'Describe your patio, driveway or garden project — dimensions, current surface, drainage, access…'
+                        : 'DIMENSIONS, CURRENT GROUND COMPOSITION, DRAINAGE ACCESS...'
+                    }
                     value={quoteForm.message}
                     onChange={(e) => setQuoteForm({ ...quoteForm, message: e.target.value })}
                   />
