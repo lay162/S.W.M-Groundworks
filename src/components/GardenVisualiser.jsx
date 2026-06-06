@@ -5,12 +5,12 @@ import {
   COBBLED_EDGE_TEXTURE,
   findMaterial,
   materialImageUrl,
+  materialShowsCobbledEdge,
 } from '../data/visualiserMaterials.js';
 
 const DISCLAIMER =
   'Generated visual preview only — not an exact survey or quote. Final design, levels and drainage are assessed on a site visit; your price and quotation are confirmed after that visit, not during it.';
 
-const COBBLED_EDGE_CATEGORIES = new Set(['indian-stone', 'porcelain']);
 
 function MaterialThumb({ material, selected, onSelect }) {
   const [failed, setFailed] = useState(false);
@@ -77,7 +77,8 @@ export function GardenVisualiser({
   const cameraOn = Boolean(cameraStream);
   const materialSrc = materialImageUrl(material.texture);
   const edgeSrc = materialImageUrl(COBBLED_EDGE_TEXTURE);
-  const showCobbledEdge = COBBLED_EDGE_CATEGORIES.has(categoryId);
+  const showCobbledEdge = Boolean(material.cameraEdgeOverlay);
+  const showsEdgeInPhoto = materialShowsCobbledEdge(material);
 
   useEffect(() => {
     setSelectedPreviewFailed(false);
@@ -133,6 +134,10 @@ export function GardenVisualiser({
         <p className="text-[11px] font-bold leading-relaxed text-zinc-600 tracking-tight">{DISCLAIMER}</p>
       </div>
 
+      <p className="text-xs font-bold text-zinc-500 mb-6 leading-relaxed">
+        Pick a finish like you would at a paving supplier — Raj Green, Kandla Grey, porcelain, or cobbled borders. Previews use real S.W.M project photos.
+      </p>
+
       <div className="mb-8">
         <p className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.4em] mb-4">Choose category</p>
         <div className="flex flex-wrap gap-2 mb-6">
@@ -172,6 +177,11 @@ export function GardenVisualiser({
           <div className="border-t border-zinc-200 bg-white px-4 py-3">
             <p className="text-sm font-black text-black">{material.name}</p>
             <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider mt-1">{material.supplierLabel}</p>
+            {showsEdgeInPhoto && (
+              <p className="text-[9px] font-black text-zinc-400 uppercase tracking-widest mt-2">
+                Includes cobbled edge as shown in photo
+              </p>
+            )}
           </div>
         </div>
 
