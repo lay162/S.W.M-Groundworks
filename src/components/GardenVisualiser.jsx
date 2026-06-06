@@ -135,7 +135,7 @@ export function GardenVisualiser({
       </div>
 
       <p className="text-xs font-bold text-zinc-500 mb-6 leading-relaxed">
-        Pick a finish like you would at a paving supplier — Raj Green, Kandla Grey, porcelain, or cobbled borders. Previews use real S.W.M project photos.
+        Pick a finish like you would at a paving supplier — Raj Green, Kandla Grey, porcelain, or cobbled borders. Swatches are clean material reference images (no supplier branding).
       </p>
 
       <div className="mb-8">

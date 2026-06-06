@@ -105,10 +105,14 @@ This repo deploys **only** via **.github/workflows/github-pages.yml** → GitHub
 netlify/functions, or Netlify CLI in the project. DNS for **swm-groundworks.co.uk** points to GitHub Pages (185.199.x.x),
 not Netlify — so live traffic is **not** served by Netlify.
 
-If Netlify still emails you about usage (e.g. 50% bandwidth), the old Netlify **site/account** is probably still active
-and may still be building from Git pushes. Do this once in the Netlify dashboard (app.netlify.com):
+**CONFIRMED (checked):** https://swm-groundworks.netlify.app/ is **still live on Netlify** (Server: Netlify, HTTP 200).
+Your custom domain **swm-groundworks.co.uk** points to **GitHub Pages** (Server: GitHub.com) — that part is correct.
+Netlify usage is almost certainly from this leftover site still connected to your GitHub repo (auto-builds on every push)
+and/or traffic hitting the **.netlify.app** URL.
 
-1. Open the old **S.W.M Groundworks** site (or any site linked to this repo).
+Do this once in the Netlify dashboard (app.netlify.com):
+
+1. Open site **swm-groundworks** (URL: https://swm-groundworks.netlify.app/).
 2. **Site configuration** → **Build & deploy** → **Continuous deployment** → **Disconnect** Git repository.
    (This stops auto-builds on every push — the main cause of ongoing usage.)
 3. Optional but recommended: **Site configuration** → **Domain management** → remove **swm-groundworks.co.uk** / **www**
