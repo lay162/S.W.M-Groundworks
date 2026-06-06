@@ -143,3 +143,16 @@ export function findMaterial(id) {
 export function materialShowsCobbledEdge(material) {
   return Boolean(material?.cobbledEdge);
 }
+
+/** Real-world UK paving sizes — repeat tile at realistic scale on camera overlay. */
+export const TILE_REPEAT_PRESETS = {
+  porcelain: { repeat: true, tileWidthPct: 10, tileHeightPct: 6.7 }, // 900×600 mm
+  'indian-stone': { repeat: true, tileWidthPct: 22, tileHeightPct: 15 }, // large flags
+  'cobbled-borders': { repeat: true, tileWidthPct: 8, tileHeightPct: 8 },
+  'block-paving': { repeat: true, tileWidthPct: 4.5, tileHeightPct: 4.5 }, // 200 mm blocks
+  turf: { repeat: false, tileWidthPct: 100, tileHeightPct: 100 },
+};
+
+export function getTileRepeatPreset(categoryId) {
+  return TILE_REPEAT_PRESETS[categoryId] || TILE_REPEAT_PRESETS.porcelain;
+}

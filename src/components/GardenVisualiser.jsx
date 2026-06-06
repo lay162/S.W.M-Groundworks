@@ -4,6 +4,7 @@ import {
   VISUALISER_CATEGORIES,
   COBBLED_EDGE_TEXTURE,
   findMaterial,
+  getTileRepeatPreset,
   materialImageUrl,
   materialShowsCobbledEdge,
 } from '../data/visualiserMaterials.js';
@@ -67,6 +68,7 @@ export function GardenVisualiser({
   const [previewWidth, setPreviewWidth] = useState(88);
   const [previewDepth, setPreviewDepth] = useState(42);
   const [previewRotate, setPreviewRotate] = useState(0);
+  const [tileSize, setTileSize] = useState(100);
   const [hasInteracted, setHasInteracted] = useState(false);
   const [triedMaterials, setTriedMaterials] = useState([]);
   const [selectedPreviewFailed, setSelectedPreviewFailed] = useState(false);
@@ -78,6 +80,19 @@ export function GardenVisualiser({
   const edgeSrc = materialImageUrl(COBBLED_EDGE_TEXTURE);
   const showCobbledEdge = Boolean(material.cameraEdgeOverlay);
   const showsEdgeInPhoto = materialShowsCobbledEdge(material);
+  const tilePreset = getTileRepeatPreset(categoryId);
+  const tileScale = tileSize / 100;
+  const overlayTileStyle = tilePreset.repeat
+    ? {
+        backgroundRepeat: 'repeat',
+        backgroundSize: `${tilePreset.tileWidthPct * tileScale}% ${tilePreset.tileHeightPct * tileScale}%`,
+        backgroundPosition: 'center',
+      }
+    : {
+        backgroundRepeat: 'no-repeat',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      };
 
   useEffect(() => {
     setSelectedPreviewFailed(false);
@@ -114,6 +129,7 @@ export function GardenVisualiser({
   }, [attachStream]);
 
   const selectMaterial = (id, catId) => {
+    if (catId !== categoryId) setTileSize(100);
     setMaterialId(id);
     setCategoryId(catId);
     setHasInteracted(true);
@@ -178,11 +194,10 @@ export function GardenVisualiser({
             aria-hidden
           >
             <div
-              className="absolute inset-0 border-2 border-white/70 shadow-[0_0_0_1px_rgba(0,0,0,0.3)]"
+              className="absolute inset-0 border-2 border-white/70 shadow-[0_0_0_1px_rgba(0,0,0,0.3)] overflow-hidden"
               style={{
                 backgroundImage: `url("${materialSrc}")`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
+                ...overlayTileStyle,
                 opacity: 0.92,
               }}
             />
@@ -255,6 +270,22 @@ export function GardenVisualiser({
 
       {cameraOn && (
         <div className="mt-4 grid grid-cols-1 gap-3">
+          {tilePreset.repeat && (
+            <label className="text-[9px] font-black text-zinc-400 uppercase tracking-widest flex items-center gap-2">
+              <Maximize2 size={12} /> Tile size
+              <input
+                type="range"
+                min={60}
+                max={160}
+                value={tileSize}
+                onChange={(e) => {
+                  setTileSize(Number(e.target.value));
+                  setHasInteracted(true);
+                }}
+                className="flex-1 accent-black"
+              />
+            </label>
+          )}
           <label className="text-[9px] font-black text-zinc-400 uppercase tracking-widest flex items-center gap-2">
             <Maximize2 size={12} /> Width
             <input
@@ -284,11 +315,12 @@ export function GardenVisualiser({
             />
           </label>
           <label className="text-[9px] font-black text-zinc-400 uppercase tracking-widest flex items-center gap-2">
-            <RotateCcw size={12} /> Rotate
+            <RotateCcw size={12} /> Rotate ({previewRotate}°)
             <input
               type="range"
-              min={-30}
-              max={30}
+              min={-180}
+              max={180}
+              step={5}
               value={previewRotate}
               onChange={(e) => {
                 setPreviewRotate(Number(e.target.value));
@@ -297,6 +329,9 @@ export function GardenVisualiser({
               className="flex-1 accent-black"
             />
           </label>
+          <p className="text-[9px] font-bold text-zinc-400 -mt-1">
+            Spin 180° to lay tiles portrait or landscape on your view.
+          </p>
         </div>
       )}
     </div>
