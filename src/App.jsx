@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   Camera,
   Star,
@@ -690,8 +690,51 @@ const App = () => {
   const [workGalleryFilter, setWorkGalleryFilter] = useState('all');
   const [blogSlug, setBlogSlug] = useState(null);
   const [quoteFromVisualiser, setQuoteFromVisualiser] = useState(false);
+  const [visualiserStream, setVisualiserStream] = useState(null);
+  const [visualiserCameraError, setVisualiserCameraError] = useState('');
   const workGalleryGridRef = useRef(null);
   const quoteFormRef = useRef(null);
+  const visualiserStreamRef = useRef(null);
+
+  const stopVisualiserCamera = useCallback(() => {
+    if (visualiserStreamRef.current) {
+      visualiserStreamRef.current.getTracks().forEach((t) => t.stop());
+      visualiserStreamRef.current = null;
+    }
+    setVisualiserStream(null);
+  }, []);
+
+  const requestVisualiserCamera = useCallback(async () => {
+    setVisualiserCameraError('');
+    if (!navigator.mediaDevices?.getUserMedia) {
+      setVisualiserCameraError(
+        'Camera not supported in this browser. Open swm-groundworks.co.uk in Safari or Chrome on your phone.',
+      );
+      return;
+    }
+    stopVisualiserCamera();
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } },
+        audio: false,
+      });
+      visualiserStreamRef.current = stream;
+      setVisualiserStream(stream);
+    } catch (err) {
+      const denied = err?.name === 'NotAllowedError' || err?.name === 'PermissionDeniedError';
+      setVisualiserCameraError(
+        denied
+          ? 'Camera permission blocked. Allow camera in your browser settings, then tap OPEN CAMERA again.'
+          : 'Camera could not start. Try Safari or Chrome on your phone over HTTPS.',
+      );
+    }
+  }, [stopVisualiserCamera]);
+
+  const openVisualiser = useCallback(() => {
+    setIsMenuOpen(false);
+    setActiveTab('visualise');
+    void requestVisualiserCamera();
+  }, [requestVisualiserCamera]);
 
   const scrollWorkGalleryIntoView = () => {
     requestAnimationFrame(() => {
@@ -711,6 +754,14 @@ const App = () => {
   useEffect(() => {
     if (activeTab !== 'blog') setBlogSlug(null);
   }, [activeTab]);
+
+  useEffect(() => {
+    if (activeTab === 'visualise') return;
+    stopVisualiserCamera();
+    setVisualiserCameraError('');
+  }, [activeTab, stopVisualiserCamera]);
+
+  useEffect(() => () => stopVisualiserCamera(), [stopVisualiserCamera]);
 
   useEffect(() => {
     applyPageSeo({ activeTab, blogSlug });
@@ -949,7 +1000,7 @@ const App = () => {
             {['home', 'services', 'work', 'reviews', 'blog', 'visualise'].map((item) => (
               <button
                 key={item}
-                onClick={() => setActiveTab(item)}
+                onClick={() => (item === 'visualise' ? openVisualiser() : setActiveTab(item))}
                 className={`capitalize text-[10px] font-black tracking-[0.2em] transition-all py-1 border-b-2 ${
                   activeTab === item
                     ? 'text-black border-black'
@@ -981,8 +1032,11 @@ const App = () => {
             <button
               key={item}
               onClick={() => {
-                setActiveTab(item);
-                setIsMenuOpen(false);
+                if (item === 'visualise') openVisualiser();
+                else {
+                  setActiveTab(item);
+                  setIsMenuOpen(false);
+                }
               }}
               className={`block w-full text-center py-2 capitalize font-black tracking-[0.2em] text-sm ${
                 activeTab === item ? 'text-black' : 'text-zinc-400'
@@ -1033,10 +1087,7 @@ const App = () => {
           </button>
           <button
             type="button"
-            onClick={() => {
-              setActiveTab('visualise');
-              setIsMenuOpen(false);
-            }}
+            onClick={openVisualiser}
             className="flex w-full items-center justify-center rounded border border-zinc-500 bg-zinc-900/80 px-8 py-5 font-black text-xs tracking-[0.3em] text-white transition-all hover:bg-zinc-800 active:scale-95 sm:flex-1 sm:min-w-[200px] sm:px-12 sm:py-6"
           >
             TRY VISUALISER
@@ -1521,7 +1572,13 @@ const App = () => {
               <p className="text-sm font-medium text-zinc-500 mb-10 max-w-lg">
                 Preview Raj Green, Kandla Grey, porcelain, block paving and artificial turf through your camera — switch materials until you are happy.
               </p>
-              <GardenVisualiser onContinueToQuote={handleContinueFromVisualiser} />
+              <GardenVisualiser
+                cameraStream={visualiserStream}
+                cameraError={visualiserCameraError}
+                onRequestCamera={requestVisualiserCamera}
+                onStopCamera={stopVisualiserCamera}
+                onContinueToQuote={handleContinueFromVisualiser}
+              />
             </div>
           </div>
         </section>

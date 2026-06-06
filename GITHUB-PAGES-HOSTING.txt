@@ -99,7 +99,23 @@ When you own **swm-groundworks.co.uk**:
 The workflow copies **dist/index.html** to **dist/404.html** so client-side routes survive a full page refresh on GitHub Pages.
 
 --------------------------------------------------------------------------------
-6) LEAVING NETLIFY
+6) LEAVING NETLIFY (STOP USAGE EMAILS / BANDWIDTH)
 --------------------------------------------------------------------------------
-Disconnect or delete the old Netlify site if you no longer want it. This repo no longer includes **netlify.toml** or
-**netlify/functions**.
+This repo deploys **only** via **.github/workflows/github-pages.yml** → GitHub Pages. There is **no** netlify.toml,
+netlify/functions, or Netlify CLI in the project. DNS for **swm-groundworks.co.uk** points to GitHub Pages (185.199.x.x),
+not Netlify — so live traffic is **not** served by Netlify.
+
+If Netlify still emails you about usage (e.g. 50% bandwidth), the old Netlify **site/account** is probably still active
+and may still be building from Git pushes. Do this once in the Netlify dashboard (app.netlify.com):
+
+1. Open the old **S.W.M Groundworks** site (or any site linked to this repo).
+2. **Site configuration** → **Build & deploy** → **Continuous deployment** → **Disconnect** Git repository.
+   (This stops auto-builds on every push — the main cause of ongoing usage.)
+3. Optional but recommended: **Site configuration** → **Domain management** → remove **swm-groundworks.co.uk** / **www**
+   if they are still listed on Netlify (DNS already points to GitHub).
+4. To stop all Netlify usage for this project: **Site configuration** → **General** → **Danger zone** →
+   **Delete site**.
+5. Revoke Netlify GitHub access: **GitHub** → **Settings** → **Applications** → **Netlify** → **Revoke** (if listed).
+
+After disconnect/delete, usage should drop to zero for this site. New deploys happen only when **main** pushes trigger
+**Actions** → **Deploy GitHub Pages** in this repo.
