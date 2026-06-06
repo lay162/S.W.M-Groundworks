@@ -27,7 +27,7 @@ function MaterialThumb({ material, selected, onSelect }) {
         selected ? 'border-black ring-2 ring-black ring-offset-2' : 'border-zinc-200 hover:border-zinc-400'
       }`}
     >
-      <div className="relative h-24 sm:h-28 bg-zinc-100">
+      <div className="relative h-28 sm:h-32 bg-zinc-100">
         {!failed ? (
           <img
             src={src}
@@ -343,11 +343,11 @@ export function GardenVisualiser({
               loading="eager"
               fetchPriority="high"
               decoding="async"
-              className="h-32 sm:h-40 w-full object-cover"
+              className="h-44 sm:h-52 w-full object-cover"
               onError={() => setSelectedPreviewFailed(true)}
             />
           ) : (
-            <div className="flex h-32 sm:h-40 items-center justify-center text-[10px] font-bold uppercase tracking-wider text-zinc-400">
+            <div className="flex h-44 sm:h-52 items-center justify-center text-[10px] font-bold uppercase tracking-wider text-zinc-400">
               Preview unavailable
             </div>
           )}
