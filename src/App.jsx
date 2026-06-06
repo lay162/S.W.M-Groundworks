@@ -22,6 +22,7 @@ import { BLOG_POSTS } from './data/blogPosts.js';
 import { WORK_GALLERY, WORK_GALLERY_ORDER, PORTFOLIO_ITEMS } from './data/workGallery.js';
 import { applyPageSeo, injectSupplementalStructuredData } from './seo.js';
 import { GardenVisualiser } from './components/GardenVisualiser.jsx';
+import { cameraErrorMessage, requestCameraStream } from './utils/camera.js';
 
 const VISUALISER_MSG_MARKER = 'What I would like done (please describe):';
 const MIN_VISUALISER_USER_DESC = 25;
@@ -706,35 +707,21 @@ const App = () => {
 
   const requestVisualiserCamera = useCallback(async () => {
     setVisualiserCameraError('');
-    if (!navigator.mediaDevices?.getUserMedia) {
-      setVisualiserCameraError(
-        'Camera not supported in this browser. Open swm-groundworks.co.uk in Safari or Chrome on your phone.',
-      );
-      return;
-    }
     stopVisualiserCamera();
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } },
-        audio: false,
-      });
+      const stream = await requestCameraStream();
       visualiserStreamRef.current = stream;
       setVisualiserStream(stream);
     } catch (err) {
-      const denied = err?.name === 'NotAllowedError' || err?.name === 'PermissionDeniedError';
-      setVisualiserCameraError(
-        denied
-          ? 'Camera permission blocked. Allow camera in your browser settings, then tap OPEN CAMERA again.'
-          : 'Camera could not start. Try Safari or Chrome on your phone over HTTPS.',
-      );
+      setVisualiserCameraError(cameraErrorMessage(err));
     }
   }, [stopVisualiserCamera]);
 
   const openVisualiser = useCallback(() => {
     setIsMenuOpen(false);
     setActiveTab('visualise');
-    void requestVisualiserCamera();
-  }, [requestVisualiserCamera]);
+    setVisualiserCameraError('');
+  }, []);
 
   const scrollWorkGalleryIntoView = () => {
     requestAnimationFrame(() => {
