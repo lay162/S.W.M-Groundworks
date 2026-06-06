@@ -1,6 +1,6 @@
 /**
  * Material previews use textures from S.W.M job photos (public/images/work/).
- * Product names match trade ranges (e.g. Landscaping World Widnes–style labels).
+ * Product names use standard UK trade labels (Raj Green, Kandla Grey, etc.) with textures from S.W.M job photos.
  */
 export const VISUALISER_CATEGORIES = [
   {
