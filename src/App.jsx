@@ -395,6 +395,13 @@ const GOOGLE_SCRIPT_SECRET =
     ? import.meta.env.VITE_GOOGLE_APPS_SCRIPT_SECRET.trim()
     : '';
 
+/** Consistent subject prefix so Zoho can filter every quote into the Quotes folder. */
+const QUOTE_EMAIL_SUBJECT_PREFIX = 'Quote request';
+
+function formatSiteAddress({ addressLine1, addressLine2, town, postcode }) {
+  return [addressLine1, addressLine2, town, postcode].map((s) => String(s || '').trim()).filter(Boolean).join(', ');
+}
+
 async function submitEnquiry(payload) {
   if (!GOOGLE_SCRIPT_URL || !GOOGLE_SCRIPT_SECRET) {
     throw new Error(
@@ -410,6 +417,11 @@ async function submitEnquiry(payload) {
   const marketingConsent =
     payload.marketingConsent === true || String(payload.marketingConsent || '').toLowerCase() === 'true';
 
+  const addressLine1 = String(payload.addressLine1 || '').trim();
+  const addressLine2 = String(payload.addressLine2 || '').trim();
+  const town = String(payload.town || '').trim();
+  const postcode = String(payload.postcode || '').trim().toUpperCase();
+
   const body = {
     secret: GOOGLE_SCRIPT_SECRET,
     type: payload.type === 'quote' ? 'quote' : 'quote',
@@ -417,9 +429,15 @@ async function submitEnquiry(payload) {
     name: payload.name,
     email: payload.email,
     phone: payload.phone,
+    addressLine1,
+    addressLine2,
+    town,
+    postcode,
+    siteAddress: formatSiteAddress({ addressLine1, addressLine2, town, postcode }),
     service: payload.service,
     message: payload.message,
     marketingConsent: marketingConsent ? 'Yes' : 'No',
+    website: String(payload.website || '').trim(),
     ip: '',
     photoCount,
     photoNames,
@@ -428,9 +446,11 @@ async function submitEnquiry(payload) {
     body.photos = attachments.map((a) => ({ name: a.name, mime: a.mime, data: a.data }));
   }
 
+  // text/plain avoids a CORS preflight that often breaks Apps Script web app POSTs from GitHub Pages.
   const res = await fetch(GOOGLE_SCRIPT_URL, {
     method: 'POST',
-    headers: { 'content-type': 'application/json' },
+    redirect: 'follow',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
     body: JSON.stringify(body),
   });
 
@@ -618,6 +638,10 @@ const App = () => {
     name: '',
     email: '',
     phone: '',
+    addressLine1: '',
+    addressLine2: '',
+    town: '',
+    postcode: '',
     service: 'Driveways',
     message: '',
     marketingConsent: false,
@@ -665,12 +689,14 @@ const App = () => {
   }, [privacyOpen]);
 
   const openEmailFallback = () => {
-    const subject = encodeURIComponent(`Quote request — ${quoteForm.service} — ${quoteForm.name}`);
+    const siteAddress = formatSiteAddress(quoteForm);
+    const subject = encodeURIComponent(`${QUOTE_EMAIL_SUBJECT_PREFIX} — ${quoteForm.service} — ${quoteForm.name}`);
     const body = encodeURIComponent(
       [
         `NAME: ${quoteForm.name}`,
         `EMAIL: ${quoteForm.email}`,
         `PHONE: ${quoteForm.phone}`,
+        `SITE ADDRESS: ${siteAddress}`,
         `SERVICE: ${quoteForm.service}`,
         `OFFERS / PROMOTIONS CONSENT: ${quoteForm.marketingConsent ? 'YES' : 'NO'}`,
         ``,
@@ -692,6 +718,11 @@ const App = () => {
   const handleQuoteSubmit = async (e) => {
     e.preventDefault();
     if (!user) return;
+    if (quoteForm.website.trim()) {
+      setStatus({ type: 'success', msg: 'Quote request sent successfully! We will contact you soon.' });
+      setTimeout(() => setStatus({ type: '', msg: '' }), 5000);
+      return;
+    }
     try {
       const files = quoteFiles.slice(0, MAX_QUOTE_PHOTOS);
       for (const f of files) {
@@ -715,6 +746,10 @@ const App = () => {
         name: quoteForm.name,
         email: quoteForm.email,
         phone: quoteForm.phone,
+        addressLine1: quoteForm.addressLine1,
+        addressLine2: quoteForm.addressLine2,
+        town: quoteForm.town,
+        postcode: quoteForm.postcode,
         service: quoteForm.service,
         message: quoteForm.message,
         marketingConsent: Boolean(quoteForm.marketingConsent),
@@ -723,7 +758,19 @@ const App = () => {
         createdAt: new Date().toISOString(),
         status: 'new',
       });
-      setQuoteForm({ name: '', email: '', phone: '', service: 'Driveways', message: '', marketingConsent: false, website: '' });
+      setQuoteForm({
+        name: '',
+        email: '',
+        phone: '',
+        addressLine1: '',
+        addressLine2: '',
+        town: '',
+        postcode: '',
+        service: 'Driveways',
+        message: '',
+        marketingConsent: false,
+        website: '',
+      });
       setQuoteFiles([]);
       if (photoInputRef.current) photoInputRef.current.value = '';
       setStatus({ type: 'success', msg: 'Quote request sent successfully! We will contact you soon.' });
@@ -1389,6 +1436,58 @@ const App = () => {
                     value={quoteForm.email}
                     onChange={(e) => setQuoteForm({ ...quoteForm, email: e.target.value })}
                   />
+                </div>
+
+                <div className="text-left space-y-10">
+                  <p className="text-[9px] font-black text-zinc-400 uppercase tracking-[0.4em]">SITE ADDRESS (WHERE THE WORK IS)</p>
+                  <div className="grid md:grid-cols-2 gap-10">
+                    <div className="md:col-span-2 text-left">
+                      <label className="block text-[9px] font-black text-zinc-400 mb-4 uppercase tracking-[0.4em]">
+                        ADDRESS LINE 1 (HOUSE / NUMBER &amp; STREET)
+                      </label>
+                      <input
+                        required
+                        autoComplete="address-line1"
+                        className="w-full px-6 py-5 bg-zinc-50 border border-zinc-200 rounded focus:border-black outline-none transition-all font-black text-xs"
+                        value={quoteForm.addressLine1}
+                        onChange={(e) => setQuoteForm({ ...quoteForm, addressLine1: e.target.value })}
+                      />
+                    </div>
+                    <div className="md:col-span-2 text-left">
+                      <label className="block text-[9px] font-black text-zinc-400 mb-4 uppercase tracking-[0.4em]">
+                        ADDRESS LINE 2 (OPTIONAL)
+                      </label>
+                      <input
+                        autoComplete="address-line2"
+                        placeholder="Flat, unit, building name…"
+                        className="w-full px-6 py-5 bg-zinc-50 border border-zinc-200 rounded focus:border-black outline-none transition-all font-black text-xs"
+                        value={quoteForm.addressLine2}
+                        onChange={(e) => setQuoteForm({ ...quoteForm, addressLine2: e.target.value })}
+                      />
+                    </div>
+                    <div className="text-left">
+                      <label className="block text-[9px] font-black text-zinc-400 mb-4 uppercase tracking-[0.4em]">TOWN / CITY</label>
+                      <input
+                        required
+                        autoComplete="address-level2"
+                        className="w-full px-6 py-5 bg-zinc-50 border border-zinc-200 rounded focus:border-black outline-none transition-all font-black text-xs"
+                        value={quoteForm.town}
+                        onChange={(e) => setQuoteForm({ ...quoteForm, town: e.target.value })}
+                      />
+                    </div>
+                    <div className="text-left">
+                      <label className="block text-[9px] font-black text-zinc-400 mb-4 uppercase tracking-[0.4em]">POSTCODE</label>
+                      <input
+                        required
+                        autoComplete="postal-code"
+                        className="w-full px-6 py-5 bg-zinc-50 border border-zinc-200 rounded focus:border-black outline-none transition-all font-black text-xs uppercase"
+                        value={quoteForm.postcode}
+                        onChange={(e) => setQuoteForm({ ...quoteForm, postcode: e.target.value.toUpperCase() })}
+                        pattern="[A-Za-z]{1,2}[0-9][A-Za-z0-9]?[ ]?[0-9][A-Za-z]{2}"
+                        title="Enter a valid UK postcode, e.g. CH41 5DL"
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 <div className="text-left">

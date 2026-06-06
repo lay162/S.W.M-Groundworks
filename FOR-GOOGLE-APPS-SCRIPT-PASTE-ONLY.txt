@@ -4,17 +4,22 @@ Do not paste google-apps-script.txt (that file includes instructions and would d
 --- copy everything below this line into Code.gs ---
 
 function doPost(e) {
-  var SECRET = 'YOUR_SECRET';
+  var SECRET = 'swm-groundworks-quote-2026';
   var DRIVE_FOLDER_ID = '';
+  /** Zoho inbox — use a filter: Subject contains "Quote request" → move to Quotes folder */
+  var QUOTE_INBOX = 'quotes@swm-groundworks.co.uk';
 
   var data;
   try {
     data = JSON.parse(e.postData.contents);
   } catch (err) {
-    return outJson(false);
+    return outJson(false, 'Invalid JSON');
   }
   if (!data || data.secret !== SECRET) {
-    return outJson(false);
+    return outJson(false, 'Unauthorized');
+  }
+  if (data.website && String(data.website).trim()) {
+    return outJson(true);
   }
 
   var photoLinks = '';
@@ -25,6 +30,14 @@ function doPost(e) {
       photoLinks = 'Drive error: ' + err;
     }
   }
+
+  var addressLine1 = String(data.addressLine1 || '').trim();
+  var addressLine2 = String(data.addressLine2 || '').trim();
+  var town = String(data.town || '').trim();
+  var postcode = String(data.postcode || '').trim().toUpperCase();
+  var siteAddress =
+    String(data.siteAddress || '').trim() ||
+    [addressLine1, addressLine2, town, postcode].filter(Boolean).join(', ');
 
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
   var mc = data.marketingConsent;
@@ -41,9 +54,97 @@ function doPost(e) {
     data.photoCount != null ? data.photoCount : '',
     data.photoNames || '',
     photoLinks,
-    consentLabel
+    consentLabel,
+    addressLine1,
+    addressLine2,
+    town,
+    postcode,
+    siteAddress
   ]);
+
+  try {
+    sendQuoteEmail_(data, QUOTE_INBOX, siteAddress, photoLinks);
+  } catch (mailErr) {
+    Logger.log('MailApp failed: ' + mailErr);
+  }
+
   return outJson(true);
+}
+
+function sendQuoteEmail_(data, toInbox, siteAddress, photoLinks) {
+  var service = String(data.service || 'General').trim();
+  var name = String(data.name || 'Unknown').trim();
+  var subject = 'Quote request — ' + service + ' — ' + name;
+
+  var lines = [
+    'New quote from the S.W.M Groundworks website',
+    '',
+    'Name: ' + name,
+    'Email: ' + (data.email || ''),
+    'Phone: ' + (data.phone || ''),
+    'Site address: ' + siteAddress,
+    'Service: ' + service,
+    'Marketing consent: ' + (data.marketingConsent || 'No'),
+    '',
+    'Message:',
+    String(data.message || ''),
+    '',
+    'Photos attached: ' + (data.photoCount != null ? data.photoCount : 0),
+    data.photoNames ? 'Photo file names: ' + data.photoNames : '',
+    photoLinks ? 'Photo links: ' + photoLinks : ''
+  ];
+
+  var htmlBody =
+    '<p><strong>New quote from the website</strong></p>' +
+    '<p><strong>Name:</strong> ' + escapeHtml_(name) + '<br>' +
+    '<strong>Email:</strong> ' + escapeHtml_(data.email || '') + '<br>' +
+    '<strong>Phone:</strong> ' + escapeHtml_(data.phone || '') + '<br>' +
+    '<strong>Site address:</strong> ' + escapeHtml_(siteAddress) + '<br>' +
+    '<strong>Service:</strong> ' + escapeHtml_(service) + '<br>' +
+    '<strong>Marketing consent:</strong> ' + escapeHtml_(String(data.marketingConsent || 'No')) + '</p>' +
+    '<p><strong>Message:</strong><br>' + escapeHtml_(String(data.message || '')).replace(/\n/g, '<br>') + '</p>';
+
+  if (photoLinks) {
+    htmlBody += '<p><strong>Photo links:</strong><br>' + escapeHtml_(photoLinks).replace(/; /g, '<br>') + '</p>';
+  }
+
+  var opts = {
+    to: toInbox,
+    subject: subject,
+    body: lines.join('\n'),
+    htmlBody: htmlBody,
+    name: 'S.W.M Groundworks Website',
+    replyTo: data.email || undefined
+  };
+
+  if (data.photos && data.photos.length) {
+    var blobs = [];
+    for (var i = 0; i < data.photos.length && i < 10; i++) {
+      var p = data.photos[i];
+      if (!p || !p.data) continue;
+      try {
+        var bytes = Utilities.base64Decode(p.data);
+        var rawName = String(p.name || 'photo-' + (i + 1) + '.jpg');
+        var attachName = rawName.replace(/[^\w.\- ]+/g, '_');
+        blobs.push(Utilities.newBlob(bytes, p.mime || 'image/jpeg', attachName));
+      } catch (decodeErr) {
+        continue;
+      }
+    }
+    if (blobs.length) {
+      opts.attachments = blobs;
+    }
+  }
+
+  MailApp.sendEmail(opts);
+}
+
+function escapeHtml_(text) {
+  return String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
 }
 
 function doGet() {
@@ -52,9 +153,10 @@ function doGet() {
   ).setMimeType(ContentService.MimeType.TEXT);
 }
 
-function outJson(ok) {
-  return ContentService.createTextOutput(JSON.stringify({ ok: ok }))
-    .setMimeType(ContentService.MimeType.JSON);
+function outJson(ok, error) {
+  var payload = { ok: ok };
+  if (error) payload.error = error;
+  return ContentService.createTextOutput(JSON.stringify(payload)).setMimeType(ContentService.MimeType.JSON);
 }
 
 function saveQuotePhotos_(photos, folderId) {
@@ -82,4 +184,10 @@ function saveQuotePhotos_(photos, folderId) {
 
 --- stop copying above this line ---
 
-Remember: set SECRET and match it in GitHub Actions as VITE_GOOGLE_APPS_SCRIPT_SECRET (and set VITE_GOOGLE_APPS_SCRIPT_URL). Redeploy Web app after edits.
+After pasting:
+1. Set SECRET (same as VITE_GOOGLE_APPS_SCRIPT_SECRET in GitHub Actions).
+2. Add sheet headers row 1 (A1:P1) — see google-apps-script.txt (step 2).
+3. Deploy → Manage deployments → New version → Deploy (Anyone).
+4. First run: submit a test quote and approve MailApp permission when prompted.
+
+Zoho: Settings → Filters → Subject contains "Quote request" → Move to folder "Quotes".

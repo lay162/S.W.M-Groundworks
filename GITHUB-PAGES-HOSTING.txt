@@ -4,6 +4,35 @@ This site is a static Vite/React build. Hosting is **GitHub Pages**; the quote f
 to your **Google Apps Script** web app (same row shape as before). There is no serverless “enquiry” function anymore.
 
 --------------------------------------------------------------------------------
+DEPLOYMENT REFERENCE — keep for GitHub step 3 (updated 2026-06-06)
+--------------------------------------------------------------------------------
+Google Sheet:        S.W.M Quote Log
+Apps Script project: S.W.M Quote Log (Extensions → Apps Script from the sheet)
+Web app deployment:  Version 2 — live URL tested OK
+
+Add these in GitHub → repo **S.W.M-Groundworks** → **Settings** → **Secrets and variables** → **Actions** → **Secrets**:
+
+  Name:  VITE_GOOGLE_APPS_SCRIPT_URL
+  Value: https://script.google.com/macros/s/AKfycbxYrMoNcaqToRiw7PxOqQYPdOP-nj-jDtusxXwwLZYj4Fm-adBZFRcr-GK2jRhTd-Pu/exec
+
+  Name:  VITE_GOOGLE_APPS_SCRIPT_SECRET
+  Value: swm-groundworks-quote-2026
+         (must match Code.gs: var SECRET = 'swm-groundworks-quote-2026';)
+
+  Name:  VITE_BUSINESS_QUOTE_EMAIL
+  Value: quotes@swm-groundworks.co.uk
+
+Optional (photos to Drive — only if you set DRIVE_FOLDER_ID in the script later):
+  Name:  VITE_GOOGLE_APPS_SCRIPT_INCLUDE_PHOTOS
+  Value: true
+
+After adding secrets: **Actions** → **Deploy GitHub Pages** → **Run workflow** (or push to main).
+
+Sheet headers (step 2): row 1 columns A–P — see google-apps-script.txt.
+
+Zoho (step 4): filter Subject contains **Quote request** → move to **Quotes** folder.
+
+--------------------------------------------------------------------------------
 1) ENABLE GITHUB PAGES
 --------------------------------------------------------------------------------
 1. GitHub → repository **S.W.M-Groundworks** → **Settings** → **Pages**.
@@ -43,11 +72,12 @@ Local dev: copy **.env.example** to **.env** and fill the same `VITE_*` names, t
 Use **FOR-GOOGLE-APPS-SCRIPT-PASTE-ONLY.txt** and **google-apps-script.txt**. Deploy the script as a Web app with access
 **Anyone** (or “Anyone with Google account” if you accept sign-in only — then browser POSTs may fail for anonymous visitors).
 
-**CORS:** If the browser blocks the request, open the browser **Console** on submit. Fixes that often work:
+**CORS:** The site sends POST with **Content-Type: text/plain** (required for Apps Script from GitHub Pages). If rows still do not appear:
 - Redeploy the Web app as a **new version** after editing the script.
 - Ensure the request URL is the **current /exec** URL from **Deploy** → **Manage deployments**.
+- Confirm **VITE_GOOGLE_APPS_SCRIPT_SECRET** in GitHub matches **SECRET** in Code.gs exactly.
 
-If POST still fails, the app falls back to **mailto** so the customer can email you (photos do not attach in that path).
+If POST still fails, the app falls back to **mailto** to **quotes@swm-groundworks.co.uk** (photos do not attach in that path). Set up a Zoho filter on subject **Quote request** so mailto and Apps Script mail both land in your Quotes folder.
 
 --------------------------------------------------------------------------------
 4) CUSTOM DOMAIN (e.g. swm-groundworks.co.uk from Namecheap)

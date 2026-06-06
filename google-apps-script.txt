@@ -16,11 +16,13 @@ FIX: YOU PASTED THE SCRIPT TWICE IN GOOGLE
 You must have exactly ONE of each: doPost, doGet, outJson, saveQuotePhotos_. Duplicate function names break the project.
 
 --------------------------------------------------------------------------------
-HEADERS ROW 1 (A1:K1)
+HEADERS ROW 1 (A1:O1)
 --------------------------------------------------------------------------------
-Timestamp | Name | Email | Phone | Service | Message | IP | PhotoCount | PhotoNames | PhotoLinks | Marketing consent
+Timestamp | Name | Email | Phone | Service | Message | IP | PhotoCount | PhotoNames | PhotoLinks | Marketing consent | Address line 1 | Address line 2 | Town | Postcode | Full site address
 
-Add column **K** (Marketing consent) if your sheet was created from the old template — values **Yes** / **No** from the quote form checkbox.
+Add columns **K–O** if your sheet was created from an older template.
+
+Every successful POST also emails **quotes@swm-groundworks.co.uk** with subject starting **Quote request —** so Zoho can filter into your Quotes folder (Settings → Filters → Subject contains "Quote request").
 
 --------------------------------------------------------------------------------
 THE “SECRET” (GOOGLE_APPS_SCRIPT_SECRET) — WHAT IT IS
@@ -44,6 +46,6 @@ VITE_GOOGLE_APPS_SCRIPT_INCLUDE_PHOTOS=true for Drive uploads (large payloads ma
 
 Sheets only (no Drive): leave DRIVE_FOLDER_ID = '' in the script; do NOT set INCLUDE_PHOTOS (or set false). Rows still get PhotoCount + PhotoNames.
 
-There is no server email path in this repo anymore; rely on the Sheet and/or MailApp inside Apps Script if you add it.
+The site POSTs to Apps Script (Content-Type text/plain to avoid CORS). The script appends a Sheet row and sends MailApp email to quotes@swm-groundworks.co.uk.
 
 Full narrative guide was merged into the files above; script body matches FOR-GOOGLE-APPS-SCRIPT-PASTE-ONLY.txt.
