@@ -1023,18 +1023,28 @@ const App = () => {
         <p className="mx-auto mb-12 max-w-3xl px-1 text-base font-medium leading-relaxed text-zinc-400 sm:mb-14 sm:px-2 sm:text-xl md:text-2xl">
           North West groundworks specialists — excavations, dig outs, driveways, foundations, fencing, patios and landscaping across Wirral, Liverpool, Merseyside, Cheshire and North Wales.
         </p>
-        <div className="mx-auto flex w-full max-w-md flex-col items-stretch gap-4 sm:flex-row sm:gap-6">
+        <div className="mx-auto flex w-full max-w-lg flex-col items-stretch gap-4 sm:flex-row sm:flex-wrap sm:justify-center sm:gap-6">
           <button
             type="button"
             onClick={() => setActiveTab('quote')}
-            className="flex w-full items-center justify-center gap-3 rounded bg-white px-8 py-5 font-black text-xs tracking-[0.3em] text-black shadow-2xl shadow-white/5 transition-all hover:bg-zinc-200 active:scale-95 sm:flex-1 sm:px-12 sm:py-6"
+            className="flex w-full items-center justify-center gap-3 rounded bg-white px-8 py-5 font-black text-xs tracking-[0.3em] text-black shadow-2xl shadow-white/5 transition-all hover:bg-zinc-200 active:scale-95 sm:flex-1 sm:min-w-[200px] sm:px-12 sm:py-6"
           >
             START PROJECT <ArrowRight size={18} aria-hidden />
           </button>
           <button
             type="button"
+            onClick={() => {
+              setActiveTab('visualise');
+              setIsMenuOpen(false);
+            }}
+            className="flex w-full items-center justify-center rounded border border-zinc-500 bg-zinc-900/80 px-8 py-5 font-black text-xs tracking-[0.3em] text-white transition-all hover:bg-zinc-800 active:scale-95 sm:flex-1 sm:min-w-[200px] sm:px-12 sm:py-6"
+          >
+            TRY VISUALISER
+          </button>
+          <button
+            type="button"
             onClick={() => setActiveTab('work')}
-            className="flex w-full items-center justify-center rounded border border-zinc-700 bg-transparent px-8 py-5 font-black text-xs tracking-[0.3em] text-white transition-all hover:bg-zinc-900 active:scale-95 sm:flex-1 sm:px-12 sm:py-6"
+            className="flex w-full items-center justify-center rounded border border-zinc-700 bg-transparent px-8 py-5 font-black text-xs tracking-[0.3em] text-white transition-all hover:bg-zinc-900 active:scale-95 sm:flex-1 sm:min-w-[200px] sm:px-12 sm:py-6"
           >
             SEE RESULTS
           </button>
