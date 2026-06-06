@@ -1493,7 +1493,7 @@ const App = () => {
                 </div>
 
                 <div className="text-left">
-                  <label className="block text-[9px] font-black text-zinc-400 mb-3 sm:mb-4 uppercase tracking-[0.4em]">EMAIL IDENTIFICATION</label>
+                  <label className="block text-[9px] font-black text-zinc-400 mb-3 sm:mb-4 uppercase tracking-[0.4em]">EMAIL ADDRESS</label>
                   <input
                     required
                     type="email"
