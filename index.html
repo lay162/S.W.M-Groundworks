@@ -8,12 +8,21 @@
     <meta name="geo.region" content="GB-MER" />
     <meta name="geo.placename" content="Wirral, Merseyside" />
     <script>
-      // GitHub Pages serves the SPA fallback for unknown paths (index/404).
-      // Some mobile browsers then cache that fallback for /BusinessCard (no slash).
-      // This redirect is scoped ONLY to /BusinessCard and forwards to the real folder page /BusinessCard/.
       (function () {
         try {
-          if (window.location.pathname === '/BusinessCard') window.location.replace('/BusinessCard/');
+          var loc = window.location;
+          var host = loc.hostname;
+          // Camera API requires HTTPS — redirect http:// to https:// (GitHub apex may not auto-redirect).
+          if (
+            loc.protocol === 'http:' &&
+            host !== 'localhost' &&
+            host !== '127.0.0.1' &&
+            !host.endsWith('.github.io')
+          ) {
+            loc.replace('https://' + host + loc.pathname + loc.search + loc.hash);
+            return;
+          }
+          if (loc.pathname === '/BusinessCard') loc.replace('/BusinessCard/');
         } catch {}
       })();
     </script>

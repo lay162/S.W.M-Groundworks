@@ -88,7 +88,9 @@ When you own **swm-groundworks.co.uk**:
 2. GitHub shows the **DNS records** to add at Namecheap (**Advanced DNS**). Typical pattern:
    - **A** records for **@** → GitHub’s IPs (copy from GitHub; they can change — always use GitHub’s current list).
    - **CNAME** for **www** → **lay162.github.io** (your GitHub username + .github.io).
-3. Wait for DNS (minutes to 48h). **Enforce HTTPS** stays on in GitHub Pages.
+3. Wait for DNS (minutes to 48h). Turn **Enforce HTTPS** ON in GitHub → repo → **Settings** → **Pages**.
+   If http://swm-groundworks.co.uk does not redirect to https://, camera on phones will fail until HTTPS works.
+   The site also runs a client-side http→https redirect in index.html as a backup.
 4. **index.html** canonical / **og:url** / JSON-LD **url** are set to **https://swm-groundworks.co.uk/** — update that file if you use a different hostname.
 
 **apex vs www:** Many registrars make **www** easier; you can redirect **@** → **https://www.swm-groundworks.co.uk** at Namecheap and set the GitHub custom domain to **www**.
