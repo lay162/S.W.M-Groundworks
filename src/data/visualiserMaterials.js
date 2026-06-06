@@ -97,9 +97,9 @@ export const VISUALISER_CATEGORIES = [
       },
       {
         id: 'porcelain-cobble-combo',
-        name: 'Porcelain + cobble edge',
-        supplierLabel: 'Cream porcelain centre with cobbled perimeter',
-        texture: '/images/visualiser/porcelain-cobbled-border.png',
+        name: 'Grey porcelain + cobble edge',
+        supplierLabel: 'Grey porcelain centre with cobbled perimeter',
+        texture: '/images/visualiser/grey-porcelain-cobbled-border.png',
         cobbledEdge: true,
       },
     ],

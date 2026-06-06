@@ -123,3 +123,6 @@ Do this once in the Netlify dashboard (app.netlify.com):
 
 After disconnect/delete, usage should drop to zero for this site. New deploys happen only when **main** pushes trigger
 **Actions** → **Deploy GitHub Pages** in this repo.
+
+**Until you delete the Netlify site, every `git push` can still trigger a Netlify build** — that is outside this repo.
+Delete Netlify first, then push. This project has zero Netlify config files.
