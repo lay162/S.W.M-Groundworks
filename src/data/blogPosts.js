@@ -147,4 +147,43 @@ export const BLOG_POSTS = [
       'If you are thinking of a larger project later in the year, February and March quotes tend to secure summer slots before the diary fills.',
     ],
   },
+  {
+    slug: 'excavations-dig-outs-wirral-groundworks',
+    title: 'Excavations and dig outs — what we plan before the digger arrives',
+    date: '2025-06-01',
+    excerpt:
+      'Groundworks on the Wirral often start with a proper dig out — services, access, spoil, and levels. Here is how we approach excavations before concrete or paving goes in.',
+    paragraphs: [
+      'Whether it is a driveway strip-out, a garage base, or a full garden dig off, excavations are where groundworks jobs are won or lost. We verify service locations, agree spoil routes, and set finished levels before the first bucket breaks ground.',
+      'Tight Wirral and Liverpool frontages need mini-digger access planned in advance — gate widths, pedestrian routes, and where wagons can sit without blocking neighbours all matter on day one.',
+      'After dig outs we consolidate sub-bases in layers rather than dumping one thick fill. That discipline carries through to block paving, resin, and concrete footings alike — the excavation is not just a hole, it is the foundation for everything above.',
+      'If you are comparing quotes, ask whether spoil removal, reinstatement, and dig-out depth are included. We itemise those clearly so there are no surprises once ground is open.',
+    ],
+  },
+  {
+    slug: 'groundworks-contractors-north-west-merseyside',
+    title: 'Choosing groundworks contractors in the North West — what to look for',
+    date: '2025-08-12',
+    excerpt:
+      'From Merseyside to Cheshire and North Wales, groundworks quality shows up years after the crew has left. Insurance, preparation, and local experience matter.',
+    paragraphs: [
+      'Groundworks is more than laying flags or pouring concrete — it is excavations, levels, drainage, and knowing how local clay and sand behave through wet winters.',
+      'We carry £5M public liability insurance and document stages on extension and foundation work where clients want a trail for building control or warranty purposes.',
+      'A North West groundworks crew should know highway details for dropped kerbs, how to tie patio falls into existing gullies, and when a garden dig off needs mechanical excavation rather than hand dig.',
+      'Photos of your site, dimensions, and postcode help us quote accurately before a visit — especially for dig outs and ground clearance on sloped North Wales gardens or narrow Merseyside drives.',
+    ],
+  },
+  {
+    slug: 'extension-foundations-site-clearance-cheshire',
+    title: 'Extension foundations and site clearance — notes from Cheshire jobs',
+    date: '2025-11-03',
+    excerpt:
+      'Concrete footings, trench excavations, and site clearance for extensions need coordination with your builder and engineer. Here is how we fit into that programme.',
+    paragraphs: [
+      'Extension groundworks usually combine dig outs, footings, and sometimes drainage alterations. We work to engineer drawings but still inspect trench bottoms on the day — ground conditions beat paper assumptions.',
+      'Site clearance ahead of foundations means removing old hardstanding, tree roots, and unsuitable fill. Skipping that step is how slabs crack and drains block within a few seasons.',
+      'Cheshire plots often mix clay and made ground. We adjust dig depth and sub-base design accordingly rather than using one specification everywhere.',
+      'If your project also needs a new driveway or patio after the build, quoting groundworks together keeps levels consistent from footing to finished surface — one crew, one programme.',
+    ],
+  },
 ];

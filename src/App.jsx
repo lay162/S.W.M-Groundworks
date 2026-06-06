@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { BLOG_POSTS } from './data/blogPosts.js';
 import { WORK_GALLERY, WORK_GALLERY_ORDER, PORTFOLIO_ITEMS } from './data/workGallery.js';
+import { applyPageSeo, injectSupplementalStructuredData } from './seo.js';
 
 // --- Custom TikTok Icon to match Lucide style ---
 const TikTokIcon = ({ size = 24, className = '' }) => (
@@ -285,7 +286,7 @@ function GardenTransformationSection() {
 const SERVICES = [
   {
     title: 'Driveways',
-    desc: 'Premium block paving, resin-bound, and decorative gravel driveways across the Wirral, Liverpool, Merseyside and Cheshire.',
+    desc: 'Premium block paving, resin-bound, and decorative gravel driveways — groundworks and dig outs included — across Wirral, Liverpool, Merseyside and Cheshire.',
     image: '/images/work/driveways/driveway pic.jpeg',
     workFilter: 'driveways',
     iconKey: 'driveways',
@@ -306,21 +307,21 @@ const SERVICES = [
   },
   {
     title: 'Landscaping',
-    desc: 'Complete architectural garden transformations and heavy-duty landscaping.',
+    desc: 'Complete garden transformations, site dig offs, excavations and heavy-duty landscaping across the North West.',
     image: '/images/work/gardens/garden before 5.jpeg',
     workFilter: 'gardens',
     iconKey: 'landscaping',
   },
   {
     title: 'Drainage',
-    desc: 'Expert ground drainage solutions to prevent flooding and manage runoff.',
+    desc: 'Expert ground drainage, excavations and runoff solutions to protect homes across Merseyside and Cheshire.',
     image: '/images/work/gardens/Garden Dig off .jpeg',
     workFilter: 'gardens',
     iconKey: 'drainage',
   },
   {
     title: 'Foundations',
-    desc: 'Precision-engineered foundations and concrete footings for extensions and new builds.',
+    desc: 'Precision foundations, concrete footings, excavation and dig outs for extensions, garages and new builds.',
     image: '/images/work/foundations/Concrete Floor Digout.jpeg',
     workFilter: 'foundations',
     iconKey: 'foundations',
@@ -698,6 +699,14 @@ const App = () => {
   }, [activeTab]);
 
   useEffect(() => {
+    applyPageSeo({ activeTab, blogSlug });
+  }, [activeTab, blogSlug]);
+
+  useEffect(() => {
+    injectSupplementalStructuredData();
+  }, []);
+
+  useEffect(() => {
     if (activeTab !== 'work') return;
     const id = window.setTimeout(scrollWorkGalleryIntoView, 80);
     return () => window.clearTimeout(id);
@@ -971,7 +980,7 @@ const App = () => {
           </span>
         </h1>
         <p className="mx-auto mb-12 max-w-3xl px-1 text-base font-medium leading-relaxed text-zinc-400 sm:mb-14 sm:px-2 sm:text-xl md:text-2xl">
-          The leading specialist in elite groundworks for the Wirral, Liverpool, Merseyside, Cheshire and North Wales. We build the foundations for your luxury projects.
+          North West groundworks specialists — excavations, dig outs, driveways, foundations, fencing, patios and landscaping across Wirral, Liverpool, Merseyside, Cheshire and North Wales.
         </p>
         <div className="mx-auto flex w-full max-w-md flex-col items-stretch gap-4 sm:flex-row sm:gap-6">
           <button
