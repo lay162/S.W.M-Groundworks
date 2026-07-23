@@ -1,0 +1,10 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "uk.co.swmgroundworks.nfcshare",
+    "sha256_cert_fingerprints": [
+      "2F:81:22:08:34:72:5F:43:CB:82:0F:58:7D:FB:EC:8B:42:5F:51:B6:72:3A:D9:28:78:DF:EE:30:0C:FC:DD:27"
+    ]
+  }
+}]
