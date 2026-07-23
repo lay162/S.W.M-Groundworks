@@ -526,3 +526,51 @@ footer a {
   justify-content: center;
 }
 
+/* NFC status strip — additive only; does not change card layout */
+.swm-nfc-ready-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(9, 9, 11, 0.96);
+  color: #fafafa;
+  padding: 0.65rem 0.85rem;
+  font-size: 0.8rem;
+  line-height: 1.35;
+  text-align: center;
+  z-index: 9998;
+  border-top: 1px solid #3f3f46;
+}
+
+.swm-nfc-banner-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem 0.85rem;
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.swm-nfc-mode-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  color: #a1a1aa;
+}
+
+.swm-nfc-mode-label select {
+  background: #18181b;
+  color: #fafafa;
+  border: 1px solid #3f3f46;
+  border-radius: 6px;
+  padding: 0.25rem 0.4rem;
+  font-size: 0.75rem;
+}
+
+body,
+#body {
+  padding-bottom: 3.5rem;
+}
+

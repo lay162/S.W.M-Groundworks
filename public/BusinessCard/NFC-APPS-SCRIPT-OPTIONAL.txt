@@ -1,0 +1,43 @@
+Optional NFC tap logging for Google Apps Script (does NOT replace your quote Code.gs).
+
+How to use:
+1. In the same Apps Script project (or a new Sheet + script), add the function below.
+2. Redeploy the web app (New version) with access Anyone.
+3. On the live card page, before scripts load, you can set:
+     window.SWM_NFC_LOG_URL = 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec';
+     window.SWM_NFC_LOG_SECRET = 'swm-groundworks-quote-2026';  // same SECRET as quotes, or a dedicated one
+   Or leave unset — taps still log in the browser via localStorage key swm_nfc_tap_log.
+
+--- paste into Code.gs (add alongside existing doPost; do not delete quote handling) ---
+
+function handleNfcTap_(data) {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName('NFC Taps');
+  if (!sheet) {
+    sheet = ss.insertSheet('NFC Taps');
+    sheet.appendRow([
+      'timestamp',
+      'card_id',
+      'nfc_token',
+      'reader_id',
+      'reader_type',
+      'raw'
+    ]);
+  }
+  sheet.appendRow([
+    data.timestamp || new Date().toISOString(),
+    data.card_id || '',
+    data.nfc_token || '',
+    data.reader_id || '',
+    data.reader_type || '',
+    JSON.stringify(data)
+  ]);
+  return outJson(true, 'NFC tap logged');
+}
+
+// Inside your existing doPost, after secret check and before quote handling, add:
+//
+//   if (data.type === 'nfc_tap') {
+//     return handleNfcTap_(data);
+//   }
+//

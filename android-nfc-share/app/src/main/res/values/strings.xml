@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">S.W.M NFC Share</string>
+    <string name="hce_service_desc">S.W.M Groundworks business card</string>
+    <string name="hce_aid_desc">SWM digital business card</string>
+    <string name="card_url">https://swm-groundworks.co.uk/BusinessCard/</string>
+    <string name="channel_name">SWM card received</string>
+    <string name="channel_desc">Shown when another phone taps you the S.W.M business card</string>
+</resources>

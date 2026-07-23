@@ -97,17 +97,61 @@ function generateQr() {
   });
 }
 
+function getLiveCardData() {
+  if (window.SWMDBC && typeof window.SWMDBC.getDefaultCardData === 'function') {
+    return window.SWMDBC.getDefaultCardData();
+  }
+  return {
+    fullName: 'S.W.M Groundworks',
+    company: 'S.W.M Groundworks',
+    email: 'info@swm-groundworks.co.uk',
+    phone: '+447375996207',
+    website: 'https://swm-groundworks.co.uk/',
+    cardUrl: getCardUrl(),
+  };
+}
+
+function initNfc() {
+  const cardData = getLiveCardData();
+  if (window.SWMNFCRuntime && typeof window.SWMNFCRuntime.initLiveCard === 'function') {
+    window.SWMNFCRuntime.initLiveCard(cardData);
+  }
+}
+
 function init() {
   const share = document.getElementById('share');
   const showQR = document.getElementById('showQR');
   const closeBtn = document.getElementById('close');
   const copyBtn = document.getElementById('copyURL');
   const modal = document.getElementById('modal');
+  const vcard = document.getElementById('vcard');
 
-  if (share) share.addEventListener('click', (e) => (e.preventDefault(), nativeShare()));
+  if (share) {
+    share.addEventListener('click', (e) => {
+      e.preventDefault();
+      // Prefer NFC share when Web NFC is available; otherwise keep existing share flow.
+      if ('NDEFReader' in window && window.SWMNFCRuntime) {
+        window.SWMNFCRuntime.shareCard(getLiveCardData()).catch(() => {
+          // User cancelled NFC, no tag nearby, or write failed — fall back cleanly.
+          nativeShare();
+        });
+        return;
+      }
+      nativeShare();
+    });
+  }
   if (showQR) showQR.addEventListener('click', (e) => (e.preventDefault(), openModal('qr')));
   if (closeBtn) closeBtn.addEventListener('click', (e) => (e.preventDefault(), closeModal()));
   if (copyBtn) copyBtn.addEventListener('click', (e) => (e.preventDefault(), copyUrl()));
+
+  // Keep Save Contact working; also log NFC tap_save when runtime is present.
+  if (vcard) {
+    vcard.addEventListener('click', () => {
+      if (window.SWMNFCRuntime && typeof window.SWMNFCRuntime.logTap === 'function') {
+        window.SWMNFCRuntime.logTap('tap_save', getLiveCardData());
+      }
+    });
+  }
 
   // Close on backdrop click
   if (modal) {
@@ -115,6 +159,8 @@ function init() {
       if (e.target === modal) closeModal();
     });
   }
+
+  initNfc();
 }
 
 document.addEventListener('DOMContentLoaded', init);

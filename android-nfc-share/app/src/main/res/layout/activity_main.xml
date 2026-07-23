@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:background="@color/swm_black">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="S.W.M Groundworks"
+            android:textColor="@color/swm_accent"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="Android NFC card share — no stickers"
+            android:textColor="@color/swm_muted"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/txtModeActive"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Tap n Share active"
+            android:textColor="@color/swm_text"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txtStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/swm_text"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/txtHint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/swm_muted"
+            android:textSize="13sp"
+            android:lineSpacingExtra="2dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Mode"
+            android:textColor="@color/swm_muted"
+            android:textAllCaps="true"
+            android:textSize="12sp" />
+
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/modeGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:singleSelection="true"
+            app:selectionRequired="true">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/modeShare"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Share"
+                android:checkable="true" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/modeSave"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Save"
+                android:checkable="true" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/modeSwap"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Swap"
+                android:checkable="true" />
+        </com.google.android.material.button.MaterialButtonToggleGroup>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="This phone"
+            android:textColor="@color/swm_muted"
+            android:textAllCaps="true"
+            android:textSize="12sp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnRoleShare"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Share my card (others tap me)"
+            app:backgroundTint="@color/swm_accent"
+            android:textColor="@color/swm_black" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnRoleReceive"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Receive a card (I tap / listen)"
+            android:textColor="@color/swm_text"
+            app:strokeColor="@color/swm_border" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnOpenCard"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Open live Business Card"
+            android:textColor="@color/swm_accent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnNfcSettings"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="NFC settings"
+            android:textColor="@color/swm_muted" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Universal token"
+            android:textColor="@color/swm_muted"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/txtToken"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textIsSelectable="true"
+            android:textColor="@color/swm_text"
+            android:textSize="12sp"
+            android:fontFamily="monospace" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Card URL"
+            android:textColor="@color/swm_muted"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/txtUrl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textIsSelectable="true"
+            android:textColor="@color/swm_text"
+            android:textSize="12sp" />
+    </LinearLayout>
+</ScrollView>

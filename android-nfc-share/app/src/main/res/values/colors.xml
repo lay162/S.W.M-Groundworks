@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="swm_black">#09090B</color>
+    <color name="swm_zinc">#18181B</color>
+    <color name="swm_border">#3F3F46</color>
+    <color name="swm_text">#FAFAFA</color>
+    <color name="swm_muted">#A1A1AA</color>
+    <color name="swm_accent">#FFD700</color>
+</resources>
